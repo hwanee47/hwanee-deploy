@@ -2,10 +2,14 @@ package com.deploy.service;
 
 import com.deploy.entity.ScmType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.IOException;
 
 @Slf4j
 @Service
@@ -20,13 +24,12 @@ public class GitService implements ScmService{
     /**
      * 접속 가능 여부 확인
      * @param url
-     * @param branch
      * @param username
      * @param password
      * @return
      */
     @Override
-    public boolean isConnected(String url, String branch, String username, String password) throws GitAPIException {
+    public boolean isConnected(String url, String username, String password) throws GitAPIException {
 
         Git.lsRemoteRepository()
                 .setHeads(true)
@@ -38,4 +41,31 @@ public class GitService implements ScmService{
         return true;
 
     }
+
+
+
+    // 클론 프로젝트
+    @Override
+    public void cloneProject(String url, String branch, String username, String password, String clonePath) throws GitAPIException, IOException {
+
+        File directory = new File(clonePath);
+
+        if (directory.exists()) {
+            FileUtils.cleanDirectory(directory);
+        }
+
+        if (directory.mkdirs()) {
+            log.info("Directory create success. clonepath={}", clonePath);
+        }
+
+
+        Git.cloneRepository()
+                .setURI(url)
+                .setBranch(branch)
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
+                .setDirectory(directory)
+                .call();
+    }
+
+
 }

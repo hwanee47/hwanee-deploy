@@ -35,6 +35,9 @@ public class CodeManageConfig extends BaseEntity {
     @Column(name = "BRANCH")
     private String branch; // 브랜치명
 
+    @Column(name = "CLONE_PATH")
+    private String clonePath; // 클론경로
+
 
     //== 생성 메서드 ==//
     @Builder
