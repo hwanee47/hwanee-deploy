@@ -2,7 +2,7 @@ package com.deploy.service;
 
 import com.deploy.dto.request.CodeManageConfigCreateReq;
 import com.deploy.entity.ScmType;
-import com.deploy.repository.CodeManageSetRepository;
+import com.deploy.repository.CodeManageConfigRepository;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -18,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Slf4j
 @SpringBootTest
 @Transactional
-class CodeManageSetServiceTest {
+class CodeManageConfigServiceTest {
 
     @Autowired
-    CodeManageSetService codeManageSetService;
+    CodeManageConfigService codeManageConfigService;
     @Autowired
-    CodeManageSetRepository codeManageSetRepository;
+    CodeManageConfigRepository codeManageConfigRepository;
     @Autowired
     EntityManager em;
     @Autowired
@@ -42,7 +42,7 @@ class CodeManageSetServiceTest {
                 .description("deasd1223")
                 .build();
 
-        codeManageSetService.save(request);
+        codeManageConfigService.save(request);
     }
 
 
@@ -51,12 +51,11 @@ class CodeManageSetServiceTest {
         //given
         ScmType type = ScmType.GIT;
         String url = "https://github.com/hwanee47/Hwanee-Platform-Server-API.git";
-        String branch = "master";
         String username = "hwnaee47";
         String password = "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";
 
         //when
-        Boolean isConnedted = codeManageSetService.isConnected(gitService, url, branch, username, password);
+        Boolean isConnedted = codeManageConfigService.isConnected(gitService, url, username, password);
 
         //then
         assertThat(isConnedted).isTrue();
@@ -69,13 +68,12 @@ class CodeManageSetServiceTest {
         //given
         ScmType type = ScmType.GIT;
         String url = "https://github.com/hwanee47/Hwanee-Platform-Server-API.git";
-        String branch = "master";
         String username = "hwnaee47";
         String password = "1234";
 
 
         //when & then
-        assertThrows(GitAPIException.class, () -> codeManageSetService.isConnected(gitService, url, branch, username, password));
+        assertThrows(GitAPIException.class, () -> codeManageConfigService.isConnected(gitService, url, username, password));
 
     }
 

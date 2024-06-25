@@ -3,8 +3,7 @@ package com.deploy.service;
 import com.deploy.dto.request.CodeManageConfigCreateReq;
 import com.deploy.dto.response.CodeManageSetRes;
 import com.deploy.entity.CodeManageConfig;
-import com.deploy.entity.ScmType;
-import com.deploy.repository.CodeManageSetRepository;
+import com.deploy.repository.CodeManageConfigRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -15,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CodeManageSetService {
+public class CodeManageConfigService {
 
-    private final CodeManageSetRepository codeManageSetRepository;
+    private final CodeManageConfigRepository codeManageConfigRepository;
 
 
     /**
@@ -29,7 +28,7 @@ public class CodeManageSetService {
     public Long save(CodeManageConfigCreateReq request) {
 
         CodeManageConfig entity = request.toEntity();
-        codeManageSetRepository.save(entity);
+        codeManageConfigRepository.save(entity);
 
         return entity.getId();
     }
@@ -41,7 +40,7 @@ public class CodeManageSetService {
      * @return
      */
     public CodeManageSetRes findById(Long id) {
-        CodeManageConfig findEntity = codeManageSetRepository.findById(id)
+        CodeManageConfig findEntity = codeManageConfigRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No such data."));
 
         return new CodeManageSetRes();
@@ -51,16 +50,15 @@ public class CodeManageSetService {
      * SCM 자격증명
      * @param service
      * @param url
-     * @param branch
      * @param username
      * @param password
      * @return
      * @throws GitAPIException
      */
-    public Boolean isConnected(ScmService service, String url, String branch, String username, String password) throws GitAPIException {
+    public Boolean isConnected(ScmService service, String url, String username, String password) throws GitAPIException {
 
         try {
-            return service.isConnected(url, branch, username, password);
+            return service.isConnected(url, username, password);
         } catch (GitAPIException e) {
             log.error("SCM({}) connected error : {}", service.getType(), e.getMessage());
             throw e;
