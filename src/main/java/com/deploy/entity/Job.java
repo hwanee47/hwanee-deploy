@@ -18,7 +18,7 @@ public class Job extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "JOB_ID")
-    private long id;
+    private Long id;
 
     @Column(name = "NAME")
     private String name; // Job 이름
@@ -28,6 +28,10 @@ public class Job extends BaseEntity {
 
     @Embedded
     private BuildSet buildSet;
+
+    @ManyToOne
+    @JoinColumn(name = "CODE_MANAGE_CONFIG_ID")
+    private CodeManageConfig codeManageConfig;
 
     @OneToMany(mappedBy = "job")
     private List<Step> steps = new ArrayList<>();

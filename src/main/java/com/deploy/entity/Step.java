@@ -14,10 +14,10 @@ public class Step extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "STEP_ID")
-    private long id;
+    private Long id;
 
     @Column(name = "STEP_INDEX")
-    private long stepIndex; // 순서
+    private Long stepIndex; // 순서
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "JOB_ID")

@@ -1,20 +1,20 @@
 package com.deploy.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @Table(name = "CODE_MANAGE_SET")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CodeManageSet extends BaseEntity {
+public class CodeManageConfig extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CODE_MANAGE_SET_ID")
-    private long id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "SCM_TYPE")
@@ -35,11 +35,18 @@ public class CodeManageSet extends BaseEntity {
     @Column(name = "BRANCH")
     private String branch; // 브랜치명
 
-    @Column(name = "IS_CREDENTIAL")
-    private boolean isCredential;   // 자격증명여부
 
-    @Column(name = "CREDENTIAL_FAIL_LOG")
-    private String credentialFailLog;   // 자격증명실패로그
+    //== 생성 메서드 ==//
+    @Builder
+    public CodeManageConfig(ScmType scmType, String description, String url, String username, String password, String branch) {
+        this.scmType = scmType;
+        this.description = description;
+        this.url = url;
+        this.username = username;
+        this.password = password;
+        this.branch = branch;
+    }
 
 
+    //== 비즈니스 로직 ==//
 }

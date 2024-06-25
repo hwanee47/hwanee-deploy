@@ -15,7 +15,7 @@ public class DeployConfig {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "DEPLOY_CONFIG_ID")
-    private long id;
+    private Long id;
 
 
 

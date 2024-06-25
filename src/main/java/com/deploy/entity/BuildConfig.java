@@ -13,7 +13,7 @@ public class BuildConfig extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BUILD_CONFIG_ID")
-    private long id;
+    private Long id;
 
     @Embedded
     private BuildSet buildSet;

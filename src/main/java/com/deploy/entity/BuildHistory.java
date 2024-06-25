@@ -16,7 +16,7 @@ public class BuildHistory extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BUILD_HISTORY_ID")
-    private long id;
+    private Long id;
 
     @Column(name = "BUILD_RESULT")
     private boolean buildResult; // 빌드결과
