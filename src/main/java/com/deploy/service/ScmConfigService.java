@@ -1,6 +1,6 @@
 package com.deploy.service;
 
-import com.deploy.dto.request.CodeManageConfigCreateReq;
+import com.deploy.dto.request.ScmConfigCreateReq;
 import com.deploy.dto.response.CodeManageSetRes;
 import com.deploy.entity.ScmConfig;
 import com.deploy.repository.ScmConfigRepository;
@@ -26,7 +26,7 @@ public class ScmConfigService {
      * @return
      */
     @Transactional
-    public Long save(CodeManageConfigCreateReq request) {
+    public Long save(ScmConfigCreateReq request) {
 
         ScmConfig entity = request.toEntity();
         scmConfigRepository.save(entity);

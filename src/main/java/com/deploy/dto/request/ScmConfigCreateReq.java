@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CodeManageConfigCreateReq {
+public class ScmConfigCreateReq {
 
     @NotNull( message = "유효하지 않은 유형(type)이 입력되었습니다.")
     private ScmType type;
@@ -31,7 +31,7 @@ public class CodeManageConfigCreateReq {
 
 
     @Builder
-    public CodeManageConfigCreateReq(ScmType type, String description, String url, String username, String password, String branch) {
+    public ScmConfigCreateReq(ScmType type, String description, String url, String username, String password, String branch) {
         this.type = type;
         this.description = description;
         this.url = url;

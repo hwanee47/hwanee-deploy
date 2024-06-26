@@ -1,6 +1,6 @@
 package com.deploy.service;
 
-import com.deploy.dto.request.CodeManageConfigCreateReq;
+import com.deploy.dto.request.ScmConfigCreateReq;
 import com.deploy.entity.enums.ScmType;
 import com.deploy.repository.ScmConfigRepository;
 import com.deploy.service.utils.GitService;
@@ -34,7 +34,7 @@ class ScmConfigServiceTest {
 
     @BeforeEach
     public void createData() {
-        CodeManageConfigCreateReq request = CodeManageConfigCreateReq.builder()
+        ScmConfigCreateReq request = ScmConfigCreateReq.builder()
                 .type(ScmType.GIT)
                 .url("https://github.com/hwanee47/Hwanee-Platform-Server-API.git")
                 .branch("master")
