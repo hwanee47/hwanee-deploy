@@ -1,17 +1,15 @@
-package com.deploy.service;
+package com.deploy.service.utils;
 
-import com.deploy.entity.ScmType;
+import com.deploy.entity.enums.ScmType;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 @Slf4j
 @Service
-public class SvnService implements ScmService{
+public class SvnService implements ScmService {
 
 
     @Override

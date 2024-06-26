@@ -1,7 +1,7 @@
 package com.deploy.dto.request;
 
 import com.deploy.entity.ScmConfig;
-import com.deploy.entity.ScmType;
+import com.deploy.entity.enums.ScmType;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

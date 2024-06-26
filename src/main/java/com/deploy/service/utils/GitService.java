@@ -1,6 +1,6 @@
-package com.deploy.service;
+package com.deploy.service.utils;
 
-import com.deploy.entity.ScmType;
+import com.deploy.entity.enums.ScmType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.Git;
@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @Slf4j
 @Service
-public class GitService implements ScmService{
+public class GitService implements ScmService {
 
 
     @Override

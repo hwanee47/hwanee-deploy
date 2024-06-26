@@ -1,5 +1,6 @@
 package com.deploy.entity;
 
+import com.deploy.entity.enums.StepType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

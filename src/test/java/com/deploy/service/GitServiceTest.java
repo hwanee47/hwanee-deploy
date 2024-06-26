@@ -1,8 +1,7 @@
 package com.deploy.service;
 
-import com.deploy.entity.ScmType;
+import com.deploy.service.utils.GitService;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

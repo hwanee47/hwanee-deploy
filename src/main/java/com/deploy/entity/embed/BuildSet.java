@@ -1,5 +1,6 @@
-package com.deploy.entity;
+package com.deploy.entity.embed;
 
+import com.deploy.entity.enums.BuildType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;

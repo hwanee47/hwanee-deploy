@@ -1,4 +1,4 @@
-package com.deploy.service;
+package com.deploy.service.utils;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 

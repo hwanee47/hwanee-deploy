@@ -4,6 +4,7 @@ import com.deploy.dto.request.CodeManageConfigCreateReq;
 import com.deploy.dto.response.CodeManageSetRes;
 import com.deploy.entity.ScmConfig;
 import com.deploy.repository.ScmConfigRepository;
+import com.deploy.service.utils.ScmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.errors.GitAPIException;

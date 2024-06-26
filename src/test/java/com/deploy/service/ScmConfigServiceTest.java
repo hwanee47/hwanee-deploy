@@ -1,8 +1,9 @@
 package com.deploy.service;
 
 import com.deploy.dto.request.CodeManageConfigCreateReq;
-import com.deploy.entity.ScmType;
+import com.deploy.entity.enums.ScmType;
 import com.deploy.repository.ScmConfigRepository;
+import com.deploy.service.utils.GitService;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.errors.GitAPIException;

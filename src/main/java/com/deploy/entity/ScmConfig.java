@@ -1,5 +1,6 @@
 package com.deploy.entity;
 
+import com.deploy.entity.enums.ScmType;
 import jakarta.persistence.*;
 import lombok.*;
 
