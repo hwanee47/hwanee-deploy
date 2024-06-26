@@ -2,8 +2,8 @@ package com.deploy.service;
 
 import com.deploy.dto.request.CodeManageConfigCreateReq;
 import com.deploy.dto.response.CodeManageSetRes;
-import com.deploy.entity.CodeManageConfig;
-import com.deploy.repository.CodeManageConfigRepository;
+import com.deploy.entity.ScmConfig;
+import com.deploy.repository.ScmConfigRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CodeManageConfigService {
+public class ScmConfigService {
 
-    private final CodeManageConfigRepository codeManageConfigRepository;
+    private final ScmConfigRepository scmConfigRepository;
 
 
     /**
@@ -27,8 +27,8 @@ public class CodeManageConfigService {
     @Transactional
     public Long save(CodeManageConfigCreateReq request) {
 
-        CodeManageConfig entity = request.toEntity();
-        codeManageConfigRepository.save(entity);
+        ScmConfig entity = request.toEntity();
+        scmConfigRepository.save(entity);
 
         return entity.getId();
     }
@@ -40,7 +40,7 @@ public class CodeManageConfigService {
      * @return
      */
     public CodeManageSetRes findById(Long id) {
-        CodeManageConfig findEntity = codeManageConfigRepository.findById(id)
+        ScmConfig findEntity = scmConfigRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No such data."));
 
         return new CodeManageSetRes();

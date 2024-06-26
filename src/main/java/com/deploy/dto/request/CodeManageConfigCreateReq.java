@@ -1,6 +1,6 @@
 package com.deploy.dto.request;
 
-import com.deploy.entity.CodeManageConfig;
+import com.deploy.entity.ScmConfig;
 import com.deploy.entity.ScmType;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -41,8 +41,8 @@ public class CodeManageConfigCreateReq {
     }
 
     //== 엔티티 변환 메서드 ==//
-    public CodeManageConfig toEntity() {
-        return CodeManageConfig.builder()
+    public ScmConfig toEntity() {
+        return ScmConfig.builder()
                 .scmType(type)
                 .description(description)
                 .url(url)

@@ -2,7 +2,7 @@ package com.deploy.service;
 
 import com.deploy.dto.request.CodeManageConfigCreateReq;
 import com.deploy.entity.ScmType;
-import com.deploy.repository.CodeManageConfigRepository;
+import com.deploy.repository.ScmConfigRepository;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -18,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Slf4j
 @SpringBootTest
 @Transactional
-class CodeManageConfigServiceTest {
+class ScmConfigServiceTest {
 
     @Autowired
-    CodeManageConfigService codeManageConfigService;
+    ScmConfigService scmConfigService;
     @Autowired
-    CodeManageConfigRepository codeManageConfigRepository;
+    ScmConfigRepository scmConfigRepository;
     @Autowired
     EntityManager em;
     @Autowired
@@ -42,7 +42,7 @@ class CodeManageConfigServiceTest {
                 .description("deasd1223")
                 .build();
 
-        codeManageConfigService.save(request);
+        scmConfigService.save(request);
     }
 
 
@@ -55,7 +55,7 @@ class CodeManageConfigServiceTest {
         String password = "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";
 
         //when
-        Boolean isConnedted = codeManageConfigService.isConnected(gitService, url, username, password);
+        Boolean isConnedted = scmConfigService.isConnected(gitService, url, username, password);
 
         //then
         assertThat(isConnedted).isTrue();
@@ -73,7 +73,7 @@ class CodeManageConfigServiceTest {
 
 
         //when & then
-        assertThrows(GitAPIException.class, () -> codeManageConfigService.isConnected(gitService, url, username, password));
+        assertThrows(GitAPIException.class, () -> scmConfigService.isConnected(gitService, url, username, password));
 
     }
 

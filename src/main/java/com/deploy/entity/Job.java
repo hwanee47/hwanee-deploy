@@ -31,7 +31,7 @@ public class Job extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "CODE_MANAGE_CONFIG_ID")
-    private CodeManageConfig codeManageConfig;
+    private ScmConfig scmConfig;
 
     @OneToMany(mappedBy = "job")
     private List<Step> steps = new ArrayList<>();

@@ -3,17 +3,15 @@ package com.deploy.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Entity
-@Table(name = "CODE_MANAGE_SET")
+@Table(name = "SCM_CONFIG")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CodeManageConfig extends BaseEntity {
+public class ScmConfig extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CODE_MANAGE_SET_ID")
+    @Column(name = "SCM_ID")
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -41,7 +39,7 @@ public class CodeManageConfig extends BaseEntity {
 
     //== 생성 메서드 ==//
     @Builder
-    public CodeManageConfig(ScmType scmType, String description, String url, String username, String password, String branch) {
+    public ScmConfig(ScmType scmType, String description, String url, String username, String password, String branch) {
         this.scmType = scmType;
         this.description = description;
         this.url = url;

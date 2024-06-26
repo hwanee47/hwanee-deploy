@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class JobService {
 
+    private final StepService service;
     private final JobRepository jobRepository;
-
 
     @Transactional
     public Long save(JobCreateReq jobCreateReq) {
