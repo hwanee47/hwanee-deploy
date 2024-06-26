@@ -23,7 +23,14 @@ public class Credential {
     private String privateKey; // 인증키
 
     @Column(name = "PASSPHRASE")
-    private String passphrase; // 인증키 생성시 입력한 비밀번호
+    private String passphrase; // 인증키 비밀번호
+
+
+
+    //== 비즈니스 로직 ==//
+    public void encrptPassphase() {
+
+    }
 
 
 }
