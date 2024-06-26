@@ -1,0 +1,99 @@
+package com.deploy.service;
+
+import com.deploy.dto.request.StepCreateReq;
+import com.deploy.entity.Credential;
+import com.deploy.entity.Job;
+import com.deploy.entity.ScmConfig;
+import com.deploy.entity.Step;
+import com.deploy.entity.enums.ScmType;
+import com.deploy.entity.enums.StepType;
+import com.deploy.repository.CredentialRepository;
+import com.deploy.repository.JobRepository;
+import com.deploy.repository.ScmConfigRepository;
+import com.deploy.repository.StepRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@Slf4j
+@SpringBootTest
+@Transactional
+@Rollback(false)
+class StepServiceTest {
+
+    @Autowired
+    StepService stepService;
+
+    @Autowired
+    StepRepository stepRepository;
+
+    @Autowired
+    JobRepository jobRepository;
+
+    @Autowired
+    CredentialRepository credentialRepository;
+
+    @Autowired
+    ScmConfigRepository scmConfigRepository;
+
+    @BeforeEach
+    public void init() {
+        Job job = new Job("job1", "test1");
+        jobRepository.save(job);
+
+        Credential credential = Credential.builder()
+                .identifierName("git-credential")
+                .targetUsername("hwaneehwanee")
+                .targetHost("192.0.0.1")
+                .targetPort(22)
+                .privateKey("123123123")
+                .build();
+        credentialRepository.save(credential);
+
+        ScmConfig scmConfig = ScmConfig.builder()
+                .scmType(ScmType.GIT)
+                .url("http://github.com")
+                .username("hwaneehwanee")
+                .password("token")
+                .branch("master")
+                .build();
+        scmConfigRepository.save(scmConfig);
+    }
+
+    @Test
+    @DisplayName("Step 엔티티 저장 테스트")
+    public void test1() {
+        //given
+        List<Job> jobs = jobRepository.findAll();
+        List<Credential> credentials = credentialRepository.findAll();
+        List<ScmConfig> scmConfigs = scmConfigRepository.findAll();
+
+        StepCreateReq stepCreateReq = new StepCreateReq();
+        stepCreateReq.setType(StepType.SCM);
+        stepCreateReq.setCommand("test");
+        stepCreateReq.setJobId(jobs.get(0).getId());
+        stepCreateReq.setCredentialId(credentials.get(0).getId());
+        stepCreateReq.setScmConfigId(scmConfigs.get(0).getId());
+
+        //when
+        Long savedId = stepService.createStep(stepCreateReq);
+        Step findStep = stepRepository.findById(savedId)
+                .orElseThrow(() -> new IllegalArgumentException("No such data."));
+
+        //then
+        assertThat(stepCreateReq.getType()).isEqualTo(findStep.getStepType());
+
+    }
+
+}

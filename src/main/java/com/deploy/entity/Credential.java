@@ -1,11 +1,15 @@
 package com.deploy.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "CREDENTIAL")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Credential {
 
     @Id
@@ -35,6 +39,17 @@ public class Credential {
     private String passphrase; // 인증키 비밀번호
 
 
+    //== 생성 메서드 ==//
+    @Builder
+    public Credential(String identifierName, String targetUsername, String targetPassword, String targetHost, int targetPort, String privateKey, String passphrase) {
+        this.identifierName = identifierName;
+        this.targetUsername = targetUsername;
+        this.targetPassword = targetPassword;
+        this.targetHost = targetHost;
+        this.targetPort = targetPort;
+        this.privateKey = privateKey;
+        this.passphrase = passphrase;
+    }
 
     //== 비즈니스 로직 ==//
     public void encrptPassphase() {
