@@ -16,8 +16,17 @@ public class Credential {
     @Column(name = "IDENTIFIER_NAME")
     private String identifierName; // 유저 식별용 이름
 
-    @Column(name = "USERNAME")
-    private String username; // 계정
+    @Column(name = "TARGET_USERNAME")
+    private String targetUsername; // 계정
+
+    @Column(name = "TARGET_PASSWORD")
+    private String targetPassword; // 비밀번호
+
+    @Column(name = "TARGET_HOST")
+    private String targetHost; // 원격지 호스트
+
+    @Column(name = "TARGET_PORT")
+    private int targetPort; // 원격지 포트
 
     @Column(name = "PRIVATE_KEY")
     private String privateKey; // 인증키
