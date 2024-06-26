@@ -52,6 +52,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit
 	implementation 'org.eclipse.jgit:org.eclipse.jgit:6.7.0.202309050840-r'
 
+	implementation 'com.github.mwiede:jsch:0.2.16'
+
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
