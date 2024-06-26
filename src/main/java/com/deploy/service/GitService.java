@@ -31,14 +31,19 @@ public class GitService implements ScmService{
     @Override
     public boolean isConnected(String url, String username, String password) throws GitAPIException {
 
-        Git.lsRemoteRepository()
-                .setHeads(true)
-                .setTags(false)
-                .setRemote(url)
-                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
-                .call();
+        try {
+            Git.lsRemoteRepository()
+                    .setHeads(true)
+                    .setTags(false)
+                    .setRemote(url)
+                    .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
+                    .call();
 
-        return true;
+            return true;
+        } catch (GitAPIException gitAPIException) {
+            log.error("Fail connect project. message={}", gitAPIException.getMessage());
+            throw gitAPIException;
+        }
 
     }
 
@@ -48,23 +53,30 @@ public class GitService implements ScmService{
     @Override
     public void cloneProject(String url, String branch, String username, String password, String clonePath) throws GitAPIException, IOException {
 
-        File directory = new File(clonePath);
+        try {
+            File directory = new File(clonePath);
 
-        if (directory.exists()) {
-            FileUtils.cleanDirectory(directory);
+            if (directory.exists()) {
+                FileUtils.cleanDirectory(directory);
+            }
+
+            if (directory.mkdirs()) {
+                log.info("Directory create success. clonepath={}", clonePath);
+            }
+
+            Git.cloneRepository()
+                    .setURI(url)
+                    .setBranch(branch)
+                    .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
+                    .setDirectory(directory)
+                    .call();
+        } catch (GitAPIException gitAPIException) {
+            log.error("Fail clone project. message={}", gitAPIException.getMessage());
+            throw gitAPIException;
+        } catch (IOException ioException) {
+            log.error("Fail create directory. message={}", ioException.getMessage());
+            throw ioException;
         }
-
-        if (directory.mkdirs()) {
-            log.info("Directory create success. clonepath={}", clonePath);
-        }
-
-
-        Git.cloneRepository()
-                .setURI(url)
-                .setBranch(branch)
-                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
-                .setDirectory(directory)
-                .call();
     }
 
 
