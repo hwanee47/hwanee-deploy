@@ -28,3 +28,9 @@ decorator:
   datasource:
     p6spy:
       enable-logging: true
+
+
+app:
+  aes:
+    secret-key: my-secert-key
+    salt: 70726574657374
