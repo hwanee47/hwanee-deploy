@@ -5,12 +5,16 @@ plugins {
 }
 
 group = 'study'
-version = '0.0.1-SNAPSHOT'
+version = ''
 
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
+}
+
+jar {
+	enabled = false
 }
 
 configurations {
