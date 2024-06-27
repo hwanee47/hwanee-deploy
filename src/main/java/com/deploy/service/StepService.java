@@ -33,7 +33,7 @@ public class StepService {
 
 
     @Transactional
-    public Long createStep(StepCreateReq stepCreateReq) {
+    public Long save(StepCreateReq stepCreateReq) {
 
         // 엔티티 조회
         Job job = jobRepository.findById(stepCreateReq.getJobId())
@@ -57,7 +57,8 @@ public class StepService {
         Long maxStepIndex = stepRepository.maxStepIndex(job.getId());
 
         // 엔티티 생성
-        Step step = Step.createStep(maxStepIndex+1, stepCreateReq.getType(), stepCreateReq.getCommand(), job, credential, scmConfig);
+        Step step = Step.createStep(maxStepIndex+1, stepCreateReq.getType(), stepCreateReq.getCommand(),
+                job, credential, scmConfig);
 
         // 엔티티 저장
         stepRepository.save(step);

@@ -40,6 +40,19 @@ public class Credential {
 
 
     //== 생성 메서드 ==//
+    public static Credential createCredential(String identifierName, String targetUsername, String targetPassword, String targetHost, int targetPort, String privateKey, String passphrase) {
+        Credential credential = new Credential();
+        credential.identifierName = identifierName;
+        credential.targetUsername = targetUsername;
+        credential.targetPassword = targetPassword;
+        credential.targetHost = targetHost;
+        credential.targetPort = targetPort;
+        credential.privateKey = privateKey;
+        credential.passphrase = passphrase;
+
+        return credential;
+    }
+
     @Builder
     public Credential(String identifierName, String targetUsername, String targetPassword, String targetHost, int targetPort, String privateKey, String passphrase) {
         this.identifierName = identifierName;
@@ -51,10 +64,8 @@ public class Credential {
         this.passphrase = passphrase;
     }
 
-    //== 비즈니스 로직 ==//
-    public void encrptPassphase() {
 
-    }
+    //== 비즈니스 로직 ==//
 
 
 }

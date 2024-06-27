@@ -1,6 +1,7 @@
 package com.deploy.service;
 
 import com.deploy.dto.request.JobCreateReq;
+import com.deploy.entity.Credential;
 import com.deploy.entity.Job;
 import com.deploy.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,12 @@ public class JobService {
 
     @Transactional
     public Long save(JobCreateReq jobCreateReq) {
-        Job entity = jobCreateReq.toEntity();
-        jobRepository.save(entity);
 
-        return entity.getId();
+        // 엔티티 생성
+        Job job = Job.createJob(jobCreateReq.getName(), jobCreateReq.getDescription());
+        jobRepository.save(job);
+
+        return job.getId();
     }
 
 

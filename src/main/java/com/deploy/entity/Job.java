@@ -42,11 +42,16 @@ public class Job extends BaseEntity {
 
 
     //== 생성 메서드 ==//
+    public static Job createJob(String name, String description) {
+        Job job = new Job();
+        job.name = name;
+        job.description = description;
+        return job;
+    }
+
     @Builder
     public Job(String name, String description) {
         this.name = name;
         this.description = description;
     }
-
-
 }

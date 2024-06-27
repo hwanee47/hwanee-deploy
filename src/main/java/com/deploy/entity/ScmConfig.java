@@ -39,6 +39,18 @@ public class ScmConfig extends BaseEntity {
 
 
     //== 생성 메서드 ==//
+    public static ScmConfig createScmConfig(ScmType scmType, String description, String url, String username, String password, String branch) {
+        ScmConfig scmConfig = new ScmConfig();
+        scmConfig.scmType = scmType;
+        scmConfig.description = description;
+        scmConfig.url = url;
+        scmConfig.username = username;
+        scmConfig.password = password;
+        scmConfig.branch = branch;
+
+        return scmConfig;
+    }
+
     @Builder
     public ScmConfig(ScmType scmType, String description, String url, String username, String password, String branch) {
         this.scmType = scmType;

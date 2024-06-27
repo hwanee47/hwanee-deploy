@@ -15,16 +15,4 @@ public class JobCreateReq {
     private String description;
 
 
-    @Builder
-    public JobCreateReq(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
-
-    public Job toEntity() {
-        return Job.builder()
-                .name(name)
-                .description(description)
-                .build();
-    }
 }
