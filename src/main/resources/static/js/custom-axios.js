@@ -29,6 +29,8 @@
             return response;
         }, function (error) {
             // 응답 에러 처리를 여기서
+            gfnShowToast('error', error.response.data.message);
+            console.error('에러 발생:', error);
             return Promise.reject(error);
         });
 

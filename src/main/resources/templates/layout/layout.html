@@ -15,15 +15,20 @@
             <!-- ===== Sidebar End ===== -->
 
             <!-- ===== Content Area Start ===== -->
-            <div class="bg-gray-100 flex-1 p-6 md:mt-16">
+            <div class="bg-gray-100 flex-1 p-6 md:mt-20">
                 <!-- ===== Main Content Start ===== -->
                 <th:block layout:fragment="content"></th:block>
                 <!-- ===== Main Content End ===== -->
             </div>
             <!-- ===== Content Area End ===== -->
 
+            <!-- ===== Toast Start ===== -->
+            <th:block th:replace="~{toast :: toastFragment}"></th:block>
+            <!-- ===== Toast End ===== -->
+
         </div>
         <!-- ===== Page Wrapper End ===== -->
 
+        <th:block layout:fragment="script"></th:block>
     </body>
 </html>

@@ -2,6 +2,7 @@ package com.deploy.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,5 +35,22 @@ public class User extends BaseEntity {
         user.username = username;
 
         return user;
+    }
+
+
+    @Builder
+    public User(String email, String password, String username) {
+        this.email = email;
+        this.password = password;
+        this.username = username;
+    }
+
+    //== 비즈니스 메서드 ==//
+    /**
+     * 비밀번호 변경
+     * @param newPassword (암호화된 새 비밀번호)
+     */
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
     }
 }

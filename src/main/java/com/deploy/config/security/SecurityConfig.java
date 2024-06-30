@@ -1,30 +1,16 @@
-package com.deploy.config;
+package com.deploy.config.security;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
-import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-import java.io.IOException;
 
 @Slf4j
 @Configuration
@@ -39,14 +25,13 @@ public class SecurityConfig {
     private static final String LOGIN_URL = "/app/view/login";
 
 
-
     @Bean
     public AesBytesEncryptor aesBytesEncryptor() {
         return new AesBytesEncryptor(secretKey, salt);
     }
 
     @Bean
-    BCryptPasswordEncoder passwordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
@@ -78,15 +63,8 @@ public class SecurityConfig {
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .loginProcessingUrl("/login")
-                        .successHandler((request, response, authentication) -> {
-                            log.info("login success.");
-                            response.sendRedirect("/");
-                        })
-                        .failureHandler((request, response, exception) -> {
-                            log.info("login fail. message={}",exception.getMessage());
-                            request.getSession().setAttribute("error_message", "Invaild email or password.");
-                            response.sendRedirect(LOGIN_URL);
-                        })
+                        .successHandler(new CustomLoginSuccessHandler())
+                        .failureHandler(new CustomLoginFailuerHandler(LOGIN_URL))
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")

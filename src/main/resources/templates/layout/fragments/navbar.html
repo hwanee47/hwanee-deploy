@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
     <th:block th:fragment="navbarFragment">
 
         <!-- start navbar -->
         <div class="md:fixed md:w-full md:top-0 md:z-20 flex flex-row flex-wrap items-center bg-white p-6 border-b border-gray-300">
 
             <!-- logo -->
-            <div class="flex-none w-56 flex flex-row items-center">
-                <img src="img/favicon.png" class="w-10 flex-none">
+            <div id="navbar-logo" class="flex-none w-56 flex flex-row items-center cursor-pointer">
+                <img th:src="@{/img/favicon.png}" class="w-10 flex-none">
                 <strong class="capitalize ml-1 flex-1">DeployMaster</strong>
 
                 <button id="sliderBtn" class="flex-none text-right text-gray-900 hidden md:block">
@@ -41,11 +44,11 @@
 
                         <button class="menu-btn focus:outline-none focus:shadow-outline flex flex-wrap items-center">
                             <div class="w-8 h-8 overflow-hidden rounded-full">
-                                <img class="w-full h-full object-cover" src="img/user.svg" >
+                                <img class="w-full h-full object-cover" th:src="@{/img/user.svg}" >
                             </div>
 
                             <div class="ml-2 capitalize flex ">
-                                <h1 class="text-sm text-gray-800 font-semibold m-0 p-0 leading-none">moeSaid</h1>
+                                <h1 id="navbar-username" class="text-sm text-gray-800 font-semibold m-0 p-0 leading-none">moeSaid</h1>
                                 <i class="fad fa-chevron-down ml-2 text-xs leading-none"></i>
                             </div>
                         </button>
@@ -55,7 +58,7 @@
                         <div class="text-gray-500 menu hidden md:mt-10 md:w-full rounded bg-white shadow-md absolute z-20 right-0 w-40 mt-5 py-2 animated faster">
 
                             <!-- item -->
-                            <a class="px-4 py-2 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out" href="#">
+                            <a class="px-4 py-2 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out" href="/app/view/profile">
                                 <i class="fad fa-user-edit text-xs mr-1"></i>
                                 edit my profile
                             </a>
@@ -85,7 +88,10 @@
                             <hr>
 
                             <!-- item -->
-                            <a class="px-4 py-2 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out" href="#">
+                            <form id="logoutForm" action="/logout" method="post" style="display: none;">
+                                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                            </form>
+                            <a class="px-4 py-2 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 hover:text-gray-900 transition-all duration-300 ease-in-out" href="#" onclick="document.getElementById('logoutForm').submit();">
                                 <i class="fad fa-user-times text-xs mr-1"></i>
                                 log out
                             </a>
@@ -241,7 +247,7 @@
                             <a class="flex flex-row items-center justify-start px-4 py-4 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 transition-all duration-300 ease-in-out" href="#">
 
                                 <div class="w-10 h-10 rounded-full overflow-hidden mr-3 bg-gray-100 border border-gray-300">
-                                    <img class="w-full h-full object-cover" src="img/user1.jpg" alt="">
+                                    <img class="w-full h-full object-cover" th:src="@{/img/user1.jpg}" alt="">
                                 </div>
 
                                 <div class="flex-1 flex flex-rowbg-green-100">
@@ -262,7 +268,7 @@
                             <a class="flex flex-row items-center justify-start px-4 py-4 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 transition-all duration-300 ease-in-out" href="#">
 
                                 <div class="w-10 h-10 rounded-full overflow-hidden mr-3 bg-gray-100 border border-gray-300">
-                                    <img class="w-full h-full object-cover" src="img/user2.jpg" alt="">
+                                    <img class="w-full h-full object-cover" th:src="@{/img/user2.jpg}" alt="">
                                 </div>
 
                                 <div class="flex-1 flex flex-rowbg-green-100">
@@ -283,7 +289,7 @@
                             <a class="flex flex-row items-center justify-start px-4 py-4 block capitalize font-medium text-sm tracking-wide bg-white hover:bg-gray-200 transition-all duration-300 ease-in-out" href="#">
 
                                 <div class="w-10 h-10 rounded-full overflow-hidden mr-3 bg-gray-100 border border-gray-300">
-                                    <img class="w-full h-full object-cover" src="img/user3.jpg" alt="">
+                                    <img class="w-full h-full object-cover" th:src="@{/img/user3.jpg}" alt="">
                                 </div>
 
                                 <div class="flex-1 flex flex-rowbg-green-100">
@@ -323,5 +329,13 @@
         </div>
         <!-- end navbar -->
 
+        <!-- script -->
+        <script th:src="@{/js/navbar.js}"></script>
+        <script>
+            $(document).ready(function(){
+                // 세션 조회
+                fnGetSession();
+            })
+        </script>
     </th:block>
 </html>

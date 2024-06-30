@@ -208,30 +208,13 @@
 
         </div>
         <!-- ===== Dashboard-2 End ===== -->
-
-        <form id="logoutForm" action="/logout" method="post" style="display: none;">
-            <input type="hidden" name="_csrf" value="${_csrf.token}" />
-        </form>
-
-        <button onclick="document.getElementById('logoutForm').submit();">logout</button>
+        <button onClick="test()"> test </button>
 
         <script>
-            const logout = () => {
-                console.log(123);
-                _axios.post('/logout', {}, {
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    })
-                    .then(function (response) {
-                        console.log('데이터:', response.data);
-                    })
-                    .catch(function (error) {
-                        console.error('에러 발생:', error);
-                    });
+            function test() {
+                gfnShowToast('error');
             }
         </script>
-
-
     </th:block>
+
 </html>

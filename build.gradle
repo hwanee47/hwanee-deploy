@@ -57,7 +57,8 @@ dependencies {
 
 	implementation 'com.github.mwiede:jsch:0.2.16'
 
-
+	// https://mvnrepository.com/artifact/com.google.collections/google-collections
+	implementation 'com.google.collections:google-collections:1.0'
 
 
 	compileOnly 'org.projectlombok:lombok'
