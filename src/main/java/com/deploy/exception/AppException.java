@@ -1,8 +1,11 @@
 package com.deploy.exception;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public abstract class AppException extends RuntimeException {
 
     public final Map<String, Object> validation = new HashMap<>();
