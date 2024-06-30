@@ -29,8 +29,17 @@
             return response;
         }, function (error) {
             // 응답 에러 처리를 여기서
-            gfnShowToast('error', error.response.data.message);
             console.error('에러 발생:', error);
+
+            let message = "";
+            if (error.response.status == 401) {
+                message = "권한이 없습니다."
+            } else {
+                message = error.response.data.message;
+            }
+
+            gfnShowToast('error', message);
+
             return Promise.reject(error);
         });
 
