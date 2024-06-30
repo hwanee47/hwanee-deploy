@@ -1,6 +1,7 @@
 package com.deploy.service;
 
 import com.deploy.dto.request.PasswordUpdateReq;
+import com.deploy.dto.response.ResUser;
 import com.deploy.entity.User;
 import com.deploy.exception.AppBizException;
 import com.deploy.repository.UserRepository;
@@ -19,6 +20,24 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
+    /**
+     * 사용자 조회
+     * @param id
+     * @return
+     */
+    public ResUser findUser(Long id) {
+        User findUser = userRepository.findById(id)
+                .orElseThrow(() -> new AppBizException("No such data in User."));
+
+        return new ResUser(findUser.getUsername(), findUser.getEmail());
+    }
+
+
+    /**
+     * 비밀번호 변경
+     * @param passwordUpdateReq
+     */
     @Transactional
     public void changePassword(PasswordUpdateReq passwordUpdateReq) {
 
