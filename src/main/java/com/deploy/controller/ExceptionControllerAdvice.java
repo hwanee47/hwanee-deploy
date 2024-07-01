@@ -1,6 +1,6 @@
 package com.deploy.controller;
 
-import com.deploy.dto.response.ErrorResponseBody;
+import com.deploy.dto.response.ErrorRes;
 import com.deploy.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -10,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
@@ -39,14 +38,14 @@ public class ExceptionControllerAdvice {
     public ResponseEntity<?> handleAppException(AppException e) {
         String statusCode = e.getStatusCode();
 
-        ErrorResponseBody errorResponseBody = ErrorResponseBody.builder()
+        ErrorRes errorRes = ErrorRes.builder()
                 .code(statusCode)
                 .message(e.getMessage())
                 .validation(e.getValidation())
                 .build();
 
-        ResponseEntity<ErrorResponseBody> response = ResponseEntity.status(Integer.valueOf(statusCode))
-                .body(errorResponseBody);
+        ResponseEntity<ErrorRes> response = ResponseEntity.status(Integer.valueOf(statusCode))
+                .body(errorRes);
 
         return response;
     }
@@ -54,15 +53,15 @@ public class ExceptionControllerAdvice {
 
     private ResponseEntity<?> responseEntityWithValidation(HttpStatus status, String message, MethodArgumentNotValidException e) {
 
-        ErrorResponseBody errorResponseBody = ErrorResponseBody.builder()
+        ErrorRes errorRes = ErrorRes.builder()
                 .code(String.valueOf(status.value()))
                 .message(message)
                 .build();
 
         for(FieldError fieldError : e.getFieldErrors()) {
-            errorResponseBody.addValidation(fieldError.getField(), fieldError.getDefaultMessage());
+            errorRes.addValidation(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
-        return new ResponseEntity<>(errorResponseBody, new HttpHeaders(), status);
+        return new ResponseEntity<>(errorRes, new HttpHeaders(), status);
     }
 }

@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ErrorResponseBody {
+public class ErrorRes {
 
     private String code;
     private String message;
@@ -18,7 +18,7 @@ public class ErrorResponseBody {
 
 
     @Builder
-    public ErrorResponseBody(String code, String message, Map<String, Object> validation){
+    public ErrorRes(String code, String message, Map<String, Object> validation){
         this.code = code;
         this.message = message;
         this.validation = validation != null ? validation : new HashMap<>();
