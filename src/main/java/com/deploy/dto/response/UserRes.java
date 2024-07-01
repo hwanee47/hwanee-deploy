@@ -5,12 +5,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResUser {
+public class UserRes {
 
     private String username;
     private String email;
 
-    public ResUser(String username, String email) {
+    public UserRes(String username, String email) {
         this.username = username;
         this.email = email;
     }

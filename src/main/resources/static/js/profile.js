@@ -1,4 +1,23 @@
+const btnSaveMyProfile = document.getElementById('btnSaveMyProfile');
 const btnChangePassword = document.getElementById('btnChangePassword');
+
+btnSaveMyProfile.addEventListener('click', function() {
+
+    let userId = sessionStorage.getItem('userId');
+
+    // 사용자 정보 변경
+    _axios
+        .put(`/api/user/${userId}`, {
+            'username': $('#profile-username').val(),
+        })
+        .then(function (response) {
+            gfnShowToast('success', '저장이 완료되었습니다.');
+            gfnGetSession();
+        })
+        .catch(function (error) {
+
+        });
+})
 
 btnChangePassword.addEventListener('click' , function() {
 

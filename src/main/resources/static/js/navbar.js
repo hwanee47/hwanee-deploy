@@ -93,7 +93,7 @@ navbarLogo.addEventListener('click' , function(){
 
 // =================== //
 
-const fnGetSession = () => {
+const gfnGetSession = () => {
 
     _axios
         .get('/api/get-session-info')
