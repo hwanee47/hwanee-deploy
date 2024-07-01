@@ -12,11 +12,16 @@
         // 요청 인터셉터 추가
         axiosInstance.interceptors.request.use(function (config) {
             // 요청을 보내기 전에 수행할 일
+
             // 예: 토큰 설정
-            const token = sessionStorage.getItem('authToken');
-            if (token) {
-                config.headers.Authorization = `Bearer ${token}`;
-            }
+            // const token = sessionStorage.getItem('authToken');
+            // if (token) {
+            //     config.headers.Authorization = `Bearer ${token}`;
+            // }
+
+            // 서버에게 axios(AJAX) 요청인지 구분하는 용도
+            config.headers['X-Requested-With'] = 'XMLHttpRequest';
+
             return config;
         }, function (error) {
             // 요청 에러 처리를 여기서
@@ -32,7 +37,7 @@
             console.error('에러 발생:', error);
 
             let message = "";
-            if (error.response.status == 401) {
+            if (error.response.status === 401) {
                 message = "권한이 없습니다."
             } else {
                 message = error.response.data.message;
