@@ -3,6 +3,7 @@ package com.deploy.service.utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -20,8 +21,12 @@ public class AesService {
      * @return
      */
     public String encrypt(String plainText) {
-        byte[] encrypt = encryptor.encrypt(plainText.getBytes(StandardCharsets.UTF_8));
-        return Base64.getEncoder().encodeToString(encrypt);
+        if (StringUtils.hasText(plainText)) {
+            byte[] encrypt = encryptor.encrypt(plainText.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(encrypt);
+        } else {
+            return null;
+        }
     }
 
     /**

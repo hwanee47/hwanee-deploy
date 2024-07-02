@@ -14,12 +14,12 @@ public class BaseEntity {
     private LocalDateTime createdAt;    // 생성일시
 
     @Column(name = "CREATED_BY", updatable = false)
-    private long createdBy;             // 생성자
+    private Long createdBy;             // 생성자
 
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;    // 수정일시
 
     @Column(name = "UPDATED_BY")
-    private long updatedBy;             // 수정자
+    private Long updatedBy;             // 수정자
 
 }

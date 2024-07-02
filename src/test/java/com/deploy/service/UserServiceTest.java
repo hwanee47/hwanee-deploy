@@ -35,6 +35,8 @@ class UserServiceTest {
                 .password(bCryptPasswordEncoder.encode("1234"))
                 .build();
 
+        System.out.println(user.getPassword());
+
         userRepository.save(user);
     }
 

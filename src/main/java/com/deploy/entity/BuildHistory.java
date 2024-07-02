@@ -31,7 +31,7 @@ public class BuildHistory extends BaseEntity {
     private String buildFileName; // 빌드파일명
 
     @Column(name = "BUILD_FILE_SIZE")
-    private long buildFileSize; // 빌드파일크기
+    private Long buildFileSize; // 빌드파일크기
 
 
     @ManyToOne(fetch = FetchType.LAZY)

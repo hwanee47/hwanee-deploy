@@ -18,4 +18,24 @@ public class ViewController {
     public String profile() {
         return "user/profile";
     }
+
+    @GetMapping("/settings")
+    public String settings() {
+        return "settings/settings";
+    }
+
+    @GetMapping("/settings/credential")
+    public String credential() {
+        return "settings/credential";
+    }
+
+    @GetMapping("/settings/credentials")
+    public String credentials() {
+        return "settings/credentials";
+    }
+
+    @GetMapping("/settings/test")
+    public String test() {
+        return "settings/test";
+    }
 }

@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @Table(name = "CREDENTIAL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Credential {
+public class Credential extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +32,7 @@ public class Credential {
     private String targetHost; // 원격지 호스트
 
     @Column(name = "TARGET_PORT")
-    private int targetPort; // 원격지 포트
+    private Integer targetPort; // 원격지 포트
 
     @Column(name = "PRIVATE_KEY")
     private String privateKey; // 인증키
@@ -38,9 +40,17 @@ public class Credential {
     @Column(name = "PASSPHRASE")
     private String passphrase; // 인증키 비밀번호
 
+    @Column(name = "DESCRIPTION")
+    private String description; // 비고
+
+    @Column(name = "TEST_CONNECTED_AT")
+    private LocalDateTime testConnectedAt; // 테스트연결일시
+
+
+
 
     //== 생성 메서드 ==//
-    public static Credential createCredential(String identifierName, String targetUsername, String targetPassword, String targetHost, int targetPort, String privateKey, String passphrase) {
+    public static Credential createCredential(String identifierName, String targetUsername, String targetPassword, String targetHost, Integer targetPort, String privateKey, String passphrase, String description) {
         Credential credential = new Credential();
         credential.identifierName = identifierName;
         credential.targetUsername = targetUsername;
@@ -49,12 +59,13 @@ public class Credential {
         credential.targetPort = targetPort;
         credential.privateKey = privateKey;
         credential.passphrase = passphrase;
+        credential.description = description;
 
         return credential;
     }
 
     @Builder
-    public Credential(String identifierName, String targetUsername, String targetPassword, String targetHost, int targetPort, String privateKey, String passphrase) {
+    public Credential(String identifierName, String targetUsername, String targetPassword, String targetHost, Integer targetPort, String privateKey, String passphrase, String description) {
         this.identifierName = identifierName;
         this.targetUsername = targetUsername;
         this.targetPassword = targetPassword;
@@ -62,10 +73,21 @@ public class Credential {
         this.targetPort = targetPort;
         this.privateKey = privateKey;
         this.passphrase = passphrase;
+        this.description = description;
     }
 
 
     //== 비즈니스 로직 ==//
+    public void changeInfo(String identifierName, String targetUsername, String targetPassword, String targetHost, Integer targetPort, String privateKey, String passphrase, String description) {
+        this.identifierName = identifierName;
+        this.targetUsername = targetUsername;
+        this.targetPassword = targetPassword;
+        this.targetHost = targetHost;
+        this.targetPort = targetPort;
+        this.privateKey = privateKey;
+        this.passphrase = passphrase;
+        this.description = description;
+    }
 
 
 }

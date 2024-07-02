@@ -75,6 +75,17 @@
         </div>
 
         <script>
+
+            /**
+             * Toast LocalStorage 저장
+             * @param type
+             * @param message
+             */
+            const gfnSetToastInLocalStorage = (type, message) => {
+                localStorage.setItem('toastType', type);
+                localStorage.setItem('toastMessage', message);
+            }
+
             /**
              * Toast 보이기
              */
@@ -86,9 +97,9 @@
                 const toastMessage = document.getElementById(`toast-${type}-message`);
                 toastMessage.innerText = message;
 
-                // setTimeout(() => {
-                //     fnHideToast(type);
-                // }, 3000);
+                setTimeout(() => {
+                    fnHideToast(type);
+                }, 5000);
             }
 
 
@@ -99,6 +110,10 @@
                 const toast = document.getElementById(`toast-${type}`);
                 toast.classList.add('toast-hide');
                 toast.classList.remove('toast-show');
+
+                localStorage.removeItem('toastType');
+                localStorage.removeItem('toastMessage');
+
                 setTimeout(() => {
                     toast.classList.add('hidden');
                 }, 100);
