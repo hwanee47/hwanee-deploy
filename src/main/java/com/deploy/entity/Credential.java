@@ -43,11 +43,6 @@ public class Credential extends BaseEntity {
     @Column(name = "DESCRIPTION")
     private String description; // 비고
 
-    @Column(name = "TEST_CONNECTED_AT")
-    private LocalDateTime testConnectedAt; // 테스트연결일시
-
-
-
 
     //== 생성 메서드 ==//
     public static Credential createCredential(String identifierName, String targetUsername, String targetPassword, String targetHost, Integer targetPort, String privateKey, String passphrase, String description) {

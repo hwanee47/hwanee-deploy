@@ -29,6 +29,29 @@
         </div>
         <!-- ===== Page Wrapper End ===== -->
 
+
+
+        <!-- ===== Common Script Start===== -->
+        <script>
+            // password show/hide toggle
+            $('.js-password-toggle').change(function() {
+                var container = $(this).closest('.toggle-password-container');
+                var passwordInput = container.find('input.js-password');
+                var eyeIcon = container.find('i');
+
+                if ($(this).is(':checked')) {
+                    passwordInput.attr('type', 'text');
+                    eyeIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    eyeIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+        </script>
+        <!-- ===== Common Script End===== -->
+
+        <!-- ===== Page Script Start===== -->
         <th:block layout:fragment="script"></th:block>
+        <!-- ===== Page Script End===== -->
     </body>
 </html>

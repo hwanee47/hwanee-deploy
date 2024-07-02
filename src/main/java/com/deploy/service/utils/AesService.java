@@ -35,9 +35,14 @@ public class AesService {
      * @return
      */
     public String decrypt(String encryptText) {
-        byte[] decryptBytes = Base64.getDecoder().decode(encryptText);
-        byte[] decrypt = encryptor.decrypt(decryptBytes);
-        return new String(decrypt, StandardCharsets.UTF_8);
+        if (StringUtils.hasText(encryptText)) {
+            byte[] decryptBytes = Base64.getDecoder().decode(encryptText);
+            byte[] decrypt = encryptor.decrypt(decryptBytes);
+            return new String(decrypt, StandardCharsets.UTF_8);
+        } else {
+            return null;
+        }
+
     }
 
 }

@@ -1,6 +1,7 @@
 package com.deploy.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -27,6 +28,12 @@ public class ViewController {
     @GetMapping("/settings/credential")
     public String credential() {
         return "settings/credential";
+    }
+
+    @GetMapping("/settings/credential-edit")
+    public String credentialEdit(String id, Model model) {
+        model.addAttribute("id", id);
+        return "settings/credential-edit";
     }
 
     @GetMapping("/settings/credentials")

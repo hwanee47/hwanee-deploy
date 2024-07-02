@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @Setter
 public class CredentialRes {
 
+    private Long id;
+
     private String name; // 유저 식별용 이름
 
     private String username; // 계정
@@ -31,7 +33,7 @@ public class CredentialRes {
     private LocalDateTime testConnectedAt;
 
     @Builder
-    public CredentialRes(String name, String username, String password, String host, int port, String privateKey, String passphrase, String description) {
+    public CredentialRes(String name, String username, String password, String host, Integer port, String privateKey, String passphrase, String description) {
         this.name = name;
         this.username = username;
         this.password = password;
@@ -43,6 +45,7 @@ public class CredentialRes {
     }
 
     public CredentialRes(Credential credential) {
+        this.id = credential.getId();
         this.name = credential.getIdentifierName();
         this.username = credential.getTargetUsername();
         this.password = credential.getTargetPassword();
