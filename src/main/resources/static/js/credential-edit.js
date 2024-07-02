@@ -1,5 +1,6 @@
 const btnCancelCredential = document.getElementById('btnCancelCredential');
 const btnUpdateCredential = document.getElementById('btnUpdateCredential');
+const btnDeleteCredential = document.getElementById('btnDeleteCredential');
 
 btnCancelCredential.addEventListener('click', function() {
     window.location.href = "/app/view/settings/credentials";
@@ -7,6 +8,12 @@ btnCancelCredential.addEventListener('click', function() {
 
 btnUpdateCredential.addEventListener('click', function() {
     fnUpdateCredential($('#credential-id').val());
+})
+
+btnDeleteCredential.addEventListener('click', function() {
+    gfnOpenModal("정말로 삭제하시겠습니까?", function() {
+        fnDeleteCredential($('#credential-id').val());
+    })
 })
 
 
@@ -51,6 +58,21 @@ const fnUpdateCredential = (id) => {
             window.location.href = "/app/view/settings/credentials";
 
             gfnSetToastInLocalStorage('success', '수정이 완료되었습니다.');
+        })
+        .catch(function (error) {
+
+        });
+}
+
+
+// Credential 삭제
+const fnDeleteCredential = (id) => {
+    _axios
+        .delete(`/api/credential/${id}`)
+        .then(function (response) {
+            window.location.href = "/app/view/settings/credentials";
+
+            gfnSetToastInLocalStorage('success', '삭제가 완료되었습니다.');
         })
         .catch(function (error) {
 

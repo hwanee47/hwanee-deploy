@@ -26,6 +26,10 @@
             <th:block th:replace="~{toast :: toastFragment}"></th:block>
             <!-- ===== Toast End ===== -->
 
+            <!-- ===== Modal Start ===== -->
+            <th:block th:replace="~{modal :: modalFragment}"></th:block>
+            <!-- ===== Modal End ===== -->
+
         </div>
         <!-- ===== Page Wrapper End ===== -->
 
@@ -33,6 +37,7 @@
 
         <!-- ===== Common Script Start===== -->
         <script>
+
             // password show/hide toggle
             $('.js-password-toggle').change(function() {
                 var container = $(this).closest('.toggle-password-container');
