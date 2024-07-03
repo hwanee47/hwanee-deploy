@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+    <th:block layout:fragment="content">
+        <div class="bg-white dark:bg-gray-800 pl-10 pr-4 py-3 h-full">
+
+            <div class="container bg-white dark:bg-gray-800 rounded h-full overflow-auto">
+                <!-- ===== Page Header Start ===== -->
+                <div class="xl:w-full border-b border-gray-300 dark:border-gray-700 pt-1 bg-white dark:bg-gray-800 pb-5">
+                    <a href="/app/view/project/myProject" class="inline-flex items-center font-semibold text-sm text-pink-600 hover:text-pink-800 mb-5">
+                        <i class="fad fa-arrow-left text-xs mr-2 custom-after-opacity"></i>
+                        목록으로 되돌아가기
+                    </a>
+                    <div class="flex w-11/12 w-full mx-0 items-center mb-3">
+                        <div class="text-2xl text-gray-800 dark:text-gray-100 font-bold">
+                            <i class="fad fa-computer-classic mr-2"></i>
+                            <span>Project - </span>
+                            <span id="project-name">${name}</span>
+                        </div>
+                        <div class="ml-2 cursor-pointer text-gray-600 dark:text-gray-400">
+                            <img class="dark:hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4.svg" alt="info">
+                            <img class="dark:block hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4dark.svg" alt="info">
+                        </div>
+                    </div>
+                    <p>Use cleopatra custom alerts styles for actions , notifcations etc.</p>
+                    <p>so far there's just 3 type of alerts feel free to submit a pull request</p>
+                </div>
+                <!-- ===== Page Header End ===== -->
+
+                <!-- ===== Page Content Start ===== -->
+                <div class="w-full h-full flex bg-gray-100">
+                        <!-- ===== Inner Side Bar Start ===== -->
+                        <div class="w-48 min-w-48 md:-ml-64 md:fixed md:top-0 md:z-30">
+                            <th:block th:replace="~{project/innerSidebar :: innerSidebarFragment}"></th:block>
+                        </div>
+                        <!-- ===== Inner Side Bar End ===== -->
+                        <div class="w-full p-6 flex-grow">
+                            <th:block th:if="${showDashboard}">
+                                <th:block th:replace="~{project/projectDashboard :: innerContentFragment}"></th:block>
+                            </th:block>
+                            <th:block th:if="${showRename}">
+                                <th:block th:replace="~{project/projectRename :: innerContentFragment}"></th:block>
+                            </th:block>
+
+                        </div>
+                </div>
+                <!-- ===== Page Content End ===== -->
+
+
+            </div>
+
+            <!-- ===== Hidden Value Start ===== -->
+            <input id="project-id" type="hidden" th:value="${id}"/>
+            <!-- ===== Hidden Value End ===== -->
+        </div>
+
+
+
+        <script th:src="@{/js/project.js}"></script>
+        <script>
+            $(document).ready(function() {
+                fnSearchProject($('#project-id').val());
+            });
+        </script>
+
+    </th:block>
+
+</html>

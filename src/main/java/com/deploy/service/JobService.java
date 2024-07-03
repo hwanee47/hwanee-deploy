@@ -51,7 +51,7 @@ public class JobService {
         Job findJob = jobRepository.findById(id)
                 .orElseThrow(() -> new AppBizException("No such data in Job."));
 
-        return new JobRes(findJob.getName(), findJob.getDescription());
+        return new JobRes(findJob.getId(), findJob.getName(), findJob.getDescription());
     }
 
 

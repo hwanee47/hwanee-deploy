@@ -80,5 +80,25 @@ public class ViewController {
         return "project/myProject";
     }
 
+    @GetMapping("/project/project")
+    public String project(String id, Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("showDashboard", true);
+        return "project/project";
+    }
+
+    @GetMapping("/project/project-dashboard")
+    public String projectDashboard(String id, Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("showDashboard", true);
+        return "project/project";
+    }
+
+    @GetMapping("/project/project-rename")
+    public String projectRename(String id, Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("showRename", true);
+        return "project/project";
+    }
 
 }

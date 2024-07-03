@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <!-- ===== Project Inner Side Bar Start ===== -->
+    <th:block th:fragment="innerSidebarFragment">
+
+        <div id="project-sideBar" class="h-full bg-white border rounded p-4 text-sm">
+
+            <!-- sidebar content -->
+            <a th:class="${showDashboard} ?
+                'btn-indigo text-left text-white hover:bg-gray-200 hover:text-gray-900' :
+                'btn text-left text-gray-800 bg-white hover:bg-gray-200 hover:text-gray-900'"
+               th:href="@{/app/view/project/project-dashboard(id=${id})}">
+                <i class="fad fa-home mr-2 custom-after-opacity"></i>
+                Dashboard
+            </a>
+
+            <hr class="my-6">
+
+            <p class="uppercase text-xs text-gray-600 mb-4 tracking-wider">features</p>
+            <ul class="space-y-2">
+
+                <li>
+                    <a class="btn text-left text-gray-800 bg-white hover:bg-gray-200 hover:text-gray-900" href="#">
+                        <i class="fad fa-rocket text-xs mr-3 custom-after-opacity"></i>
+                        Build Now
+                    </a>
+                </li>
+
+                <li>
+                    <a th:class="${showRename} ?
+                        'btn-indigo text-left text-white hover:bg-gray-200 hover:text-gray-900' :
+                        'btn text-left text-gray-800 bg-white hover:bg-gray-200 hover:text-gray-900'"
+                       th:href="@{/app/view/project/project-rename(id=${id})}">
+                        <i class="fad fa-spell-check text-xs mr-3 custom-after-opacity"></i>
+                        Rename
+                    </a>
+                </li>
+
+                <li>
+                    <a class="btn text-left text-gray-800 bg-white hover:bg-gray-200 hover:text-gray-900" href="#">
+                        <i class="fad fa-list text-xs mr-3 custom-after-opacity"></i>
+                        version list
+                    </a>
+                </li>
+
+                <li>
+                    <a class="btn text-left text-gray-800 bg-white hover:bg-gray-200 hover:text-gray-900" href="#">
+                        <i class="fad fa-history text-xs mr-3 custom-after-opacity"></i>
+                        History
+                    </a>
+                </li>
+
+                <li>
+                    <a class="btn text-left text-red-700 bg-white hover:bg-red-100 hover:text-red-800" href="#">
+                        <i class="fad fa-trash text-xs mr-3 custom-after-opacity"></i>
+                        Delete
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+
+
+        <!-- script -->
+    <!--    <script th:src="@{/js/navbar.js}"></script>-->
+        <script>
+            $(document).ready(function(){
+
+
+
+            })
+        </script>
+    </th:block>
+    <!-- ===== Project Inner Side Bar End ===== -->
+</html>
