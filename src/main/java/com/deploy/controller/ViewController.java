@@ -41,6 +41,11 @@ public class ViewController {
         return "settings/credentials";
     }
 
+    @GetMapping("/settings/scmConfigs")
+    public String configs() {
+        return "settings/scmConfigs";
+    }
+
     @GetMapping("/settings/test")
     public String test() {
         return "settings/test";

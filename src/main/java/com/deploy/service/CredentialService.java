@@ -68,20 +68,20 @@ public class CredentialService {
 
     /**
      * Credential 추가
-     * @param credentialCreateReq
+     * @param request
      * @return
      */
     @Transactional
-    public Long createCredential(CredentialCreateReq credentialCreateReq) {
+    public Long createCredential(CredentialCreateReq request) {
 
-        String identifierName = credentialCreateReq.getName();
-        String username = credentialCreateReq.getUsername();
-        String password = credentialCreateReq.getPassword();
-        String host = credentialCreateReq.getHost();
-        Integer port = credentialCreateReq.getPort();
-        String privateKey = credentialCreateReq.getPrivateKey();
-        String passphrase = credentialCreateReq.getPassphrase();
-        String description = credentialCreateReq.getDescription();
+        String identifierName = request.getName();
+        String username = request.getUsername();
+        String password = request.getPassword();
+        String host = request.getHost();
+        Integer port = request.getPort();
+        String privateKey = request.getPrivateKey();
+        String passphrase = request.getPassphrase();
+        String description = request.getDescription();
 
         Credential credential = Credential.createCredential(
                 identifierName, username, aesService.encrypt(password),
@@ -98,20 +98,20 @@ public class CredentialService {
     /**
      * Credential 수정
      * @param id
-     * @param credentialUpdateReq
+     * @param request
      * @return
      */
     @Transactional
-    public Long updateCredential(Long id, CredentialUpdateReq credentialUpdateReq) {
+    public Long updateCredential(Long id, CredentialUpdateReq request) {
 
-        String identifierName = credentialUpdateReq.getName();
-        String username = credentialUpdateReq.getUsername();
-        String password = credentialUpdateReq.getPassword();
-        String host = credentialUpdateReq.getHost();
-        Integer port = credentialUpdateReq.getPort();
-        String privateKey = credentialUpdateReq.getPrivateKey();
-        String passphrase = credentialUpdateReq.getPassphrase();
-        String description = credentialUpdateReq.getDescription();
+        String identifierName = request.getName();
+        String username = request.getUsername();
+        String password = request.getPassword();
+        String host = request.getHost();
+        Integer port = request.getPort();
+        String privateKey = request.getPrivateKey();
+        String passphrase = request.getPassphrase();
+        String description = request.getDescription();
 
         Credential findCredential = credentialRepository.findById(id)
                 .orElseThrow(() -> new AppBizException("No such data in Credential."));

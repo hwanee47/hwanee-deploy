@@ -39,14 +39,14 @@ public class CredentialController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCredential(@RequestBody @Valid CredentialCreateReq credentialCreateReq) {
-        Long id = credentialService.createCredential(credentialCreateReq);
+    public ResponseEntity<?> createCredential(@RequestBody @Valid CredentialCreateReq request) {
+        Long id = credentialService.createCredential(request);
         return ResponseHandler.generateResponse(HttpStatus.OK, "success", id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCredential(@PathVariable Long id, @RequestBody @Valid CredentialUpdateReq credentialUpdateReq) {
-        credentialService.updateCredential(id, credentialUpdateReq);
+    public ResponseEntity<?> updateCredential(@PathVariable Long id, @RequestBody @Valid CredentialUpdateReq request) {
+        credentialService.updateCredential(id, request);
         return ResponseHandler.generateResponse(HttpStatus.OK, "success", id);
     }
 
