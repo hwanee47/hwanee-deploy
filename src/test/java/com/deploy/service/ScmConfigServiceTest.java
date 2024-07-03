@@ -43,7 +43,7 @@ class ScmConfigServiceTest {
                 .description("deasd1223")
                 .build();
 
-        scmConfigService.save(request);
+        scmConfigService.createScmConfig(request);
     }
 
 

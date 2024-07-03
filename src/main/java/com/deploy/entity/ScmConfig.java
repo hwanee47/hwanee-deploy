@@ -63,4 +63,12 @@ public class ScmConfig extends BaseEntity {
 
 
     //== 비즈니스 로직 ==//
+    public void changeInfo(ScmType scmType, String description, String url, String username, String password, String branch) {
+        this.scmType = scmType;
+        this.description = description;
+        this.url = url;
+        this.username = username;
+        this.password = password;
+        this.branch = branch;
+    }
 }

@@ -42,12 +42,19 @@ public class ViewController {
     }
 
     @GetMapping("/settings/scmConfigs")
-    public String configs() {
+    public String scmConfigs() {
         return "settings/scmConfigs";
     }
 
-    @GetMapping("/settings/test")
-    public String test() {
-        return "settings/test";
+    @GetMapping("/settings/scmConfig")
+    public String scmConfig() {
+        return "settings/scmConfig";
     }
+
+    @GetMapping("/settings/scmConfig-edit")
+    public String scmConfigEdit(String id, Model model) {
+        model.addAttribute("id", id);
+        return "settings/scmConfig-edit";
+    }
+
 }
