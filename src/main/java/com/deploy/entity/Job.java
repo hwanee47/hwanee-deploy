@@ -54,4 +54,11 @@ public class Job extends BaseEntity {
         this.name = name;
         this.description = description;
     }
+
+
+    //== 비즈니스 메서드 ==//
+    public void changeInfo(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 }

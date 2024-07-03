@@ -1,13 +1,22 @@
 package com.deploy.controller;
 
+import com.deploy.dto.response.JobRes;
+import com.deploy.service.JobService;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/app/view")
 public class ViewController {
+
+    private final JobService jobService;
 
     @GetMapping("/login")
     public String login() {
@@ -56,5 +65,20 @@ public class ViewController {
         model.addAttribute("id", id);
         return "settings/scmConfig-edit";
     }
+
+    @GetMapping("/project/newProject")
+    public String newProject() {
+        return "project/newProject";
+    }
+
+    @GetMapping("/project/myProject")
+    public String myProject(HttpSession httpSession, Model model) {
+        Long userId = (Long) httpSession.getAttribute("userId");
+        List<JobRes> jobRes = jobService.searchMyJob(userId);
+
+        model.addAttribute("projects", jobRes);
+        return "project/myProject";
+    }
+
 
 }

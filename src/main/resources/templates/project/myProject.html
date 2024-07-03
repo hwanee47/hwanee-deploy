@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+    <th:block layout:fragment="content">
+        <div class="bg-white dark:bg-gray-800 px-10 py-6">
+
+            <div class="container bg-white dark:bg-gray-800 rounded">
+                <!-- ===== Page Header Start ===== -->
+                <div class="xl:w-full border-b border-gray-300 dark:border-gray-700 py-3 bg-white dark:bg-gray-800 pb-5">
+                    <div class="flex w-11/12 w-full mx-0 items-center mb-3">
+                        <p class="text-2xl text-gray-800 dark:text-gray-100 font-bold">
+                            <i class="fad fa-folder-open mr-2"></i>My Project
+                        </p>
+                        <div class="ml-2 cursor-pointer text-gray-600 dark:text-gray-400">
+                            <img class="dark:hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4.svg" alt="info">
+                            <img class="dark:block hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4dark.svg" alt="info">
+                        </div>
+                    </div>
+                    <p>Use cleopatra custom alerts styles for actions , notifcations etc.</p>
+                    <p>so far there's just 3 type of alerts feel free to submit a pull request</p>
+                </div>
+                <!-- ===== Page Header End ===== -->
+
+                <!-- ===== Page Content Start ===== -->
+                <div class="w-full">
+                    <div class="w-full xl:mx-0">
+                        <div class="mt-10">
+                            <!-- ===== My Project List Start ===== -->
+                            <div class="grid grid-cols-2 gap-6 xl:grid-cols-1">
+
+                                <!-- ===== Card Start ===== -->
+                                <div th:each="project : ${projects}" class="report-card cursor-pointer">
+                                    <div class="card">
+                                        <div class="card-body flex flex-col hover:bg-blue-100">
+                                            <div class="flex flex-row justify-between items-center">
+                                                <!-- ===== Card-top Start ===== -->
+                                                <div class="h6 text-indigo-700 fad fa-shopping-cart"></div>
+                                                    <span class="rounded-full text-white badge bg-teal-400 text-xs">
+                                                        12%
+                                                        <i class="fal fa-chevron-up ml-1"></i>
+                                                    </span>
+                                                </div>
+                                                <!-- ===== Card-top End ===== -->
+
+                                                <!-- ===== Card-bottom Start ===== -->
+                                                <div class="mt-8 space-y-3">
+                                                    <h1 th:text="${project.name}" class="h5 num-4 custom-truncate-multiline">my first project zzzasdasd</h1>
+                                                    <p th:text="${project.description}" class="custom-truncate-multiline">저의 첫번째 프로젝트입니다. 가나다라마바사입니다. ㅁㄴㅇㅁㄴㅇㅁㄴㅇ</p>
+                                                </div>
+                                                <!-- ===== Card-bottom End ===== -->
+                                            </div>
+                                        </div>
+                                    <div class="footer bg-white p-1 mx-4 border border-t-0 rounded rounded-t-none"></div>
+                                </div>
+                                <!-- ===== Card End ===== -->
+
+
+
+                            </div>
+                            <!-- ===== My Project List End ===== -->
+                        </div>
+                    </div>
+                </div>
+                <!-- ===== Page Content End ===== -->
+
+
+            </div>
+        </div>
+
+
+
+        <script th:src="@{/js/newProject.js}"></script>
+        <script>
+            $(document).ready(function() {
+
+            });
+        </script>
+
+    </th:block>
+
+</html>

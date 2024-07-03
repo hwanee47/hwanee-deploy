@@ -20,6 +20,14 @@
         <script th:src="@{/js/axios/custom-axios.js}" type="module"></script>
 
         <style>
+            .custom-truncate-multiline {
+                display: -webkit-box;
+                -webkit-line-clamp: 1; /* 원하는 줄 수로 설정 */
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
             .custom-after-opacity::after {
                 opacity: unset;
             }

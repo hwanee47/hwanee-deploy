@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class JobCreateReq {
 
-    @NotEmpty(message = "name은 필수값입니다.")
+    @NotEmpty(message = "이름(프로젝트명)은 필수값입니다.")
     private String name;
     private String description;
 
