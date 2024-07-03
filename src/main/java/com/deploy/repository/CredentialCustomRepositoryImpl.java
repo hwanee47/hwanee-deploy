@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+import static com.deploy.entity.QCredential.credential;
+
 public class CredentialCustomRepositoryImpl implements CredentialCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -24,11 +26,10 @@ public class CredentialCustomRepositoryImpl implements CredentialCustomRepositor
     @Override
     public Page<Credential> search(CredentialSearchCond condition, Pageable pageable) {
 
-        QCredential credential = QCredential.credential;
-
         // contents
         List<Credential> contents = jpaQueryFactory
                 .selectFrom(credential)
+                .orderBy(credential.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

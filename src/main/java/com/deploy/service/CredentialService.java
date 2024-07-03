@@ -28,6 +28,12 @@ public class CredentialService {
     private final AesService aesService;
 
 
+    /**
+     * Credential 다건 조회
+     * @param condition
+     * @param pageable
+     * @return
+     */
     public Page<CredentialRes> search(CredentialSearchCond condition, Pageable pageable) {
         Page<Credential> list = credentialRepository.search(condition, pageable);
 
