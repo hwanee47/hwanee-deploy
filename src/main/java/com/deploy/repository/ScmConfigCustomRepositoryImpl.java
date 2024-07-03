@@ -29,7 +29,7 @@ public class ScmConfigCustomRepositoryImpl implements ScmConfigCustomRepository 
         // contents
         List<ScmConfig> contents = jpaQueryFactory
                 .selectFrom(scmConfig)
-                .orderBy(scmConfig.id.desc())
+                .orderBy(scmConfig.updatedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

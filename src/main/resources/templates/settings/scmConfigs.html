@@ -92,11 +92,16 @@
                 },
                 columns: [
                     {name: 'id', header: 'id', hidden: 1},
-                    {name: 'type', header: '유형', sortable: true},
-                    {name: 'url', header: 'url', sortable: true},
+                    {name: 'type', header: '유형', sortable: true, width: 100},
+                    {name: 'url', header: 'url', sortable: true, width: 400},
                     {name: 'username', header: '계정', sortable: true},
                     {name: 'branch', header: '브랜치', sortable: true},
-                    {name: 'description', header: '비고', sortable: true},
+                    {
+                        name: 'isConnected', header: '연결상태', sortable: true,
+                        renderer: {
+                            type: CustomConnectStatusRenderer,
+                        }
+                    }
                 ],
                 contextMenu: ({ rowKey, columnName }) => [
                     [

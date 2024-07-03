@@ -29,7 +29,7 @@ public class CredentialCustomRepositoryImpl implements CredentialCustomRepositor
         // contents
         List<Credential> contents = jpaQueryFactory
                 .selectFrom(credential)
-                .orderBy(credential.id.desc())
+                .orderBy(credential.updatedAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

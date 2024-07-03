@@ -37,6 +37,11 @@ public class ScmConfig extends BaseEntity {
     @Column(name = "CLONE_PATH")
     private String clonePath; // 클론경로
 
+    @Column(name = "IS_CONNECTED")
+    private boolean isConnected;
+
+    @Column(name = "FAIL_MESSAGE")
+    private String failMessage;
 
     //== 생성 메서드 ==//
     public static ScmConfig createScmConfig(ScmType scmType, String description, String url, String username, String password, String branch) {
@@ -47,6 +52,7 @@ public class ScmConfig extends BaseEntity {
         scmConfig.username = username;
         scmConfig.password = password;
         scmConfig.branch = branch;
+        scmConfig.isConnected = false;
 
         return scmConfig;
     }
@@ -70,5 +76,17 @@ public class ScmConfig extends BaseEntity {
         this.username = username;
         this.password = password;
         this.branch = branch;
+    }
+
+    // 연결성공
+    public void connectSuccess() {
+        this.isConnected = true;
+        this.failMessage = null;
+    }
+
+    // 연결실패
+    public void connectFail(String failMessage) {
+        this.isConnected = false;
+        this.failMessage = failMessage;
     }
 }

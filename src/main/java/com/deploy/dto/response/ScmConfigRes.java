@@ -2,6 +2,7 @@ package com.deploy.dto.response;
 
 import com.deploy.entity.ScmConfig;
 import com.deploy.entity.enums.ScmType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,10 @@ public class ScmConfigRes {
     private String password;
     private String branch;
     private String clonePath;
+
+    @JsonProperty(value = "isConnected")
+    private boolean isConnected;
+    private String failMessage;
 
 
     @Builder
@@ -41,5 +46,7 @@ public class ScmConfigRes {
         this.password = scmConfig.getPassword();
         this.branch = scmConfig.getBranch();
         this.clonePath = scmConfig.getClonePath();
+        this.isConnected = scmConfig.isConnected();
+        this.failMessage = scmConfig.getFailMessage();
     }
 }

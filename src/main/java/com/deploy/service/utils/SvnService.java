@@ -17,19 +17,14 @@ public class SvnService implements ScmService {
         return ScmType.SVN.toString();
     }
 
-    /**
-     * 접속 가능 여부 확인
-     * @param url
-     * @param username
-     * @param password
-     * @return
-     */
     @Override
     public boolean isConnected(String url, String username, String password) throws GitAPIException {
-
-
         return true;
+    }
 
+    @Override
+    public boolean isConnected(String url, String username, String password, String branch) throws GitAPIException {
+        return false;
     }
 
     @Override

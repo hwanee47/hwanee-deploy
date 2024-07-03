@@ -1,6 +1,11 @@
 const btnCancelScmConfig = document.getElementById('btnCancelScmConfig');
 const btnUpdateScmConfig = document.getElementById('btnUpdateScmConfig');
 const btnDeleteScmConfig = document.getElementById('btnDeleteScmConfig');
+const btnHealthCheck = document.getElementById('btnHealthCheck');
+
+btnHealthCheck.addEventListener('click', function() {
+    fnHealthCheck();
+})
 
 btnCancelScmConfig.addEventListener('click', function() {
     window.location.href = "/app/view/settings/scmConfigs";
@@ -70,6 +75,24 @@ const fnDeleteScmConfig = (id) => {
             window.location.href = "/app/view/settings/scmConfigs";
 
             gfnSetToastInLocalStorage('success', '삭제가 완료되었습니다.');
+        })
+        .catch(function (error) {
+
+        });
+}
+
+
+const fnHealthCheck = () => {
+    _axios
+        .post(`/api/scmConfig/healthCheck`, {
+            'type': $('#scmConfig-type').val(),
+            'url': $('#scmConfig-url').val(),
+            'username': $('#scmConfig-username').val(),
+            'password': $('#scmConfig-password').val(),
+            'branch': $('#scmConfig-branch').val()
+        })
+        .then(function (response) {
+            $('#healthCheckMessage').text(`"${response.data.result}"`);
         })
         .catch(function (error) {
 

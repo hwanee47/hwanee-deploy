@@ -11,6 +11,7 @@ import com.deploy.service.ScmConfigService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,5 +54,11 @@ public class ScmConfigController {
     public ResponseEntity<?> deleteScmConfig(@PathVariable Long id) {
         scmConfigService.deleteScmConfig(id);
         return ResponseHandler.generateResponse(HttpStatus.OK, "success", id);
+    }
+
+    @PostMapping("/healthCheck")
+    public ResponseEntity<?> healthCheck(@RequestBody @Valid ExecuteConntectReq request) {
+        String resultMessage = scmConfigService.healthCheck(request);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "success", resultMessage);
     }
 }

@@ -9,7 +9,9 @@ import com.deploy.entity.ScmConfig;
 import com.deploy.entity.enums.ScmType;
 import com.deploy.exception.AppBizException;
 import com.deploy.repository.ScmConfigRepository;
+import com.deploy.service.utils.GitService;
 import com.deploy.service.utils.ScmService;
+import com.deploy.service.utils.SvnService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -81,7 +83,16 @@ public class ScmConfigService {
 
         ScmConfig scmConfig = ScmConfig.createScmConfig(type, description, url, username, password, branch);
 
-        //save
+        // health check
+        try {
+            if (healthCheck(type, url, username, password, branch)) {
+                scmConfig.connectSuccess();
+            };
+        } catch (GitAPIException e) {
+            scmConfig.connectFail(e.getMessage());
+        }
+
+        // save
         scmConfigRepository.save(scmConfig);
 
         return scmConfig.getId();
@@ -110,6 +121,16 @@ public class ScmConfigService {
         // update
         findScmConfig.changeInfo(type, description, url, username, password, branch);
 
+
+        // health check
+        try {
+            if (healthCheck(type, url, username, password, branch)) {
+                findScmConfig.connectSuccess();
+            };
+        } catch (GitAPIException e) {
+            findScmConfig.connectFail(e.getMessage());
+        }
+
         return id;
     }
 
@@ -126,25 +147,66 @@ public class ScmConfigService {
         scmConfigRepository.delete(findScmConfig);
     }
 
+    /**
+     * 연결 테스트 실행
+     * @param request
+     */
+    public String healthCheck(ExecuteConntectReq request) {
+        String url = request.getUrl();
+        String username = request.getUsername();
+        String password = request.getPassword();
+        String branch = request.getBranch();
+
+        ScmType scmType = request.getType();
+        ScmService scmService = getScmService(scmType);
+
+        try {
+            boolean connected = scmService.isConnected(url, username, password, branch);
+            log.info("isConnected={}", connected);
+            return "Succeeded :: Test connection success.";
+        } catch (GitAPIException e) {
+            log.error("SCM({}) connected error : {}", scmType, e.getMessage());
+            return "Failed :: " + e.getMessage();
+        }
+
+    }
+
 
     /**
      * SCM 자격증명
-     * @param service
+     * @param scmType
      * @param url
      * @param username
      * @param password
+     * @param branch
      * @return
      * @throws GitAPIException
      */
-    public Boolean isConnected(ScmService service, String url, String username, String password) throws GitAPIException {
-
+    private boolean healthCheck(ScmType scmType, String url, String username, String password, String branch) throws GitAPIException {
         try {
-            return service.isConnected(url, username, password);
+            ScmService scmService = getScmService(scmType);
+            return scmService.isConnected(url, username, password, branch);
         } catch (GitAPIException e) {
-            log.error("SCM({}) connected error : {}", service.getType(), e.getMessage());
+            log.error("SCM({}) connected error : {}", scmType, e.getMessage());
             throw e;
         }
 
+    }
+
+
+    /**
+     * ScmType에 맞는 ScmService 구현체 반환
+     * @param scmType
+     * @return
+     */
+    private ScmService getScmService(ScmType scmType) {
+        if (scmType.equals(ScmType.SVN)) {
+            return new SvnService();
+        } else if (scmType.equals(ScmType.GIT)) {
+            return new GitService();
+        }
+
+        return null;
     }
 
 }

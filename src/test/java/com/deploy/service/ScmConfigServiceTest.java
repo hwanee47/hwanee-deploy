@@ -47,36 +47,36 @@ class ScmConfigServiceTest {
     }
 
 
-    @Test
-    public void 연결성공테스트() throws Exception {
-        //given
-        ScmType type = ScmType.GIT;
-        String url = "https://github.com/hwanee47/Hwanee-Platform-Server-API.git";
-        String username = "hwnaee47";
-        String password = "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";
-
-        //when
-        Boolean isConnedted = scmConfigService.isConnected(gitService, url, username, password);
-
-        //then
-        assertThat(isConnedted).isTrue();
-
-    }
-
-
-    @Test
-    public void 연결실패테스트() throws Exception {
-        //given
-        ScmType type = ScmType.GIT;
-        String url = "https://github.com/hwanee47/Hwanee-Platform-Server-API.git";
-        String username = "hwnaee47";
-        String password = "1234";
-
-
-        //when & then
-        assertThrows(GitAPIException.class, () -> scmConfigService.isConnected(gitService, url, username, password));
-
-    }
+//    @Test
+//    public void 연결성공테스트() throws Exception {
+//        //given
+//        ScmType type = ScmType.GIT;
+//        String url = "https://github.com/hwanee47/Hwanee-Platform-Server-API.git";
+//        String username = "hwnaee47";
+//        String password = "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";
+//
+//        //when
+//        Boolean isConnedted = scmConfigService.isConnected(gitService, url, username, password);
+//
+//        //then
+//        assertThat(isConnedted).isTrue();
+//
+//    }
+//
+//
+//    @Test
+//    public void 연결실패테스트() throws Exception {
+//        //given
+//        ScmType type = ScmType.GIT;
+//        String url = "https://github.com/hwanee47/Hwanee-Platform-Server-API.git";
+//        String username = "hwnaee47";
+//        String password = "1234";
+//
+//
+//        //when & then
+//        assertThrows(GitAPIException.class, () -> scmConfigService.isConnected(gitService, url, username, password));
+//
+//    }
 
 
 

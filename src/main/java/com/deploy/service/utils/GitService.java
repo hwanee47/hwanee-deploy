@@ -1,6 +1,7 @@
 package com.deploy.service.utils;
 
 import com.deploy.entity.enums.ScmType;
+import com.deploy.exception.NotFoundGitBranchException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.Git;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -45,6 +48,48 @@ public class GitService implements ScmService {
             throw gitAPIException;
         }
 
+    }
+
+
+    /**
+     * 접속 가능 여부 확인 with 브랜치
+     * @param url
+     * @param username
+     * @param password
+     * @return
+     */
+    @Override
+    public boolean isConnected(String url, String username, String password, String branch) throws GitAPIException {
+
+        try {
+            List<String> branches = getBranches(url, username, password);
+
+            // branch check
+            if (branches.isEmpty() || (branch != null && !branches.contains(branch))) {
+                throw new NotFoundGitBranchException("Not found Git branch = " + branch);
+            }
+
+            return true;
+        } catch (GitAPIException gitAPIException) {
+            log.error("Fail connect project. message={}", gitAPIException.getMessage());
+            throw gitAPIException;
+        }
+
+    }
+
+
+    private List<String> getBranches(String url, String username, String password) throws GitAPIException {
+        return Git.lsRemoteRepository()
+                .setHeads(true)
+                .setTags(false)
+                .setRemote(url)
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
+                .call()
+                .stream()
+                .map(ref -> {
+                    return ref.getName().replace("refs/heads/", "");
+                })
+                .collect(Collectors.toList());
     }
 
 
