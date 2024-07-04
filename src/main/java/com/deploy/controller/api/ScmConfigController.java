@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/scmConfig")
@@ -30,6 +32,12 @@ public class ScmConfigController {
     public TuiGridRes search(ScmConfigSearchCond condition, CustomPageable customPageable) {
         Page<ScmConfigRes> list = scmConfigService.search(condition, customPageable);
         return new TuiGridRes(list.getContent(), customPageable.getPage(), (int) list.getTotalElements(), customPageable.getPerPage());
+    }
+
+    @GetMapping
+    public ResponseEntity<?> searchAll() {
+        List<ScmConfigRes> list = scmConfigService.searchAll();
+        return ResponseHandler.generateResponse(HttpStatus.OK, "success", list);
     }
 
     @GetMapping("/{id}")

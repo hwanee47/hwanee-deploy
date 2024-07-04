@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -49,6 +50,19 @@ public class ScmConfigService {
                 , pageable
                 , list.getTotalElements()
         );
+
+        return results;
+    }
+
+    public List<ScmConfigRes> searchAll() {
+        List<ScmConfig> list = scmConfigRepository.findAll();
+
+        List<ScmConfigRes> results = list.stream()
+                .map(ScmConfig -> {
+                    ScmConfigRes scmConfigRes = new ScmConfigRes(ScmConfig);
+                    return scmConfigRes;
+                })
+                .collect(Collectors.toList());
 
         return results;
     }
