@@ -27,12 +27,6 @@ public class Job extends BaseEntity {
     @Column(name = "DESCRIPTION")
     private String description; // 설명
 
-    @Embedded
-    private BuildSet buildSet;
-
-    @ManyToOne
-    @JoinColumn(name = "CODE_MANAGE_CONFIG_ID")
-    private ScmConfig scmConfig;
 
     @OneToMany(mappedBy = "job")
     private List<Step> steps = new ArrayList<>();

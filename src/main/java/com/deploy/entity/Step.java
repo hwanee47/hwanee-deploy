@@ -1,5 +1,7 @@
 package com.deploy.entity;
 
+import com.deploy.entity.embed.BuildSet;
+import com.deploy.entity.enums.BuildType;
 import com.deploy.entity.enums.StepType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,7 +26,11 @@ public class Step extends BaseEntity {
     private Long stepIndex; // 순서
 
     @Column(name = "STEP_TYPE")
+    @Enumerated(value = EnumType.STRING)
     private StepType stepType; // 유형
+
+    @Embedded
+    private BuildSet buildSet;
 
     @Lob
     @Column(name = "COMMAND")
@@ -51,7 +57,7 @@ public class Step extends BaseEntity {
 
 
     //== 생성 메서드 ==//
-    public static Step createStep(Long stepIndex, StepType stepType, String command, Job job, Credential credential, ScmConfig scmConfig) {
+    public static Step createStep(Long stepIndex, StepType stepType, BuildSet buildSet, String command, Job job, Credential credential, ScmConfig scmConfig) {
 
         Step step = new Step();
         step.stepIndex = stepIndex;
@@ -59,6 +65,7 @@ public class Step extends BaseEntity {
         step.command = command;
         step.credential = credential;
         step.scmConfig = scmConfig;
+        step.buildSet = buildSet;
 
         step.setJob(job);
 
@@ -67,5 +74,12 @@ public class Step extends BaseEntity {
 
 
     //== 비즈니스 로직 ==//
+    public void changeInfo(StepType stepType, BuildSet buildSet, Credential credential, ScmConfig scmConfig) {
+        this.stepType = stepType;
+        this.command = command;
+        this.credential = credential;
+        this.scmConfig = scmConfig;
+        this.buildSet = buildSet;
+    }
 
 }

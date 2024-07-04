@@ -31,33 +31,36 @@
                             <div class="grid grid-cols-2 gap-6 xl:grid-cols-1">
 
                                 <!-- ===== Card Start ===== -->
-                                <div th:each="project : ${projects}" th:attr="data-id=${project.id}" class="report-card cursor-pointer project-container">
-                                    <div class="card">
-                                        <div class="card-body flex flex-col hover:bg-blue-100">
-                                            <div class="flex flex-row justify-between items-center">
-                                                <!-- ===== Card-top Start ===== -->
-                                                <div class="h6 text-indigo-700 fad fa-shopping-cart"></div>
-                                                    <span class="rounded-full text-white badge bg-teal-400 text-xs">
-                                                        12%
-                                                        <i class="fal fa-chevron-up ml-1"></i>
-                                                    </span>
-                                                </div>
-                                                <!-- ===== Card-top End ===== -->
+                                <div th:if="${projects.size() > 0}">
+                                    <div th:each="project : ${projects}" th:attr="data-id=${project.id}" class="report-card cursor-pointer project-container">
+                                        <div class="card">
+                                            <div class="card-body flex flex-col hover:bg-blue-100">
+                                                <div class="flex flex-row justify-between items-center">
+                                                    <!-- ===== Card-top Start ===== -->
+                                                    <div class="h6 text-indigo-700 fad fa-shopping-cart"></div>
+                                                        <span class="rounded-full text-white badge bg-teal-400 text-xs">
+                                                            12%
+                                                            <i class="fal fa-chevron-up ml-1"></i>
+                                                        </span>
+                                                    </div>
+                                                    <!-- ===== Card-top End ===== -->
 
-                                                <!-- ===== Card-bottom Start ===== -->
-                                                <div class="mt-8 space-y-3">
-                                                    <h1 th:text="${project.name}" class="h5 num-4 custom-truncate-multiline">my first project zzzasdasd</h1>
-                                                    <p th:text="${project.description}" class="custom-truncate-multiline">저의 첫번째 프로젝트입니다. 가나다라마바사입니다. ㅁㄴㅇㅁㄴㅇㅁㄴㅇ</p>
+                                                    <!-- ===== Card-bottom Start ===== -->
+                                                    <div class="mt-8 space-y-3">
+                                                        <h1 th:text="${project.name}" class="h5 num-4 custom-truncate-multiline">my first project zzzasdasd</h1>
+                                                        <p th:text="${project.description}" class="custom-truncate-multiline">저의 첫번째 프로젝트입니다. 가나다라마바사입니다. ㅁㄴㅇㅁㄴㅇㅁㄴㅇ</p>
+                                                    </div>
+                                                    <!-- ===== Card-bottom End ===== -->
                                                 </div>
-                                                <!-- ===== Card-bottom End ===== -->
                                             </div>
-                                        </div>
-                                    <div class="footer bg-white p-1 mx-4 border border-t-0 rounded rounded-t-none"></div>
+                                        <div class="footer bg-white p-1 mx-4 border border-t-0 rounded rounded-t-none"></div>
+                                    </div>
+                                </div>
+                                <div th:unless="${projects.size() > 0}">
+                                    <p class="text-lg">생성한 프로젝트 없습니다. </p>
+                                    <a href="/app/view/project/newProject" class="text-sm text-blue-500 underline mt-1">[ 프로젝트 생성하러 가기 - GO ]</a>
                                 </div>
                                 <!-- ===== Card End ===== -->
-
-
-
                             </div>
                             <!-- ===== My Project List End ===== -->
                         </div>

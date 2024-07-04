@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.stream.Stream;
 
 public enum StepType {
-    SCM, BUILD, COMMAND;
+    SCM, BUILD, DEPLOY, COMMAND;
 
 
     @JsonCreator

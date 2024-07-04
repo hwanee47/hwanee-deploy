@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -45,6 +46,23 @@ public class CredentialService {
                 , pageable
                 , list.getTotalElements()
         );
+
+        return results;
+    }
+
+    /**
+     * Crendential 전체 조회
+     * @return
+     */
+    public List<CredentialRes> searchAll() {
+        List<Credential> list = credentialRepository.findAll();
+
+        List<CredentialRes> results = list.stream()
+                .map(Credential -> {
+                    CredentialRes credentialRes = new CredentialRes(Credential);
+                    return credentialRes;
+                })
+                .collect(Collectors.toList());
 
         return results;
     }

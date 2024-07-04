@@ -2,14 +2,15 @@
 
 // Project 조회
 const fnSearchProject = (id) => {
-    _axios
+    return _axios
         .get(`/api/job/${id}`)
         .then(function (response) {
-            fnSetProjectInfo(response.data.result);
+            return response.data.result;
         })
         .catch(function (error) {
 
         });
+
 }
 
 const fnSetProjectInfo = (data) => {

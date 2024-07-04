@@ -101,4 +101,11 @@ public class ViewController {
         return "project/project";
     }
 
+    @GetMapping("/project/project-configure")
+    public String projectConfigure(String id, Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("showConfigure", true);
+        return "project/project";
+    }
+
 }

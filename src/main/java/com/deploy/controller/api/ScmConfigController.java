@@ -34,7 +34,7 @@ public class ScmConfigController {
         return new TuiGridRes(list.getContent(), customPageable.getPage(), (int) list.getTotalElements(), customPageable.getPerPage());
     }
 
-    @GetMapping
+    @GetMapping("/searchAll")
     public ResponseEntity<?> searchAll() {
         List<ScmConfigRes> list = scmConfigService.searchAll();
         return ResponseHandler.generateResponse(HttpStatus.OK, "success", list);

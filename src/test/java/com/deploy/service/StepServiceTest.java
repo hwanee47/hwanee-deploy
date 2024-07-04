@@ -68,7 +68,7 @@ class StepServiceTest {
         stepCreateReq.setScmConfigId(scmConfigs.get(0).getId());
 
         //when
-        Long savedId = stepService.save(stepCreateReq);
+        Long savedId = stepService.createStep(stepCreateReq);
         Step findStep = stepRepository.findById(savedId)
                 .orElseThrow(() -> new IllegalArgumentException("No such data."));
 

@@ -15,7 +15,7 @@ spring:
       ddl-auto: none
 #  sql:
 #    init:
-#      mode: embedded
+#      mode: always
 
 
 logging:

@@ -5,10 +5,13 @@
         dashboard
 
 
-        <script th:src="@{/js/project.js}"></script>
+<!--        <script th:src="@{/js/project.js}"></script>-->
         <script>
             $(document).ready(function() {
-                fnSearchProject($('#project-id').val());
+                fnSearchProject($('#project-id').val())
+                    .then(data => {
+                        fnSetProjectInfo(data);
+                    })
             });
         </script>
 

@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/credential")
@@ -30,6 +32,12 @@ public class CredentialController {
     public TuiGridRes search(CredentialSearchCond condition, CustomPageable customPageable) {
         Page<CredentialRes> list = credentialService.search(condition, customPageable);
         return new TuiGridRes(list.getContent(), customPageable.getPage(), (int) list.getTotalElements(), customPageable.getPerPage());
+    }
+
+    @GetMapping("/searchAll")
+    public ResponseEntity<?> searchAll() {
+        List<CredentialRes> list = credentialService.searchAll();
+        return ResponseHandler.generateResponse(HttpStatus.OK, "success", list);
     }
 
     @GetMapping("/{id}")

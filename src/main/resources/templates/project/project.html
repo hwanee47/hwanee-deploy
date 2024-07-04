@@ -36,9 +36,12 @@
                             <th:block th:replace="~{project/innerSidebar :: innerSidebarFragment}"></th:block>
                         </div>
                         <!-- ===== Inner Side Bar End ===== -->
-                        <div class="w-full p-6 flex-grow">
+                        <div class="w-full p-6 flex-grow overflow-auto">
                             <th:block th:if="${showDashboard}">
                                 <th:block th:replace="~{project/projectDashboard :: innerContentFragment}"></th:block>
+                            </th:block>
+                            <th:block th:if="${showConfigure}">
+                                <th:block th:replace="~{project/projectConfigure :: innerContentFragment}"></th:block>
                             </th:block>
                             <th:block th:if="${showRename}">
                                 <th:block th:replace="~{project/projectRename :: innerContentFragment}"></th:block>
@@ -61,7 +64,12 @@
         <script th:src="@{/js/project.js}"></script>
         <script>
             $(document).ready(function() {
-                fnSearchProject($('#project-id').val());
+
+                if (localStorage.getItem('toastType')) {
+                    gfnShowToast(localStorage.getItem('toastType'), localStorage.getItem('toastMessage'));
+                }
+
+
             });
         </script>
 

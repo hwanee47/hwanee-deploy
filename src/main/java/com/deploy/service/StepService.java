@@ -1,10 +1,15 @@
 package com.deploy.service;
 
 import com.deploy.dto.request.StepCreateReq;
+import com.deploy.dto.request.StepUpdateReq;
 import com.deploy.entity.Credential;
 import com.deploy.entity.Job;
 import com.deploy.entity.ScmConfig;
 import com.deploy.entity.Step;
+import com.deploy.entity.embed.BuildSet;
+import com.deploy.entity.enums.BuildType;
+import com.deploy.entity.enums.StepType;
+import com.deploy.exception.AppBizException;
 import com.deploy.repository.CredentialRepository;
 import com.deploy.repository.JobRepository;
 import com.deploy.repository.ScmConfigRepository;
@@ -32,24 +37,32 @@ public class StepService {
     private final ScmConfigRepository scmConfigRepository;
 
 
+    /**
+     * Step 추가
+     * @param stepCreateReq
+     * @return
+     */
     @Transactional
-    public Long save(StepCreateReq stepCreateReq) {
+    public Long createStep(StepCreateReq stepCreateReq) {
+
+        // 유효성 검사
+        validation(stepCreateReq.getType(), stepCreateReq.getBuildType(), stepCreateReq.getCredentialId(), stepCreateReq.getScmConfigId());
 
         // 엔티티 조회
         Job job = jobRepository.findById(stepCreateReq.getJobId())
-                .orElseThrow(() -> new IllegalArgumentException("No such Job data."));
+                .orElseThrow(() -> new AppBizException("No such Job data."));
 
         Credential credential = null;
         ScmConfig scmConfig = null;
 
         if (stepCreateReq.getCredentialId() != null) {
             credential = credentialRepository.findById(stepCreateReq.getCredentialId())
-                    .orElse(null);
+                    .orElseThrow(() -> new AppBizException("No such Credential data."));
         }
 
         if (stepCreateReq.getScmConfigId() != null) {
             scmConfig = scmConfigRepository.findById(stepCreateReq.getScmConfigId())
-                    .orElse(null);
+                    .orElseThrow(() -> new AppBizException("No such SCM config data."));
         }
 
 
@@ -57,13 +70,80 @@ public class StepService {
         Long maxStepIndex = stepRepository.maxStepIndex(job.getId());
 
         // 엔티티 생성
-        Step step = Step.createStep(maxStepIndex+1, stepCreateReq.getType(), stepCreateReq.getCommand(),
-                job, credential, scmConfig);
+        Step step = Step.createStep(
+                maxStepIndex+1,
+                stepCreateReq.getType(),
+                new BuildSet(stepCreateReq.getBuildType(), null),
+                stepCreateReq.getCommand(),
+                job,
+                credential,
+                scmConfig);
 
         // 엔티티 저장
         stepRepository.save(step);
 
         return step.getId();
+    }
+
+
+    /**
+     * Step 수정
+     * @param request
+     * @return
+     */
+    @Transactional
+    public Long updateStep(Long id, StepUpdateReq request) {
+
+        // 엔티티 조회
+        Step findStep = stepRepository.findById(id)
+                .orElseThrow(() -> new AppBizException("No such data in Step."));
+
+        Credential credential = null;
+        ScmConfig scmConfig = null;
+
+        if (request.getCredentialId() != null) {
+            credential = credentialRepository.findById(request.getCredentialId())
+                    .orElseThrow(() -> new AppBizException("No such Credential data."));
+        }
+
+        if (request.getScmConfigId() != null) {
+            scmConfig = scmConfigRepository.findById(request.getScmConfigId())
+                    .orElseThrow(() -> new AppBizException("No such SCM config data."));
+        }
+
+
+        // update
+        findStep.changeInfo(
+                request.getType(),
+                new BuildSet(request.getBuildType(), null),
+                credential,
+                scmConfig
+        );
+
+        return id;
+
+    }
+
+    // 유효성 검사
+    private void validation(StepType type, BuildType buildType, Long credentialId, Long scmConfigId) {
+
+        if (type.equals(StepType.SCM)) {
+            if (scmConfigId == null) {
+                throw new AppBizException("유형이 'SCM'의 경우 SCM Config값은 필수입니다.");
+            }
+        }
+
+        if (type.equals(StepType.DEPLOY)) {
+            if (credentialId == null) {
+                throw new AppBizException("유형이 'DEPLOY'의 경우 Credential값은 필수입니다.");
+            }
+        }
+
+        if (type.equals(StepType.BUILD)) {
+            if (buildType == null) {
+                throw new AppBizException("유형이 'BUILD'의 경우 BuildType값은 필수입니다.");
+            }
+        }
     }
 
 
