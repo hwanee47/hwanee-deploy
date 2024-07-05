@@ -6,6 +6,7 @@ import com.deploy.dto.request.CredentialUpdateReq;
 import com.deploy.dto.response.CredentialRes;
 import com.deploy.entity.Credential;
 import com.deploy.exception.AppBizException;
+import com.deploy.exception.AppErrorCode;
 import com.deploy.repository.CredentialRepository;
 import com.deploy.service.utils.AesService;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +76,7 @@ public class CredentialService {
     public CredentialRes findCredential(Long id) {
 
         Credential findCredential = credentialRepository.findById(id)
-                .orElseThrow(() -> new AppBizException("No such data in Credential."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_CREDENTIAL));
 
         return CredentialRes.builder()
                 .name(findCredential.getIdentifierName())
@@ -138,7 +139,7 @@ public class CredentialService {
         String description = request.getDescription();
 
         Credential findCredential = credentialRepository.findById(id)
-                .orElseThrow(() -> new AppBizException("No such data in Credential."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_CREDENTIAL));
 
 
         // update
@@ -159,7 +160,7 @@ public class CredentialService {
     @Transactional
     public void deleteCredential(Long id) {
         Credential findCredential = credentialRepository.findById(id)
-                .orElseThrow(() -> new AppBizException("No such data in Credential."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_CREDENTIAL));
 
         credentialRepository.delete(findCredential);
     }

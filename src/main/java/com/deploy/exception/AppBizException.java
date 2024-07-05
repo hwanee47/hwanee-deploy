@@ -7,8 +7,13 @@ import java.util.Map;
 
 public class AppBizException extends AppException {
 
+
     public AppBizException(String message) {
         super(message);
+    }
+
+    public AppBizException(AppErrorCode appErrorCode) {
+        super(appErrorCode.getMessage());
     }
 
     public AppBizException(String message, String fieldName, Object data) {

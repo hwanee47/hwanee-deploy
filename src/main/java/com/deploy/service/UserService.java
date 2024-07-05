@@ -6,6 +6,7 @@ import com.deploy.dto.request.UserUpdateReq;
 import com.deploy.dto.response.UserRes;
 import com.deploy.entity.User;
 import com.deploy.exception.AppBizException;
+import com.deploy.exception.AppErrorCode;
 import com.deploy.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ public class UserService {
      */
     public UserRes findUser(Long id) {
         User findUser = userRepository.findById(id)
-                .orElseThrow(() -> new AppBizException("No such data in User."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_USER));
 
         return new UserRes(findUser.getUsername(), findUser.getEmail());
     }
@@ -76,7 +77,7 @@ public class UserService {
         String username = userUpdateReq.getUsername();
 
         User findUser = userRepository.findById(id)
-                .orElseThrow(() -> new AppBizException("No such data in User."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_USER));
 
 
         findUser.changeInfo(username);
@@ -98,7 +99,7 @@ public class UserService {
         String newPasswordConfirm = passwordUpdateReq.getNewPasswordConfirm();
 
         User findUser = userRepository.findById(userId)
-                .orElseThrow(() -> new AppBizException("No such data in User."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_USER));
 
 
         // Password mismatched.

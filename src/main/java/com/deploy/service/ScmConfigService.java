@@ -8,6 +8,7 @@ import com.deploy.entity.Credential;
 import com.deploy.entity.ScmConfig;
 import com.deploy.entity.enums.ScmType;
 import com.deploy.exception.AppBizException;
+import com.deploy.exception.AppErrorCode;
 import com.deploy.repository.ScmConfigRepository;
 import com.deploy.service.utils.GitService;
 import com.deploy.service.utils.ScmService;
@@ -75,7 +76,7 @@ public class ScmConfigService {
      */
     public ScmConfigRes findScmConfig(Long id) {
         ScmConfig scmConfig = scmConfigRepository.findById(id)
-                .orElseThrow(() -> new AppBizException("No such data in ScmConfig."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_SCMCONFIG));
         return new ScmConfigRes(scmConfig);
     }
 
@@ -130,7 +131,7 @@ public class ScmConfigService {
         String branch = request.getBranch();
 
         ScmConfig findScmConfig = scmConfigRepository.findById(id)
-                .orElseThrow(() -> new AppBizException("No such data in ScmConfig."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_SCMCONFIG));
 
         // update
         findScmConfig.changeInfo(type, description, url, username, password, branch);
@@ -156,7 +157,7 @@ public class ScmConfigService {
     @Transactional
     public void deleteScmConfig(Long id) {
         ScmConfig findScmConfig = scmConfigRepository.findById(id)
-                .orElseThrow(() -> new AppBizException("No such data in ScmConfig."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_SCMCONFIG));
 
         scmConfigRepository.delete(findScmConfig);
     }

@@ -1,6 +1,9 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;NON_KEYWORDS=USER
+    url: jdbc:h2:mem:testdb;
+  sql:
+    init:
+      mode: never
 
 logging:
   level:
@@ -10,6 +13,7 @@ decorator:
   datasource:
     p6spy:
       enable-logging: true
+
 
 app:
   aes:

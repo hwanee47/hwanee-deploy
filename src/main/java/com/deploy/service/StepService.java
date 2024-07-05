@@ -10,6 +10,7 @@ import com.deploy.entity.embed.BuildSet;
 import com.deploy.entity.enums.BuildType;
 import com.deploy.entity.enums.StepType;
 import com.deploy.exception.AppBizException;
+import com.deploy.exception.AppErrorCode;
 import com.deploy.repository.CredentialRepository;
 import com.deploy.repository.JobRepository;
 import com.deploy.repository.ScmConfigRepository;
@@ -50,19 +51,19 @@ public class StepService {
 
         // 엔티티 조회
         Job job = jobRepository.findById(stepCreateReq.getJobId())
-                .orElseThrow(() -> new AppBizException("No such Job data."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
 
         Credential credential = null;
         ScmConfig scmConfig = null;
 
         if (stepCreateReq.getCredentialId() != null) {
             credential = credentialRepository.findById(stepCreateReq.getCredentialId())
-                    .orElseThrow(() -> new AppBizException("No such Credential data."));
+                    .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_CREDENTIAL));
         }
 
         if (stepCreateReq.getScmConfigId() != null) {
             scmConfig = scmConfigRepository.findById(stepCreateReq.getScmConfigId())
-                    .orElseThrow(() -> new AppBizException("No such SCM config data."));
+                    .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_SCMCONFIG));
         }
 
 
@@ -96,19 +97,19 @@ public class StepService {
 
         // 엔티티 조회
         Step findStep = stepRepository.findById(id)
-                .orElseThrow(() -> new AppBizException("No such data in Step."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_STEP));
 
         Credential credential = null;
         ScmConfig scmConfig = null;
 
         if (request.getCredentialId() != null) {
             credential = credentialRepository.findById(request.getCredentialId())
-                    .orElseThrow(() -> new AppBizException("No such Credential data."));
+                    .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_CREDENTIAL));
         }
 
         if (request.getScmConfigId() != null) {
             scmConfig = scmConfigRepository.findById(request.getScmConfigId())
-                    .orElseThrow(() -> new AppBizException("No such SCM config data."));
+                    .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_SCMCONFIG));
         }
 
 

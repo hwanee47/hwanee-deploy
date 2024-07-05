@@ -5,6 +5,7 @@ import com.deploy.dto.request.JobUpdateReq;
 import com.deploy.dto.response.JobRes;
 import com.deploy.entity.Job;
 import com.deploy.exception.AppBizException;
+import com.deploy.exception.AppErrorCode;
 import com.deploy.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +47,7 @@ public class JobService {
      */
     public JobRes findJob(Long id) {
         Job findJob = jobRepository.findById(id)
-                .orElseThrow(() -> new AppBizException("No such data in Job."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
 
         return new JobRes(findJob);
     }
@@ -80,7 +81,7 @@ public class JobService {
     @Transactional
     public Long updateJob(Long id, JobUpdateReq request) {
         Job findJob = jobRepository.findById(id)
-                .orElseThrow(() -> new AppBizException("No such data in Job."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
 
         // update
         findJob.changeInfo(request.getName(), request.getDescription());
@@ -95,7 +96,7 @@ public class JobService {
     @Transactional
     public void deleteJob(Long id) {
         Job findJob = jobRepository.findById(id)
-                .orElseThrow(() -> new AppBizException("No such data in Job."));
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
 
         jobRepository.delete(findJob);
     }
