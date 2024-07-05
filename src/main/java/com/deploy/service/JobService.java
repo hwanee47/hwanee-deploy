@@ -3,14 +3,11 @@ package com.deploy.service;
 import com.deploy.dto.request.JobCreateReq;
 import com.deploy.dto.request.JobUpdateReq;
 import com.deploy.dto.response.JobRes;
-import com.deploy.dto.response.ScmConfigRes;
-import com.deploy.entity.Credential;
 import com.deploy.entity.Job;
 import com.deploy.exception.AppBizException;
 import com.deploy.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

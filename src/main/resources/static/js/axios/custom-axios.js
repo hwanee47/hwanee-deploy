@@ -38,7 +38,8 @@
 
             let message = "";
             if (error.response.status === 401) {
-                message = "권한이 없습니다."
+                message = "권한이 없습니다.";
+                window.location.href = "/app/view/login";
             } else {
                 message = error.response.data.message;
             }
