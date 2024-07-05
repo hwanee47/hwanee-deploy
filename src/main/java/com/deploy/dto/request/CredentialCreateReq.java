@@ -3,6 +3,7 @@ package com.deploy.dto.request;
 import com.deploy.entity.Credential;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,4 +28,17 @@ public class CredentialCreateReq {
     private String passphrase; // 인증키 비밀번호
 
     private String description; // 비고
+
+
+    @Builder
+    public CredentialCreateReq(String name, String username, String password, String host, Integer port, String privateKey, String passphrase, String description) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.host = host;
+        this.port = port;
+        this.privateKey = privateKey;
+        this.passphrase = passphrase;
+        this.description = description;
+    }
 }

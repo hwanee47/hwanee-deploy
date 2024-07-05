@@ -4,9 +4,15 @@ import com.deploy.dto.request.JobCreateReq;
 import com.deploy.dto.request.JobUpdateReq;
 import com.deploy.dto.response.JobRes;
 import com.deploy.entity.Job;
+import com.deploy.entity.ScmConfig;
+import com.deploy.entity.Step;
+import com.deploy.entity.enums.ScmType;
+import com.deploy.entity.enums.StepType;
 import com.deploy.exception.AppBizException;
 import com.deploy.exception.AppErrorCode;
 import com.deploy.repository.JobRepository;
+import com.deploy.service.utils.GitService;
+import com.deploy.service.utils.ScmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,13 +21,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.deploy.entity.enums.StepType.*;
+import static com.deploy.entity.enums.StepType.BUILD;
+import static com.deploy.entity.enums.StepType.SCM;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class JobService {
 
-    private final StepService service;
+    private final StepService stepService;
     private final JobRepository jobRepository;
 
     /**
@@ -102,17 +112,20 @@ public class JobService {
     }
 
 
-    // CI/CD 시작
+    // Build Now
     @Transactional
-    public void run(Long id) {
+    public void buildNow(Long id) {
 
-        // TODO: 식별자로 job 엔티티 조회
-        // TODO: job 엔티티에 저장된 빌드유형(buildType)에 따른 책임부여
+        // 엔티티 조회
+        Job findJob = jobRepository.findById(id)
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
+
+        // step 조회 & 수행
+        for (Step step : findJob.getSteps()) {
+            stepService.executeStep(step);
+        }
 
     }
-
-
-
 
 
 }

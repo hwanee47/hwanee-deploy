@@ -30,11 +30,13 @@ class CredentialServiceTest {
     @Test
     public void 등록_테스트() {
         //given
-        CredentialCreateReq credentialCreateReq = new CredentialCreateReq();
-        credentialCreateReq.setName("credential-1");
-        credentialCreateReq.setUsername("hwaneehwanee");
-        credentialCreateReq.setPassword("password");
-        credentialCreateReq.setPrivateKey("privateKey");
+        CredentialCreateReq credentialCreateReq = CredentialCreateReq.builder()
+                .name("credential-1")
+                .username("hwaneehwanee")
+                .password("password")
+                .privateKey("privateKey")
+                .build();
+
 
         //when
         Long id = credentialService.createCredential(credentialCreateReq);

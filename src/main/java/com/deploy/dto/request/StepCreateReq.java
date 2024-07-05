@@ -29,4 +29,13 @@ public class StepCreateReq {
     private String command;
 
 
+    @Builder
+    public StepCreateReq(Long jobId, StepType type, BuildType buildType, Long credentialId, Long scmConfigId, String command) {
+        this.jobId = jobId;
+        this.type = type;
+        this.buildType = buildType;
+        this.credentialId = credentialId;
+        this.scmConfigId = scmConfigId;
+        this.command = command;
+    }
 }

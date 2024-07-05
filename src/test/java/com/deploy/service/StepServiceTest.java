@@ -60,12 +60,13 @@ class StepServiceTest {
         List<Credential> credentials = credentialRepository.findAll();
         List<ScmConfig> scmConfigs = scmConfigRepository.findAll();
 
-        StepCreateReq stepCreateReq = new StepCreateReq();
-        stepCreateReq.setType(StepType.SCM);
-        stepCreateReq.setCommand("test");
-        stepCreateReq.setJobId(jobs.get(0).getId());
-        stepCreateReq.setCredentialId(credentials.get(0).getId());
-        stepCreateReq.setScmConfigId(scmConfigs.get(0).getId());
+        StepCreateReq stepCreateReq = StepCreateReq.builder()
+                .type(StepType.SCM)
+                .command("test")
+                .jobId(jobs.get(0).getId())
+                .credentialId(credentials.get(0).getId())
+                .scmConfigId(scmConfigs.get(0).getId())
+                .build();
 
         //when
         Long savedId = stepService.createStep(stepCreateReq);

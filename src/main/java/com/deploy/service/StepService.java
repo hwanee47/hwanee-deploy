@@ -17,6 +17,7 @@ import com.deploy.repository.ScmConfigRepository;
 import com.deploy.repository.StepRepository;
 import com.deploy.service.utils.BuildService;
 import com.deploy.service.utils.ScmService;
+import com.deploy.service.utils.ScmServiceFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -36,7 +37,7 @@ public class StepService {
     private final StepRepository stepRepository;
     private final CredentialRepository credentialRepository;
     private final ScmConfigRepository scmConfigRepository;
-
+    private final ScmServiceFactory scmServiceFactory;
 
     /**
      * Step 추가
@@ -149,36 +150,38 @@ public class StepService {
 
 
     /**
-     * 클론 프로젝트
+     * Step type 별 역할수행
+     * @param step
      */
-    public void cloneProject(ScmService service, String url, String branch, String username, String password, String clonePath) {
+    public void executeStep(Step step) {
 
-        try {
-            service.cloneProject(url, branch, username, password, clonePath);
-        } catch (GitAPIException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        StepType stepType = step.getStepType();
+
+        switch(stepType) {
+            case SCM:
+
+                // SCM config 조회
+                ScmConfig scmConfig = step.getScmConfig();
+
+                ScmService scmService = scmServiceFactory.getScmService(scmConfig.getScmType());
+                String url = scmConfig.getUrl();
+                String branch = scmConfig.getBranch();
+                String username = scmConfig.getUsername();
+                String password = scmConfig.getPassword();
+
+                // 클론 프로젝트
+                try {
+                    scmService.cloneProject(url, branch, username, password, "/path");
+                } catch (GitAPIException | IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                break;
+            case BUILD:
+                break;
+            case DEPLOY:
+                break;
         }
-
-    }
-
-
-    /**
-     * 빌드 프로젝트
-     */
-    public void executeBuild(BuildService service, String projectPath) {
-        try {
-            service.executeBuild(projectPath);
-        } catch (Exception e) {
-
-        }
-    }
-
-
-
-    public void deployToRemote() {
-
     }
 
 
