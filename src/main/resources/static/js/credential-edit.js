@@ -36,6 +36,7 @@ const fnSetCredentialInfo = (data) => {
     $('#credential-username').val(data.username);
     $('#credential-password').val(data.password);
     $('#credential-host').val(data.host);
+    $('#credential-port').val(data.port);
     $('#credential-privateKey').val(data.privateKey);
     $('#credential-passphrase').val(data.passphrase);
     $('#credential-description').val(data.description);
