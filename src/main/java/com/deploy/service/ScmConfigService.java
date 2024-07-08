@@ -10,6 +10,7 @@ import com.deploy.entity.enums.ScmType;
 import com.deploy.exception.AppBizException;
 import com.deploy.exception.AppErrorCode;
 import com.deploy.repository.ScmConfigRepository;
+import com.deploy.service.utils.AesService;
 import com.deploy.service.utils.GitService;
 import com.deploy.service.utils.ScmService;
 import com.deploy.service.utils.SvnService;
@@ -28,10 +29,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ScmConfigService {
 
     private final ScmConfigRepository scmConfigRepository;
+    private final AesService aesService;
 
 
     /**
@@ -60,8 +61,17 @@ public class ScmConfigService {
 
         List<ScmConfigRes> results = list.stream()
                 .map(ScmConfig -> {
-                    ScmConfigRes scmConfigRes = new ScmConfigRes(ScmConfig);
-                    return scmConfigRes;
+                    return ScmConfigRes.builder()
+                            .id(ScmConfig.getId())
+                            .type(ScmConfig.getScmType())
+                            .description(ScmConfig.getDescription())
+                            .url(ScmConfig.getUrl())
+                            .username(ScmConfig.getUsername())
+                            .password(aesService.decrypt(ScmConfig.getPassword()))
+                            .branch(ScmConfig.getBranch())
+                            .isConnected(ScmConfig.isConnected())
+                            .failMessage(ScmConfig.getFailMessage())
+                            .build();
                 })
                 .collect(Collectors.toList());
 
@@ -77,7 +87,17 @@ public class ScmConfigService {
     public ScmConfigRes findScmConfig(Long id) {
         ScmConfig scmConfig = scmConfigRepository.findById(id)
                 .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_SCMCONFIG));
-        return new ScmConfigRes(scmConfig);
+        return ScmConfigRes.builder()
+                .id(scmConfig.getId())
+                .type(scmConfig.getScmType())
+                .description(scmConfig.getDescription())
+                .url(scmConfig.getUrl())
+                .username(scmConfig.getUsername())
+                .password(aesService.decrypt(scmConfig.getPassword()))
+                .branch(scmConfig.getBranch())
+                .isConnected(scmConfig.isConnected())
+                .failMessage(scmConfig.getFailMessage())
+                .build();
     }
 
 
@@ -96,7 +116,7 @@ public class ScmConfigService {
         String password = request.getPassword();
         String branch = request.getBranch();
 
-        ScmConfig scmConfig = ScmConfig.createScmConfig(type, description, url, username, password, branch);
+        ScmConfig scmConfig = ScmConfig.createScmConfig(type, description, url, username, aesService.encrypt(password), branch);
 
         // health check
         try {
@@ -134,7 +154,7 @@ public class ScmConfigService {
                 .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_SCMCONFIG));
 
         // update
-        findScmConfig.changeInfo(type, description, url, username, password, branch);
+        findScmConfig.changeInfo(type, description, url, username, aesService.encrypt(password), branch);
 
 
         // health check

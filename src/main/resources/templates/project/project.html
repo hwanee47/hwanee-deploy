@@ -46,6 +46,9 @@
                             <th:block th:if="${showRename}">
                                 <th:block th:replace="~{project/projectRename :: innerContentFragment}"></th:block>
                             </th:block>
+                            <th:block th:if="${showHistory}">
+                                <th:block th:replace="~{project/projectHistory :: innerContentFragment}"></th:block>
+                            </th:block>
 
                         </div>
                 </div>

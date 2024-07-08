@@ -8632,6 +8632,26 @@ div.code-toolbar .toolbar button:hover {
     min-width: 16rem;
 }
 
+.min-w-72{
+    min-width: 18rem;
+}
+
+.min-w-80{
+    min-width: 20rem;
+}
+
+.min-w-88{
+    min-width: 22rem;
+}
+
+.min-w-96{
+    min-width: 24rem;
+}
+
+.min-w-104{
+    min-width: 26rem;
+}
+
 .min-w-full{
     min-width: 100%;
 }

@@ -108,4 +108,11 @@ public class ViewController {
         return "project/project";
     }
 
+    @GetMapping("/project/project-history")
+    public String projectHistory(String id, Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("showHistory", true);
+        return "project/project";
+    }
+
 }

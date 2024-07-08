@@ -48,4 +48,10 @@ public class JobController {
         jobService.deleteJob(id);
         return ResponseHandler.generateResponse(HttpStatus.OK, "success", id);
     }
+
+    @PostMapping("/run/{id}")
+    public ResponseEntity<?> runJob(@PathVariable Long id) {
+        jobService.runJob(id);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "success", id);
+    }
 }

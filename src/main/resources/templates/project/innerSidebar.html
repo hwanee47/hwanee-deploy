@@ -22,7 +22,7 @@
 
                 <li>
                     <a th:class="${showConfigure} ?
-                          'btn-indigo text-left text-white font-semibold hover:bg-gray-200 hover:text-gray-900' :
+                          'btn-indigo text-left text-white font-semibold' :
                           'btn text-left text-yellow-700 font-semibold bg-white hover:bg-yellow-100 hover:text-yellow-800'"
                        th:href="@{/app/view/project/project-configure(id=${id})}">
                         <i class="fad fa-cog text-xs mr-3 custom-after-opacity"></i>
@@ -31,15 +31,15 @@
                 </li>
 
                 <li>
-                    <a class="btn text-left text-green-700 font-semibold bg-white hover:bg-green-100 hover:text-green-800" href="#">
+                    <a class="btn text-left text-green-700 font-semibold bg-white hover:bg-green-100 hover:text-green-800" href="#" onClick="runNow()">
                         <i class="fad fa-rocket text-xs mr-3 custom-after-opacity"></i>
-                        Build Now
+                        Run Now
                     </a>
                 </li>
 
                 <li>
                     <a th:class="${showRename} ?
-                        'btn-indigo text-left text-white font-semibold hover:bg-gray-200 hover:text-gray-900' :
+                        'btn-indigo text-left text-white font-semibold' :
                         'btn text-left text-gray-800 font-semibold bg-white hover:bg-gray-200 hover:text-gray-900'"
                        th:href="@{/app/view/project/project-rename(id=${id})}">
                         <i class="fad fa-spell-check text-xs mr-3 custom-after-opacity"></i>
@@ -55,7 +55,10 @@
                 </li>
 
                 <li>
-                    <a class="btn text-left text-gray-800 font-semibold bg-white hover:bg-gray-200 hover:text-gray-900" href="#">
+                    <a th:class="${showHistory} ?
+                          'btn-indigo text-left text-white font-semibold' :
+                          'btn text-left text-gray-800 font-semibold bg-white hover:bg-gray-200 hover:text-gray-900'"
+                       th:href="@{/app/view/project/project-history(id=${id})}">
                         <i class="fad fa-history text-xs mr-3 custom-after-opacity"></i>
                         History
                     </a>
@@ -76,10 +79,19 @@
     <!--    <script th:src="@{/js/navbar.js}"></script>-->
         <script>
             $(document).ready(function(){
-
-
-
             })
+
+            const runNow = () => {
+                let id = $('#project-id').val();
+                _axios
+                    .post(`/api/job/run/${id}`)
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+
+                    });
+            }
         </script>
     </th:block>
     <!-- ===== Project Inner Side Bar End ===== -->

@@ -1,6 +1,5 @@
 package com.deploy.entity;
 
-import com.deploy.entity.embed.BuildSet;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,7 +31,7 @@ public class Job extends BaseEntity {
     private List<Step> steps = new ArrayList<>();
 
     @OneToMany(mappedBy = "job")
-    private List<BuildHistory> buildHistories = new ArrayList<>();
+    private List<RunHistory> runHistories = new ArrayList<>();
 
 
     //== 생성 메서드 ==//

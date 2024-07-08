@@ -2,42 +2,40 @@ package com.deploy.service;
 
 import com.deploy.dto.request.StepCreateReq;
 import com.deploy.dto.request.StepUpdateReq;
-import com.deploy.entity.Credential;
-import com.deploy.entity.Job;
-import com.deploy.entity.ScmConfig;
-import com.deploy.entity.Step;
+import com.deploy.entity.*;
 import com.deploy.entity.embed.BuildSet;
 import com.deploy.entity.enums.BuildType;
 import com.deploy.entity.enums.StepType;
 import com.deploy.exception.AppBizException;
 import com.deploy.exception.AppErrorCode;
-import com.deploy.repository.CredentialRepository;
-import com.deploy.repository.JobRepository;
-import com.deploy.repository.ScmConfigRepository;
-import com.deploy.repository.StepRepository;
-import com.deploy.service.utils.BuildService;
-import com.deploy.service.utils.ScmService;
-import com.deploy.service.utils.ScmServiceFactory;
+import com.deploy.repository.*;
+import com.deploy.service.utils.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.jgit.api.errors.GitAPIException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
+import java.io.File;
+import java.time.Duration;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class StepService {
 
     private final JobRepository jobRepository;
     private final StepRepository stepRepository;
     private final CredentialRepository credentialRepository;
     private final ScmConfigRepository scmConfigRepository;
+    private final RunHistoryDetailRepository runHistoryDetailRepository;
     private final ScmServiceFactory scmServiceFactory;
+    private final BuildServiceFactory buildServiceFactory;
+    private final RemoteService remoteService;
+    private final AesService aesService;
+
+    private final String DEFAULT_CLONE_PATH = System.getProperty("user.home") + File.separator + "deployApp" + File.separator;
 
     /**
      * Step 추가
@@ -153,37 +151,129 @@ public class StepService {
      * Step type 별 역할수행
      * @param step
      */
-    public void executeStep(Step step) {
+    public String executeStep(Step step, String prevResult) throws Exception {
 
         StepType stepType = step.getStepType();
+        String result = null;
 
-        switch(stepType) {
+        switch (stepType) {
             case SCM:
+                String clonePath = DEFAULT_CLONE_PATH + step.getJob().getName();
 
-                // SCM config 조회
-                ScmConfig scmConfig = step.getScmConfig();
-
-                ScmService scmService = scmServiceFactory.getScmService(scmConfig.getScmType());
-                String url = scmConfig.getUrl();
-                String branch = scmConfig.getBranch();
-                String username = scmConfig.getUsername();
-                String password = scmConfig.getPassword();
-
-                // 클론 프로젝트
-                try {
-                    scmService.cloneProject(url, branch, username, password, "/path");
-                } catch (GitAPIException | IOException e) {
-                    throw new RuntimeException(e);
-                }
+                result = executeSCM(step, clonePath);
 
                 break;
             case BUILD:
+//                detailsIndex = runHistory.getDetailsIndexByStepType(StepType.SCM);
+                String projectPath = prevResult;
+
+                result = executeBuild(step, prevResult);
+
                 break;
             case DEPLOY:
+//                detailsIndex = runHistory.getDetailsIndexByStepType(StepType.BUILD);
+                String sourcePath = prevResult;
+                String targetPath = "/home/ec2-user";
+                String targetFileName = "my-app.jar";
+
+                result = executeDeploy(step, sourcePath, targetPath, targetFileName);
+
                 break;
         }
+
+        return result;
     }
 
 
+    /**
+     * 배포 수행
+     * @param step
+     * @param sourcePath
+     * @param targetPath
+     * @param targetFileName
+     * @throws Exception
+     */
+    private String executeDeploy(Step step, String sourcePath, String targetPath, String targetFileName) throws Exception {
+
+        // validation
+        validationParam(sourcePath, targetPath);
+
+        // Credential 조회
+        Credential credential = step.getCredential();
+        String targetHost = credential.getTargetHost();
+        Integer targetPort = credential.getTargetPort();
+        String targetUsername = credential.getTargetUsername();
+        String targetPassword = aesService.decrypt(credential.getTargetPassword());
+        String privateKey = aesService.decrypt(credential.getPrivateKey());
+
+        // 초기화
+        remoteService.init(targetHost, targetPort, targetUsername, targetPassword, privateKey);
+
+        File uploadFile = new File(sourcePath);
+
+        // 업로드
+        if (!StringUtils.hasText(targetFileName))
+            targetFileName = "app.jar";
+
+        boolean upload = remoteService.upload(uploadFile, targetPath, targetFileName);
+
+        return upload ? targetPath : "";
+    }
+
+
+    /**
+     * 빌드 수행
+     * @param step
+     * @param projectPath
+     * @return
+     * @throws Exception
+     */
+    private String executeBuild(Step step, String projectPath) throws Exception {
+
+        // validation
+        validationParam(projectPath);
+
+        String buildFile;
+        BuildService buildService = buildServiceFactory.getBuildService(step.getBuildSet().getBuildType());
+
+        // 빌드 프로젝트
+        //            buildFile = buildService.executeBuild("/Users/hwaneehwanee/test/" + step.getJob().getName());
+        buildFile = buildService.executeBuild(projectPath);
+        return buildFile;
+    }
+
+
+    /**
+     * 소스코드 관리
+     * @param step
+     * @param clonePath
+     * @return
+     * @throws Exception
+     */
+    private String executeSCM(Step step, String clonePath) throws Exception {
+
+        // SCM config 조회
+        ScmConfig scmConfig = step.getScmConfig();
+
+        ScmService scmService = scmServiceFactory.getScmService(scmConfig.getScmType());
+        String url = scmConfig.getUrl();
+        String branch = scmConfig.getBranch();
+        String username = scmConfig.getUsername();
+        String password = aesService.decrypt(scmConfig.getPassword());
+
+        // 클론 프로젝트
+        scmService.cloneProject(url, branch, username, password, clonePath);
+
+        return clonePath;
+    }
+
+
+    private void validationParam(String... params) {
+        for (String param : params) {
+            if (!StringUtils.hasText(param)) {
+                throw new IllegalArgumentException("["+param+"] 값은 필수입니다.");
+            }
+        }
+    }
 
 }

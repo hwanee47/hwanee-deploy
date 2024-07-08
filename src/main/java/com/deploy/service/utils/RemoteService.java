@@ -28,6 +28,8 @@ public class RemoteService {
      */
     public void init(String host, int port, String username, String password, String privateKey) {
 
+        log.info("Start RemoteService init. host={}", host);
+
         try {
             // 로그
             JSch.setLogger(new RemoteServiceLogger());
@@ -47,6 +49,9 @@ public class RemoteService {
 
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
+
+            log.info("End RemoteService init. host={}", host);
+
         } catch (Exception e) {
             log.error("RemoteService init error. message={}", e.getMessage());
         }
@@ -60,6 +65,8 @@ public class RemoteService {
      * @throws Exception
      */
     public String executeScript(String script) throws Exception {
+
+        log.info("Start RemoteService execute script.");
 
         if (session == null) {
             throw new IllegalStateException("RemoteService init메서드를 먼저 호출해주세요.");
@@ -94,6 +101,8 @@ public class RemoteService {
                 throw new RemoteException(errorOutput.toString());
             }
 
+            log.info("End RemoteService execute script.");
+
             return output.toString();
         } catch (Exception e) {
             log.error("RemoteService executeScript failed. message={}", e.getMessage());
@@ -114,6 +123,8 @@ public class RemoteService {
      */
     public boolean upload(File file, String remotePath, String newFileName) throws Exception{
 
+        log.info("Start RemoteService upload.");
+
         //sftp로 접속
         channel = session.openChannel("sftp");
         channel.connect();
@@ -132,6 +143,9 @@ public class RemoteService {
             if (this.exists(remotePath + "/" + newFileName)) {
                 isUpload = true;
             }
+
+            log.info("End RemoteService upload.");
+
         } catch (Exception e) {
             log.error("RemoteService upload failed. message={}", e.getMessage());
             throw e;

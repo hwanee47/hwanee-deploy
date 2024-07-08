@@ -12,8 +12,7 @@ import java.io.InputStreamReader;
 public class MavenService implements BuildService{
 
     @Override
-    public void executeBuild(String projectPath) throws Exception {
-
-
+    public String executeBuild(String projectPath) throws Exception {
+        return null;
     }
 }

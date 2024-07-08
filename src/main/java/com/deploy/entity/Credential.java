@@ -34,7 +34,8 @@ public class Credential extends BaseEntity {
     @Column(name = "TARGET_PORT")
     private Integer targetPort; // 원격지 포트
 
-    @Column(name = "PRIVATE_KEY")
+    @Lob
+    @Column(name = "PRIVATE_KEY", columnDefinition = "MEDIUMTEXT")
     private String privateKey; // 인증키
 
     @Column(name = "PASSPHRASE")

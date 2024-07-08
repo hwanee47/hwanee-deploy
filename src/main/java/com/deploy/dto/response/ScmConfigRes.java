@@ -26,7 +26,7 @@ public class ScmConfigRes {
 
 
     @Builder
-    public ScmConfigRes(Long id, ScmType type, String description, String url, String username, String password, String branch, String clonePath) {
+    public ScmConfigRes(Long id, ScmType type, String description, String url, String username, String password, String branch, String clonePath, boolean isConnected, String failMessage) {
         this.id = id;
         this.type = type;
         this.description = description;
@@ -35,6 +35,8 @@ public class ScmConfigRes {
         this.password = password;
         this.branch = branch;
         this.clonePath = clonePath;
+        this.isConnected = isConnected;
+        this.failMessage = failMessage;
     }
 
     public ScmConfigRes(ScmConfig scmConfig) {
