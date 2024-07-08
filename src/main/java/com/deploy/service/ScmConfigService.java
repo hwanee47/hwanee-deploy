@@ -44,16 +44,12 @@ public class ScmConfigService {
     public Page<ScmConfigRes> search(ScmConfigSearchCond condition, Pageable pageable) {
         Page<ScmConfig> list = scmConfigRepository.search(condition, pageable);
 
-        Page<ScmConfigRes> results = new PageImpl<>(
-                list.stream().map(ScmConfig -> {
-                    ScmConfigRes scmConfigRes = new ScmConfigRes(ScmConfig);
-                    return scmConfigRes;
-                }).collect(Collectors.toList())
-                , pageable
-                , list.getTotalElements()
-        );
+        List<ScmConfigRes> results = list.stream().map(ScmConfig -> {
+            ScmConfigRes scmConfigRes = new ScmConfigRes(ScmConfig);
+            return scmConfigRes;
+        }).collect(Collectors.toList());
 
-        return results;
+        return new PageImpl<>(results, pageable, list.getTotalElements());
     }
 
     public List<ScmConfigRes> searchAll() {

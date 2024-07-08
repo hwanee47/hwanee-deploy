@@ -159,23 +159,18 @@ public class StepService {
         switch (stepType) {
             case SCM:
                 String clonePath = DEFAULT_CLONE_PATH + step.getJob().getName();
-
                 result = executeSCM(step, clonePath);
 
                 break;
             case BUILD:
-//                detailsIndex = runHistory.getDetailsIndexByStepType(StepType.SCM);
                 String projectPath = prevResult;
-
                 result = executeBuild(step, prevResult);
 
                 break;
             case DEPLOY:
-//                detailsIndex = runHistory.getDetailsIndexByStepType(StepType.BUILD);
                 String sourcePath = prevResult;
                 String targetPath = "/home/ec2-user";
                 String targetFileName = "my-app.jar";
-
                 result = executeDeploy(step, sourcePath, targetPath, targetFileName);
 
                 break;
@@ -268,6 +263,10 @@ public class StepService {
     }
 
 
+    /**
+     * 파라미터 검증
+     * @param params
+     */
     private void validationParam(String... params) {
         for (String param : params) {
             if (!StringUtils.hasText(param)) {
