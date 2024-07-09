@@ -11,7 +11,9 @@
         <div class="h-screen flex flex-row">
 
             <!-- ===== Sidebar Start ===== -->
-            <th:block th:replace="~{/layout/fragments/sidebar :: sidebarFragment}"></th:block>
+            <div id="layout-sidebar">
+                <th:block th:replace="~{/layout/fragments/sidebar :: sidebarFragment}"></th:block>
+            </div>
             <!-- ===== Sidebar End ===== -->
 
             <!-- ===== Content Area Start ===== -->
@@ -37,8 +39,20 @@
 
         <!-- ===== Common Script Start===== -->
         <script>
+            $(document).ready(function() {
+                var currentUrl = window.location.pathname;
+                var sidebar = document.getElementById('layout-sidebar');
 
-            // password show/hide toggle
+                // project 페이지 오픈시 사이드바 숨기기
+                var regex = /^\/app\/view\/project\/project/;
+                if (regex.test(currentUrl)) {
+                    sidebar.style.display = 'none';
+                }
+            });
+
+
+
+            // 패스워드 토글
             $('.js-password-toggle').change(function() {
                 var container = $(this).closest('.toggle-password-container');
                 var passwordInput = container.find('input.js-password');
