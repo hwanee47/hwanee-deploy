@@ -2,7 +2,10 @@ package com.deploy.service;
 
 import com.deploy.dto.request.StepCreateReq;
 import com.deploy.dto.request.StepUpdateReq;
-import com.deploy.entity.*;
+import com.deploy.entity.Credential;
+import com.deploy.entity.Job;
+import com.deploy.entity.ScmConfig;
+import com.deploy.entity.Step;
 import com.deploy.entity.embed.BuildSet;
 import com.deploy.entity.enums.BuildType;
 import com.deploy.entity.enums.StepType;
@@ -12,18 +15,19 @@ import com.deploy.repository.*;
 import com.deploy.service.utils.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
-import java.time.Duration;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class StepService {
+    private Logger logger = LoggerFactory.getLogger(StepService.class);
 
     private final JobRepository jobRepository;
     private final StepRepository stepRepository;
@@ -36,6 +40,14 @@ public class StepService {
     private final AesService aesService;
 
     private final String DEFAULT_CLONE_PATH = System.getProperty("user.home") + File.separator + "deployApp" + File.separator;
+
+
+    public void setHistoryLogger(Logger logger) {
+        this.logger = logger;
+        this.scmServiceFactory.setHistoryLogger(logger);
+        this.buildServiceFactory.setHistoryLogger(logger);
+        this.remoteService.setHistoryLogger(logger);
+    }
 
     /**
      * Step 추가
@@ -232,7 +244,6 @@ public class StepService {
         BuildService buildService = buildServiceFactory.getBuildService(step.getBuildSet().getBuildType());
 
         // 빌드 프로젝트
-        //            buildFile = buildService.executeBuild("/Users/hwaneehwanee/test/" + step.getJob().getName());
         buildFile = buildService.executeBuild(projectPath);
         return buildFile;
     }

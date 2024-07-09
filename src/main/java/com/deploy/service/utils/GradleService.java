@@ -1,6 +1,7 @@
 package com.deploy.service.utils;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -14,14 +15,19 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-@Slf4j
 @Service
 public class GradleService implements BuildService{
+
+    private Logger logger = LoggerFactory.getLogger(GradleService.class);
+
+    public void setHistoryLogger(Logger logger) {
+        this.logger = logger;
+    }
 
     @Override
     public String executeBuild(String projectPath) throws Exception {
 
-        log.info("Start build. projectPath={}", projectPath);
+        logger.info("[OK] Start build. projectPath={}", projectPath);
         String builtFile = null;
 
         try {
@@ -39,7 +45,7 @@ public class GradleService implements BuildService{
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.out.println(line);
+                        logger.info(line);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -51,7 +57,7 @@ public class GradleService implements BuildService{
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.err.println(line);
+                        logger.error(line);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -79,11 +85,11 @@ public class GradleService implements BuildService{
                 }
             }
 
-            log.info("End build. exitCode={}, builtFile={}", exitCode, builtFile);
+            logger.info("[OK] End build. exitCode={}, builtFile={}", exitCode, builtFile);
 
 
         } catch (Exception e) {
-            log.error("Gradle build failed. message={}", e.getMessage());
+            logger.error("[ERROR] Failed gradle build. message={}", e.getMessage());
             throw e;
         }
 
@@ -98,13 +104,13 @@ public class GradleService implements BuildService{
                 .forEach(path -> {
                     try {
                         Files.deleteIfExists(path);
-                        log.info("Deleted plain.jar file={}", path);
+                        logger.info("[OK] Deleted plain.jar file={}", path);
                     } catch (IOException e) {
-                        log.warn("Failed to delete plain.jar file={}. message={}", path, e.getMessage());
+                        logger.warn("[WARN] Failed to delete plain.jar file={}. message={}", path, e.getMessage());
                     }
                 });
         } catch (IOException e) {
-            log.warn("Failed to walk through the directory. message={}", e.getMessage());
+            logger.warn("[ERROR] Failed to walk through the directory. message={}", e.getMessage());
         }
     }
 }

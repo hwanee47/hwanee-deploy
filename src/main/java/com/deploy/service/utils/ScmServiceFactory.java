@@ -2,6 +2,7 @@ package com.deploy.service.utils;
 
 import com.deploy.entity.enums.ScmType;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,6 +11,11 @@ public class ScmServiceFactory {
 
     private final GitService gitService;
     private final SvnService svnService;
+
+    public void setHistoryLogger(Logger logger) {
+        gitService.setHistoryLogger(logger);
+        svnService.setHistoryLogger(logger);
+    }
 
     public ScmService getScmService(ScmType type) {
         switch (type) {

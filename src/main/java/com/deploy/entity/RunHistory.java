@@ -73,7 +73,7 @@ public class RunHistory extends BaseEntity {
 
     //== 비즈니스 메서드 ==//
     // 실행 완료
-    public void completeRun() {
+    public void completeRun(String logFilePath) {
 
         boolean result = true;
         long totalRunTime = 0L;
@@ -89,6 +89,7 @@ public class RunHistory extends BaseEntity {
         this.isSuccess = result;
         this.totalRunTime = totalRunTime;
         this.status = HistoryStatus.COMPLETE;
+        this.logFilePath = logFilePath;
     }
 
     // StepType으로 Details 리스트의 인덱스 구하기

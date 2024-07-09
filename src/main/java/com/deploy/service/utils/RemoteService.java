@@ -3,6 +3,7 @@ package com.deploy.service.utils;
 import com.deploy.exception.RemoteException;
 import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -13,10 +14,16 @@ import java.util.Vector;
 @Service
 public class RemoteService {
 
+    private org.slf4j.Logger logger = LoggerFactory.getLogger(RemoteService.class);
+
     private Session session = null;
     private Channel channel = null;
     private ChannelSftp channelSftp = null;
     private ChannelExec channelExec = null;
+
+    public void setHistoryLogger(org.slf4j.Logger logger) {
+        this.logger = logger;
+    }
 
     /**
      * 초기화
@@ -28,11 +35,11 @@ public class RemoteService {
      */
     public void init(String host, int port, String username, String password, String privateKey) {
 
-        log.info("Start RemoteService init. host={}", host);
+        logger.info("[OK] Start RemoteService init. host={}", host);
 
         try {
             // 로그
-            JSch.setLogger(new RemoteServiceLogger());
+            JSch.setLogger(new SLF4JLoggerWrapper(logger));
 
             JSch jsch = new JSch();
             session = jsch.getSession(username, host, port);
@@ -50,10 +57,10 @@ public class RemoteService {
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
 
-            log.info("End RemoteService init. host={}", host);
+            logger.info("[OK] Succeeded RemoteService init. host={}", host);
 
         } catch (Exception e) {
-            log.error("RemoteService init error. message={}", e.getMessage());
+            logger.error("[ERROR] Failed RemoteService init. message={}", e.getMessage());
         }
     }
 
@@ -66,7 +73,7 @@ public class RemoteService {
      */
     public String executeScript(String script) throws Exception {
 
-        log.info("Start RemoteService execute script.");
+        logger.info("[OK] Start RemoteService execute script.");
 
         if (session == null) {
             throw new IllegalStateException("RemoteService init메서드를 먼저 호출해주세요.");
@@ -101,11 +108,11 @@ public class RemoteService {
                 throw new RemoteException(errorOutput.toString());
             }
 
-            log.info("End RemoteService execute script.");
+            log.info("[OK] Succeeded RemoteService execute script.");
 
             return output.toString();
         } catch (Exception e) {
-            log.error("RemoteService executeScript failed. message={}", e.getMessage());
+            log.error("[ERROR] Failed RemoteService executeScript. message={}", e.getMessage());
             throw e;
         } finally {
             this.disconnect();
@@ -123,7 +130,7 @@ public class RemoteService {
      */
     public boolean upload(File file, String remotePath, String newFileName) throws Exception{
 
-        log.info("Start RemoteService upload.");
+        logger.info("[OK] Start RemoteService upload.");
 
         //sftp로 접속
         channel = session.openChannel("sftp");
@@ -144,10 +151,10 @@ public class RemoteService {
                 isUpload = true;
             }
 
-            log.info("End RemoteService upload.");
+            logger.info("[OK] End RemoteService upload.");
 
         } catch (Exception e) {
-            log.error("RemoteService upload failed. message={}", e.getMessage());
+            logger.error("[ERROR] Failed RemoteService upload. message={}", e.getMessage());
             throw e;
         } finally {
             try {
@@ -213,22 +220,47 @@ public class RemoteService {
 
 
     // JSch Logger 설정
-    public static class RemoteServiceLogger implements com.jcraft.jsch.Logger {
-        static java.util.Hashtable<Integer, String> name = new java.util.Hashtable<>();
-        static {
-            name.put(DEBUG, "DEBUG");
-            name.put(INFO, "INFO");
-            name.put(WARN, "WARN");
-            name.put(ERROR, "ERROR");
-            name.put(FATAL, "FATAL");
+    public static class SLF4JLoggerWrapper implements Logger {
+        private final org.slf4j.Logger logger;
+
+        public SLF4JLoggerWrapper(org.slf4j.Logger logger) {
+            this.logger = logger;
         }
 
+        @Override
         public boolean isEnabled(int level) {
-            return true;
+            switch (level) {
+                case DEBUG:
+                    return logger.isDebugEnabled();
+                case INFO:
+                    return logger.isInfoEnabled();
+                case WARN:
+                    return logger.isWarnEnabled();
+                case ERROR:
+                case FATAL:
+                    return logger.isErrorEnabled();
+                default:
+                    return false;
+            }
         }
 
+        @Override
         public void log(int level, String message) {
-            System.out.println(name.get(level) + ": " + message);
+            switch (level) {
+                case DEBUG:
+                    logger.debug(message);
+                    break;
+                case INFO:
+                    logger.info(message);
+                    break;
+                case WARN:
+                    logger.warn(message);
+                    break;
+                case ERROR:
+                case FATAL:
+                    logger.error(message);
+                    break;
+            }
         }
     }
 }

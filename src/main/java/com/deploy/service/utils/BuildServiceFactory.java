@@ -2,6 +2,7 @@ package com.deploy.service.utils;
 
 import com.deploy.entity.enums.BuildType;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import static com.deploy.entity.enums.BuildType.*;
@@ -12,6 +13,11 @@ public class BuildServiceFactory {
 
     private final GradleService gradleService;
     private final MavenService mavenService;
+
+    public void setHistoryLogger(Logger logger) {
+        gradleService.setHistoryLogger(logger);
+        mavenService.setHistoryLogger(logger);
+    }
 
     public BuildService getBuildService(BuildType type) {
         switch (type) {

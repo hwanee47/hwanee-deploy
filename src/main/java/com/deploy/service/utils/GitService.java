@@ -7,6 +7,8 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -17,9 +19,14 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class GitService implements ScmService {
+
+    private Logger logger = LoggerFactory.getLogger(GitService.class);
+
+    public void setHistoryLogger(Logger logger) {
+        this.logger = logger;
+    }
 
 
     @Override
@@ -47,7 +54,7 @@ public class GitService implements ScmService {
 
             return true;
         } catch (GitAPIException gitAPIException) {
-            log.error("Fail connect project. message={}", gitAPIException.getMessage());
+            logger.error("[ERROR] Failed connect project. message={}", gitAPIException.getMessage());
             throw gitAPIException;
         }
 
@@ -74,7 +81,7 @@ public class GitService implements ScmService {
 
             return true;
         } catch (GitAPIException gitAPIException) {
-            log.error("Fail connect project. message={}", gitAPIException.getMessage());
+            logger.error("[ERROR] Failed connect project. message={}", gitAPIException.getMessage());
             throw gitAPIException;
         }
 
@@ -102,6 +109,8 @@ public class GitService implements ScmService {
     public void cloneProject(String url, String branch, String username, String password, String clonePath) throws GitAPIException, IOException {
 
         try {
+            logger.info("[OK] Start clone project. url={}, branch={}", url, branch);
+
             File directory = new File(clonePath);
 
             if (directory.exists()) {
@@ -110,7 +119,7 @@ public class GitService implements ScmService {
 
 
             if (directory.mkdirs()) {
-                log.info("Directory create success. clonePath={}", clonePath);
+                logger.info("[OK] Succeeded create directory. clonePath={}", clonePath);
             }
 
             Git.cloneRepository()
@@ -119,11 +128,13 @@ public class GitService implements ScmService {
                     .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
                     .setDirectory(directory)
                     .call();
+
+            logger.info("[OK] End clone project.");
         } catch (GitAPIException gitAPIException) {
-            log.error("Fail clone project. message={}", gitAPIException.getMessage());
+            logger.error("[ERROR] Failed clone project. message={}", gitAPIException.getMessage());
             throw gitAPIException;
         } catch (IOException ioException) {
-            log.error("Fail create directory. message={}", ioException.getMessage());
+            logger.error("[ERROR] Failed create directory. message={}", ioException.getMessage());
             throw ioException;
         }
     }

@@ -1,5 +1,9 @@
 package com.deploy.service;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.core.FileAppender;
 import com.deploy.dto.response.RunHistoryDetailRes;
 import com.deploy.dto.response.RunHistoryRes;
 import com.deploy.entity.Job;
@@ -12,6 +16,7 @@ import com.deploy.repository.RunHistoryDetailRepository;
 import com.deploy.repository.RunHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -172,15 +179,51 @@ public class RunHistoryService {
      * @param runHistoryId
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void completeRun(Long runHistoryId) {
+    public void completeRun(Long runHistoryId, String logFilepath) {
 
         // 엔티티 조회
         RunHistory findRunHistory = runHistoryRepository.findById(runHistoryId)
                 .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_RUNHISTORY));
 
-        findRunHistory.completeRun();
+        findRunHistory.completeRun(logFilepath);
     }
 
 
+    /**
+     * History 용 로거 생성
+     * @param jobId
+     * @return
+     */
+    public Logger createHistoryLogger(Long jobId) {
+
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+        // 파일 이름 설정 (jobId와 현재 시간을 사용)
+        String userHome = System.getProperty("user.home");
+        String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        String logFileName = userHome + "/logs/job-" + jobId + "-" + dateTime + ".log";
+
+        // 패턴 레이아웃 설정
+        PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+        encoder.setContext(loggerContext);
+        encoder.setPattern("[%d{yyyy-MM-dd HH:mm:ss:SSS}] %highlight([%-5level]) %magenta([%thread]) %cyan([%logger{5}\\(%line\\)]) - %msg%n%ex{3}");
+        encoder.start();
+
+        // 파일 Appender 설정
+        FileAppender fileAppender = new FileAppender();
+        fileAppender.setContext(loggerContext);
+        fileAppender.setName("FILE-" + jobId);
+        fileAppender.setFile(logFileName);
+        fileAppender.setEncoder(encoder);
+        fileAppender.start();
+
+        // 로거 설정
+        Logger logger = (Logger) LoggerFactory.getLogger("JobLogger-" + jobId);
+        logger.setAdditive(false); // 부모 로거에 추가되지 않도록 설정
+        logger.addAppender(fileAppender);
+        logger.setLevel(ch.qos.logback.classic.Level.DEBUG);
+
+        return logger;
+    }
 
 }

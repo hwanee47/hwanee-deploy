@@ -1,5 +1,9 @@
 package com.deploy.service;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.core.FileAppender;
 import com.deploy.dto.request.JobCreateReq;
 import com.deploy.dto.request.JobUpdateReq;
 import com.deploy.dto.response.JobRes;
@@ -13,9 +17,12 @@ import com.deploy.repository.RunHistoryRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,8 +33,6 @@ public class JobService {
 
     private final StepService stepService;
     private final JobRepository jobRepository;
-    private final RunHistoryRepository runHistoryRepository;
-    private final RunHistoryDetailRepository runHistoryDetailRepository;
     private final RunHistoryService runHistoryService;
     private final EntityManager em;
 
@@ -117,6 +122,11 @@ public class JobService {
     @Transactional
     public void runJob(Long jobId) {
 
+        // 동적 로거 생성 & 주입
+        Logger historyLogger = runHistoryService.createHistoryLogger(jobId);
+        stepService.setHistoryLogger(historyLogger);
+        historyLogger.info("====== JobService run start. ======\n");
+
         // 엔티티 조회
         Job findJob = jobRepository.findById(jobId)
                 .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
@@ -131,6 +141,7 @@ public class JobService {
         // step 수행
         String prevResult = "";
         for (Step step : findJob.getSteps()) {
+            historyLogger.info("==== StepService executeStep start. type={} ====", step.getStepType());
 
             // RunHistoryDetails 생성 & RunHistory에 추가
             Long runHistoryDetailId = runHistoryService.createRunHistoryDetail(runHistoryId, step);
@@ -144,11 +155,12 @@ public class JobService {
 
                 // step 성공
                 runHistoryService.successDetail(runHistoryDetailId, prevResult);
+                historyLogger.info("==== StepService executeStep success. type={} ====\n\n", step.getStepType());
 
             } catch (Exception e) {
                 // step 실패
                 runHistoryService.failDetail(runHistoryDetailId, e.getMessage());
-                log.error("StepService executeStep error. message={}", e.getMessage());
+                historyLogger.error("==== StepService executeStep error. message={} ====\n\n", e.getMessage());
             } finally {
                 endTime = System.currentTimeMillis();
                 runHistoryService.changeDetailRunTime(runHistoryDetailId, (endTime - startTime));
@@ -156,10 +168,14 @@ public class JobService {
 
         }
 
-        runHistoryService.completeRun(runHistoryId);
+        String logFilePath = ((FileAppender<?>) historyLogger.getAppender("FILE-" + jobId)).getFile();
+        runHistoryService.completeRun(runHistoryId, logFilePath);
+        historyLogger.info("====== JobService run complete. ======");
 
 
     }
+
+
 
 
 

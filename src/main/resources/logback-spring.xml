@@ -1,0 +1,13 @@
+<configuration>
+    <!-- 콘솔에 출력되는 기본 로그 설정 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss:SSS}] %highlight([%-5level]) %magenta([%thread]) %cyan([%logger{5}\(%line\)]) - %msg%n%ex{3}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 파일 Appender 설정을 동적으로 추가할 수 있도록 ConsoleAppender로 기본 설정 -->
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
