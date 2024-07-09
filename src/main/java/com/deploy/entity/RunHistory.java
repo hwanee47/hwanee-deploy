@@ -1,6 +1,6 @@
 package com.deploy.entity;
 
-import com.deploy.entity.enums.ScmType;
+import com.deploy.entity.enums.HistoryStatus;
 import com.deploy.entity.enums.StepType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,12 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
-import java.time.Duration;
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.FetchType.LAZY;
 
 @Getter
 @Entity
@@ -30,9 +28,13 @@ public class RunHistory extends BaseEntity {
     @Column(name = "JOB_RUN_SEQ")
     private Long jobRunSeq;
 
-    @Comment("실행 결과")
-    @Column(name = "RUN_RESULT")
-    private boolean runResult;
+    @Comment("상태: ING(진행중), COMPLETE(완료)")
+    @Enumerated(EnumType.STRING)
+    private HistoryStatus status;
+
+    @Comment("성공 여부")
+    @Column(name = "IS_SUCCESS")
+    private boolean isSuccess;
 
     @Comment("총 실행 시간")
     @Column(name = "TOTAL_RUN_TIME")
@@ -42,7 +44,7 @@ public class RunHistory extends BaseEntity {
     @Column(name = "LOG_FILE_PATH")
     private String logFilePath;
 
-    @OneToMany(mappedBy = "runHistory", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "runHistory")
     private List<RunHistoryDetail> runHistoryDetails = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)
@@ -56,17 +58,13 @@ public class RunHistory extends BaseEntity {
         job.getRunHistories().add(this);
     }
 
-    public void setRunHistoryDetails(RunHistoryDetail runHistoryDetail) {
-        runHistoryDetail.setRunHistory(this);
-        this.runHistoryDetails.add(runHistoryDetail);
-    }
-
 
     //== 생성 메서드 ==//
     public static RunHistory createRunHistory(Job job, Long jobRunSeq, String logFilePath, RunHistoryDetail... runHistoryDetails) {
         RunHistory runHistory = new RunHistory();
         runHistory.jobRunSeq = (jobRunSeq == null) ? 1L : jobRunSeq + 1;
         runHistory.logFilePath = logFilePath;
+        runHistory.status = HistoryStatus.ING; // 초기상태 : 진행중
         runHistory.setJob(job);
 
         return runHistory;
@@ -88,8 +86,9 @@ public class RunHistory extends BaseEntity {
             }
         }
 
-        this.runResult = result;
+        this.isSuccess = result;
         this.totalRunTime = totalRunTime;
+        this.status = HistoryStatus.COMPLETE;
     }
 
     // StepType으로 Details 리스트의 인덱스 구하기

@@ -4,14 +4,13 @@ import com.deploy.dto.request.JobCreateReq;
 import com.deploy.dto.request.JobUpdateReq;
 import com.deploy.dto.response.JobRes;
 import com.deploy.entity.Job;
-import com.deploy.entity.RunHistory;
-import com.deploy.entity.RunHistoryDetail;
 import com.deploy.entity.Step;
 import com.deploy.exception.AppBizException;
 import com.deploy.exception.AppErrorCode;
 import com.deploy.repository.JobRepository;
 import com.deploy.repository.RunHistoryDetailRepository;
 import com.deploy.repository.RunHistoryRepository;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +28,9 @@ public class JobService {
     private final JobRepository jobRepository;
     private final RunHistoryRepository runHistoryRepository;
     private final RunHistoryDetailRepository runHistoryDetailRepository;
+    private final RunHistoryService runHistoryService;
+    private final EntityManager em;
+
 
     /**
      * 내 Job 조회
@@ -119,17 +121,19 @@ public class JobService {
         Job findJob = jobRepository.findById(jobId)
                 .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
 
+        if (findJob.getSteps().isEmpty()) {
+            throw new AppBizException("등록된 Step이 존재하지않습니다. Step 구성을 먼저 수행해주세요.");
+        }
+
         // RunHistory 생성
-        Long maxSeq = runHistoryRepository.findMaxSeq(jobId);
-        RunHistory runHistory = RunHistory.createRunHistory(findJob, maxSeq, "");
+        Long runHistoryId = runHistoryService.createRunHistory(findJob);
 
         // step 수행
         String prevResult = "";
         for (Step step : findJob.getSteps()) {
 
             // RunHistoryDetails 생성 & RunHistory에 추가
-            RunHistoryDetail runHistoryDetail = RunHistoryDetail.createRunHistoryDetail(step);
-            runHistory.setRunHistoryDetails(runHistoryDetail);
+            Long runHistoryDetailId = runHistoryService.createRunHistoryDetail(runHistoryId, step);
 
             Long startTime = System.currentTimeMillis();
             Long endTime = null;
@@ -139,25 +143,24 @@ public class JobService {
                 prevResult = stepService.executeStep(step, prevResult);
 
                 // step 성공
-                runHistoryDetail.success(prevResult);
+                runHistoryService.successDetail(runHistoryDetailId, prevResult);
 
             } catch (Exception e) {
                 // step 실패
-                runHistoryDetail.fail(e.getMessage());
+                runHistoryService.failDetail(runHistoryDetailId, e.getMessage());
                 log.error("StepService executeStep error. message={}", e.getMessage());
             } finally {
                 endTime = System.currentTimeMillis();
-                runHistoryDetail.changeRunTime(endTime - startTime);
+                runHistoryService.changeDetailRunTime(runHistoryDetailId, (endTime - startTime));
             }
 
         }
 
-        runHistory.completeRun();
+        runHistoryService.completeRun(runHistoryId);
 
-        // RunHistory 저장 (cascade)
-        runHistoryRepository.save(runHistory);
 
     }
+
 
 
 }

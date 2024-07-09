@@ -1,5 +1,6 @@
 package com.deploy.entity;
 
+import com.deploy.entity.enums.HistoryStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,6 +22,10 @@ public class RunHistoryDetail extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RUN_HISTORY_DETAIL_ID")
     private Long id;
+
+    @Comment("상태: ING(진행중), COMPLETE(완료)")
+    @Enumerated(EnumType.STRING)
+    private HistoryStatus status;
 
     @Comment("STEP별 성공 여부")
     @Column(name = "IS_SUCCESS")
@@ -48,11 +53,18 @@ public class RunHistoryDetail extends BaseEntity {
     private RunHistory runHistory;
 
 
+    //== 연관관계 메서드 == //
+    public void setRunHistory(RunHistory runHistory) {
+        this.runHistory = runHistory;
+        runHistory.getRunHistoryDetails().add(this);
+    }
+
+
     //== 생성 메서드 ==//
     public static RunHistoryDetail createRunHistoryDetail(Step step) {
         RunHistoryDetail runHistoryDetail = new RunHistoryDetail();
         runHistoryDetail.step = step;
-//        runHistoryDetail.setRunHistory(runHistory);
+        runHistoryDetail.status = HistoryStatus.ING; // 초기상태: 진행중
 
         return runHistoryDetail;
     }
@@ -67,11 +79,13 @@ public class RunHistoryDetail extends BaseEntity {
         this.isSuccess = true;
         this.runResult = result;
         this.runFailLog = null;
+        this.status = HistoryStatus.COMPLETE;
     }
 
     public void fail(String message) {
         this.isSuccess = false;
         this.runFailLog = message;
+        this.status = HistoryStatus.COMPLETE;
     }
 
 }

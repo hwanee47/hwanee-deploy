@@ -20,7 +20,7 @@ spring:
         default_batch_fetch_size: 100
 
 
-
+#
 #  sql:
 #    init:
 #      mode: always

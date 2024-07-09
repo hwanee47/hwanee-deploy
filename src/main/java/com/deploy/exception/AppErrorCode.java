@@ -8,7 +8,9 @@ public enum AppErrorCode {
     NOT_FOUND_ENTITY_IN_STEP("400", "No such data in Step"),
     NOT_FOUND_ENTITY_IN_CREDENTIAL("400", "No such data in Credential"),
     NOT_FOUND_ENTITY_IN_SCMCONFIG("400", "No such data in ScmConfig"),
-    NOT_FOUND_ENTITY_IN_USER("400", "No such data in User")
+    NOT_FOUND_ENTITY_IN_USER("400", "No such data in User"),
+    NOT_FOUND_ENTITY_IN_RUNHISTORY("400", "No such data in RunHistory"),
+    NOT_FOUND_ENTITY_IN_RUNHISTORYDETAIL("400", "No such data in RunHistoryDetail")
     ;
 
     private final String code;
