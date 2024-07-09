@@ -226,4 +226,19 @@ public class RunHistoryService {
         return logger;
     }
 
+    /**
+     * 로그파일 경로 반환
+     * @param jobId
+     * @param runHistoryId
+     * @return
+     */
+    public String getLogFilePath(Long runHistoryId) {
+
+        // 엔티티조회
+        RunHistory findRunHistory = runHistoryRepository.findById(runHistoryId)
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_RUNHISTORY));
+
+        return findRunHistory.getLogFilePath();
+    }
+
 }
