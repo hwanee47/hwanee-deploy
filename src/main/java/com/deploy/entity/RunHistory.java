@@ -75,7 +75,7 @@ public class RunHistory extends BaseEntity {
     // 실행 완료
     public void completeRun(String logFilePath) {
 
-        boolean result = true;
+        boolean result = runHistoryDetails.size() > 0 ? true : false;
         long totalRunTime = 0L;
 
         for (RunHistoryDetail runHistoryDetail : runHistoryDetails) {
@@ -92,18 +92,11 @@ public class RunHistory extends BaseEntity {
         this.logFilePath = logFilePath;
     }
 
-    // StepType으로 Details 리스트의 인덱스 구하기
-    public int getDetailsIndexByStepType(StepType stepType) {
-        int index = 0;
-        for (RunHistoryDetail runHistoryDetail : runHistoryDetails) {
-            if (runHistoryDetail.getStep().getStepType().equals(stepType)) {
-                return index;
-            }
-            index++;
-        }
-
-        throw new IllegalStateException("해당 유형(StepType)에 맞는 RunHistoryDetails가 존재하지 않습니다. stepType="+stepType);
+    public void failRun() {
+        this.status = HistoryStatus.COMPLETE;
+        this.isSuccess = false;
     }
+
 
 
 }

@@ -48,9 +48,12 @@
                 </li>
 
                 <li>
-                    <a class="btn text-left text-gray-800 font-semibold bg-white hover:bg-gray-200 hover:text-gray-900" href="#">
-                        <i class="fad fa-list text-xs mr-3 custom-after-opacity"></i>
-                        version list
+                    <a th:class="${showBuildFile} ?
+                          'btn-indigo text-left text-white font-semibold' :
+                          'btn text-left text-gray-800 font-semibold bg-white hover:bg-gray-200 hover:text-gray-900'"
+                       th:href="@{/app/view/project/project-buildFile(id=${id})}">
+                        <i class="fad fa-history text-xs mr-3 custom-after-opacity"></i>
+                        Build File
                     </a>
                 </li>
 

@@ -33,6 +33,9 @@ public class Job extends BaseEntity {
     @OneToMany(mappedBy = "job")
     private List<RunHistory> runHistories = new ArrayList<>();
 
+    @OneToMany(mappedBy = "job")
+    private List<BuildFile> buildFiles = new ArrayList<>();
+
 
     //== 생성 메서드 ==//
     public static Job createJob(String name, String description) {

@@ -48,7 +48,6 @@ const fnSaveProjectStep = (stepIndex) => {
 
 
     if (stepId) {
-        console.log(stepId);
         _axios
             .put(`/api/step/${stepId}`, {
                 'type': type,

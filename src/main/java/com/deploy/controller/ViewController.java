@@ -115,4 +115,11 @@ public class ViewController {
         return "project/project";
     }
 
+    @GetMapping("/project/project-buildFile")
+    public String projectBuildFiles(String id, Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("showBuildFile", true);
+        return "project/project";
+    }
+
 }
