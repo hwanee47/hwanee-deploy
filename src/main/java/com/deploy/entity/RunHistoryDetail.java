@@ -47,11 +47,9 @@ public class RunHistoryDetail extends BaseEntity {
     @JoinColumn(name = "STEP_ID")
     private Step step;
 
-    @Setter
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "RUN_HISTORY_ID")
     private RunHistory runHistory;
-
 
     //== 연관관계 메서드 == //
     public void setRunHistory(RunHistory runHistory) {
