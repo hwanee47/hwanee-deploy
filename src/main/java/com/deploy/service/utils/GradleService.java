@@ -127,7 +127,7 @@ public class GradleService implements BuildService{
 
     private String moveBuiltJarWithTimestamp(String builtFilePath) throws IOException {
         Path sourcePath = Paths.get(builtFilePath);
-        String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date());
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss").format(new Date());
         String fileNameWithTimestamp = timestamp + ".jar";
 
         // 타겟 디렉토리 없는경우 생성

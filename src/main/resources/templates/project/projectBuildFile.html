@@ -41,7 +41,14 @@
                             <div class="w-full xl:mx-0">
                                 <div class="mt-8 flex flex-col w-full">
                                     <label for="projectBuildFile-buildFileName" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">빌드파일명</label>
-                                    <input tabindex="0" type="text" id="projectBuildFile-buildFileName" name="projectBuildFile-buildFileName" required class="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="@example" disabled/>
+                                    <div class="relative w-full">
+                                        <div id="btnDownload" class="absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer hidden">
+                                            <label class="bg-gray-300 hover:bg-gray-400 rounded px-2 py-1 text-sm text-gray-600 cursor-pointer js-password-label" for="password1">
+                                                <i class="fad fa-download custom-after-opacity"></i>
+                                            </label>
+                                        </div>
+                                        <input tabindex="0" type="text" id="projectBuildFile-buildFileName" name="projectBuildFile-buildFileName" required class="w-full border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="@example" disabled/>
+                                    </div>
                                 </div>
                                 <div class="mt-8 flex flex-col w-full">
                                     <label for="projectBuildFile-description" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">변경사항</label>
@@ -61,8 +68,8 @@
                                 <button id="btnDeploy" role="button" class="bg-green-500 hover:bg-green-600 focus:outline-none transition duration-150 ease-in-out dark:bg-gray-700 rounded text-white dark:text-indigo-600 px-6 py-2 text-sm mr-4 focus:ring-2 focus:ring-offset-2 focus:ring-gray-700 hidden">해당 버전으로 배포하기</button>
                             </div>
                             <div class="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-end">
-                                <button role="button" aria-label="cancel form" class="bg-gray-200 focus:outline-none transition duration-150 ease-in-out hover:bg-gray-300 dark:bg-gray-700 rounded text-indigo-600 dark:text-indigo-600 px-6 py-2 text-xs mr-4 focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">Cancel</button>
-                                <button id="btnSaveProjectBuildFile" role="button" aria-label="Save form" class="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 bg-indigo-700 focus:outline-none transition duration-150 ease-in-out hover:bg-indigo-600 rounded text-white px-8 py-2 text-sm">Save</button>
+                                <button id="btnCancelProjectBuildFile" role="button" aria-label="cancel form" class="bg-gray-200 focus:outline-none transition duration-150 ease-in-out hover:bg-gray-300 dark:bg-gray-700 rounded text-indigo-600 dark:text-indigo-600 px-6 py-2 text-xs mr-4 focus:ring-2 focus:ring-offset-2 focus:ring-gray-700 hidden">Cancel</button>
+                                <button id="btnSaveProjectBuildFile" role="button" aria-label="Save form" class="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 bg-indigo-700 focus:outline-none transition duration-150 ease-in-out hover:bg-indigo-600 rounded text-white px-8 py-2 text-sm hidden">Save</button>
                             </div>
                         </div>
                     </div>
