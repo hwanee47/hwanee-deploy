@@ -2,10 +2,7 @@ package com.deploy.service;
 
 import com.deploy.dto.request.StepCreateReq;
 import com.deploy.dto.request.StepUpdateReq;
-import com.deploy.entity.Credential;
-import com.deploy.entity.Job;
-import com.deploy.entity.ScmConfig;
-import com.deploy.entity.Step;
+import com.deploy.entity.*;
 import com.deploy.entity.embed.BuildSet;
 import com.deploy.entity.enums.BuildType;
 import com.deploy.entity.enums.StepType;
@@ -33,13 +30,13 @@ public class StepService {
     private final StepRepository stepRepository;
     private final CredentialRepository credentialRepository;
     private final ScmConfigRepository scmConfigRepository;
-    private final RunHistoryDetailRepository runHistoryDetailRepository;
     private final ScmServiceFactory scmServiceFactory;
     private final BuildServiceFactory buildServiceFactory;
     private final RemoteService remoteService;
     private final AesService aesService;
+    private final BuildFileService buildFileService;
 
-    private final String DEFAULT_CLONE_PATH = System.getProperty("user.home") + File.separator + "deployApp" + File.separator;
+    private final String DEFAULT_CLONE_PATH = System.getProperty("user.home") + "/deployApp/source_code/";
 
 
     public void setHistoryLogger(Logger logger) {
@@ -163,6 +160,7 @@ public class StepService {
      * Step type 별 역할수행
      * @param step
      */
+    @Transactional
     public String executeStep(Step step, String prevResult) throws Exception {
 
         StepType stepType = step.getStepType();
@@ -177,6 +175,10 @@ public class StepService {
             case BUILD:
                 String projectPath = prevResult;
                 result = executeBuild(step, prevResult);
+
+                // 빌드파일 엔티티 저장
+                buildFileService.createBuildFile(step.getJob(), result);
+
 
                 break;
             case DEPLOY:

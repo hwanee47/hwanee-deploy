@@ -3,6 +3,7 @@ package com.deploy.service;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import com.deploy.dto.response.RunHistoryDetailRes;
 import com.deploy.dto.response.RunHistoryRes;
@@ -36,6 +37,8 @@ public class RunHistoryService {
 
     private final RunHistoryRepository runHistoryRepository;
     private final RunHistoryDetailRepository runHistoryDetailRepository;
+
+    private final String DEFAULT_LOG_PATH = System.getProperty("user.home") + "/deployApp/logs/";
 
     /**
      * Job 히스토리 조회
@@ -190,18 +193,32 @@ public class RunHistoryService {
 
 
     /**
+     * Run fail
+     * @param runHistoryId
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void failRun(Long runHistoryId) {
+
+        // 엔티티 조회
+        RunHistory findRunHistory = runHistoryRepository.findById(runHistoryId)
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_RUNHISTORY));
+
+        findRunHistory.failRun();
+    }
+
+
+    /**
      * History 용 로거 생성
-     * @param jobId
+     * @param job
      * @return
      */
-    public Logger createHistoryLogger(Long jobId) {
+    public Logger createHistoryLogger(Job job) {
 
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         // 파일 이름 설정 (jobId와 현재 시간을 사용)
-        String userHome = System.getProperty("user.home");
         String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        String logFileName = userHome + "/logs/job-" + jobId + "-" + dateTime + ".log";
+        String logFileName = DEFAULT_LOG_PATH + job.getName() + "/" + dateTime + ".log";
 
         // 패턴 레이아웃 설정
         PatternLayoutEncoder encoder = new PatternLayoutEncoder();
@@ -212,15 +229,24 @@ public class RunHistoryService {
         // 파일 Appender 설정
         FileAppender fileAppender = new FileAppender();
         fileAppender.setContext(loggerContext);
-        fileAppender.setName("FILE-" + jobId);
+        fileAppender.setName("FILE-" + job.getId());
         fileAppender.setFile(logFileName);
         fileAppender.setEncoder(encoder);
         fileAppender.start();
 
+        // 콘솔 Appender 설정
+        ConsoleAppender consoleAppender = new ConsoleAppender<>();
+        consoleAppender.setContext(loggerContext);
+        consoleAppender.setName("CONSOLE-" + job.getId());
+        consoleAppender.setEncoder(encoder);
+        consoleAppender.start();
+
+
         // 로거 설정
-        Logger logger = (Logger) LoggerFactory.getLogger("JobLogger-" + jobId);
+        Logger logger = (Logger) LoggerFactory.getLogger("JobLogger-" + job.getName());
         logger.setAdditive(false); // 부모 로거에 추가되지 않도록 설정
         logger.addAppender(fileAppender);
+        logger.addAppender(consoleAppender);
         logger.setLevel(ch.qos.logback.classic.Level.DEBUG);
 
         return logger;
@@ -228,7 +254,6 @@ public class RunHistoryService {
 
     /**
      * 로그파일 경로 반환
-     * @param jobId
      * @param runHistoryId
      * @return
      */

@@ -122,11 +122,6 @@ public class JobService {
     @Transactional
     public void runJob(Long jobId) {
 
-        // 동적 로거 생성 & 주입
-        Logger historyLogger = runHistoryService.createHistoryLogger(jobId);
-        stepService.setHistoryLogger(historyLogger);
-        historyLogger.info("====== JobService run start. ======\n");
-
         // 엔티티 조회
         Job findJob = jobRepository.findById(jobId)
                 .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
@@ -135,21 +130,29 @@ public class JobService {
             throw new AppBizException("등록된 Step이 존재하지않습니다. Step 구성을 먼저 수행해주세요.");
         }
 
+        // 동적 로거 생성 & 주입
+        Logger historyLogger = runHistoryService.createHistoryLogger(findJob);
+        stepService.setHistoryLogger(historyLogger);
+        historyLogger.info("====== JobService run start. ======\n");
+
         // RunHistory 생성
         Long runHistoryId = runHistoryService.createRunHistory(findJob);
 
         // step 수행
         String prevResult = "";
+
         for (Step step : findJob.getSteps()) {
+
             historyLogger.info("==== StepService executeStep start. type={} ====", step.getStepType());
 
-            // RunHistoryDetails 생성 & RunHistory에 추가
-            Long runHistoryDetailId = runHistoryService.createRunHistoryDetail(runHistoryId, step);
-
+            Long runHistoryDetailId = null;
             Long startTime = System.currentTimeMillis();
             Long endTime = null;
 
             try {
+                // RunHistoryDetails 생성
+                runHistoryDetailId = runHistoryService.createRunHistoryDetail(runHistoryId, step);
+
                 // step 실행
                 prevResult = stepService.executeStep(step, prevResult);
 
@@ -157,16 +160,18 @@ public class JobService {
                 runHistoryService.successDetail(runHistoryDetailId, prevResult);
                 historyLogger.info("==== StepService executeStep success. type={} ====\n\n", step.getStepType());
 
-            } catch (Exception e) {
-                // step 실패
-                runHistoryService.failDetail(runHistoryDetailId, e.getMessage());
-                historyLogger.error("==== StepService executeStep error. message={} ====\n\n", e.getMessage());
-            } finally {
                 endTime = System.currentTimeMillis();
                 runHistoryService.changeDetailRunTime(runHistoryDetailId, (endTime - startTime));
-            }
 
+            } catch (Exception e) {
+                // step 실패 처리
+                if (runHistoryDetailId != null) {
+                    runHistoryService.failDetail(runHistoryDetailId, e.getMessage());
+                }
+                historyLogger.error("==== StepService executeStep error. message={} ====\n\n", e.getMessage());
+            }
         }
+
 
         String logFilePath = ((FileAppender<?>) historyLogger.getAppender("FILE-" + jobId)).getFile();
         runHistoryService.completeRun(runHistoryId, logFilePath);

@@ -11,13 +11,17 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
 public class GradleService implements BuildService{
 
+    private final String DEFAULT_TARGET_PATH = System.getProperty("user.home") + "/deployApp/build/";
     private Logger logger = LoggerFactory.getLogger(GradleService.class);
 
     public void setHistoryLogger(Logger logger) {
@@ -76,24 +80,31 @@ public class GradleService implements BuildService{
             deletePlainJar(projectPath);
 
             // 빌드된 JAR 파일 경로 수집
-            try (Stream<Path> paths = Files.walk(Paths.get(projectPath, "build", "libs"))) {
-                Optional<Path> optionalPath = paths.filter(Files::isRegularFile)
-                        .filter(path -> path.toString().endsWith(".jar"))
-                        .max(Comparator.comparingLong(path -> path.toFile().lastModified()));
-                if (optionalPath.isPresent()) {
-                    builtFile = optionalPath.get().toString();
-                }
-            }
+            builtFile = findAndMoveBuiltJar(projectPath);
 
             logger.info("[OK] End build. exitCode={}, builtFile={}", exitCode, builtFile);
 
 
         } catch (Exception e) {
-            logger.error("[ERROR] Failed gradle build. message={}", e.getMessage());
+            logger.error("[ERROR] Failed gradle build. exception={}, message={}",e.getClass().getName() ,e.getMessage());
+            e.printStackTrace();
             throw e;
         }
 
         return builtFile;
+    }
+
+    private String findAndMoveBuiltJar(String projectPath) throws IOException {
+        try (Stream<Path> paths = Files.walk(Paths.get(projectPath, "build", "libs"))) {
+            Optional<Path> optionalPath = paths.filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(".jar"))
+                    .max(Comparator.comparingLong(path -> path.toFile().lastModified()));
+
+            if (optionalPath.isPresent()) {
+                return moveBuiltJarWithTimestamp(optionalPath.get().toString());
+            }
+        }
+        return null;
     }
 
 
@@ -110,7 +121,24 @@ public class GradleService implements BuildService{
                     }
                 });
         } catch (IOException e) {
-            logger.warn("[ERROR] Failed to walk through the directory. message={}", e.getMessage());
+            logger.warn("[ERROR] Failed to walk through the directory. exception={}, message={}", e.getClass().getName(), e.getMessage());
         }
+    }
+
+    private String moveBuiltJarWithTimestamp(String builtFilePath) throws IOException {
+        Path sourcePath = Paths.get(builtFilePath);
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date());
+        String fileNameWithTimestamp = timestamp + ".jar";
+
+        // 타겟 디렉토리 없는경우 생성
+        Path targetDirectory = Paths.get(DEFAULT_TARGET_PATH);
+        if (Files.notExists(targetDirectory)) {
+            Files.createDirectories(targetDirectory);
+        }
+        Path targetPath = targetDirectory.resolve(fileNameWithTimestamp);
+
+        Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+        logger.info("[OK] Moved built JAR file to {}", targetPath);
+        return targetPath.toString();
     }
 }
