@@ -1,30 +1,29 @@
 package com.deploy.service;
 
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.core.FileAppender;
 import com.deploy.dto.request.JobCreateReq;
+import com.deploy.dto.request.JobNotificationUpdateReq;
 import com.deploy.dto.request.JobUpdateReq;
 import com.deploy.dto.response.JobRes;
 import com.deploy.entity.Job;
+import com.deploy.entity.Notification;
 import com.deploy.entity.Step;
 import com.deploy.exception.AppBizException;
-import com.deploy.exception.AppErrorCode;
 import com.deploy.repository.JobRepository;
-import com.deploy.repository.RunHistoryDetailRepository;
-import com.deploy.repository.RunHistoryRepository;
-import jakarta.persistence.EntityManager;
+import com.deploy.repository.NotificationRepository;
+import com.deploy.service.event.RunCompletedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.deploy.exception.AppErrorCode.NOT_FOUND_ENTITY_IN_JOB;
+import static com.deploy.exception.AppErrorCode.NOT_FOUND_ENTITY_IN_NOTIFICATION;
 
 @Slf4j
 @Service
@@ -32,9 +31,10 @@ import java.util.stream.Collectors;
 public class JobService {
 
     private final StepService stepService;
-    private final JobRepository jobRepository;
     private final RunHistoryService runHistoryService;
-    private final EntityManager em;
+    private final JobRepository jobRepository;
+    private final NotificationRepository notificationRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
 
     /**
@@ -60,7 +60,7 @@ public class JobService {
      */
     public JobRes findJob(Long id) {
         Job findJob = jobRepository.findById(id)
-                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
+                .orElseThrow(() -> new AppBizException(NOT_FOUND_ENTITY_IN_JOB));
 
         return new JobRes(findJob);
     }
@@ -94,7 +94,7 @@ public class JobService {
     @Transactional
     public Long updateJob(Long id, JobUpdateReq request) {
         Job findJob = jobRepository.findById(id)
-                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
+                .orElseThrow(() -> new AppBizException(NOT_FOUND_ENTITY_IN_JOB));
 
         // update
         findJob.changeInfo(request.getName(), request.getDescription());
@@ -109,22 +109,36 @@ public class JobService {
     @Transactional
     public void deleteJob(Long id) {
         Job findJob = jobRepository.findById(id)
-                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
+                .orElseThrow(() -> new AppBizException(NOT_FOUND_ENTITY_IN_JOB));
 
         jobRepository.delete(findJob);
     }
 
 
     /**
-     * Job 작업수행
+     * Job 실행 & 메세지 발송
      * @param jobId
      */
-    @Transactional
     public void runJob(Long jobId) {
 
+        // job 실행
+        Long runHistoryId = executeRun(jobId);
+
+        // Message event
+        eventPublisher.publishEvent(new RunCompletedEvent(runHistoryId));
+    }
+
+
+    /**
+     *
+     * @param jobId
+     * @return
+     */
+    @Transactional
+    public Long executeRun(Long jobId) {
         // 엔티티 조회
         Job findJob = jobRepository.findById(jobId)
-                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
+                .orElseThrow(() -> new AppBizException(NOT_FOUND_ENTITY_IN_JOB));
 
         if (findJob.getSteps().isEmpty()) {
             throw new AppBizException("등록된 Step이 존재하지않습니다. Step 구성을 먼저 수행해주세요.");
@@ -176,12 +190,30 @@ public class JobService {
         String logFilePath = ((FileAppender<?>) historyLogger.getAppender("FILE-" + jobId)).getFile();
         runHistoryService.completeRun(runHistoryId, logFilePath);
         historyLogger.info("====== JobService run complete. ======");
-
-
+        return runHistoryId;
     }
 
 
+    /**
+     * Job Notification 설정
+     * @param jobId
+     * @param request
+     * @return
+     */
+    @Transactional
+    public Long updateNotification(Long jobId, JobNotificationUpdateReq request) {
+        // 엔티티 조회
+        Job findJob = jobRepository.findById(jobId)
+                .orElseThrow(() -> new AppBizException(NOT_FOUND_ENTITY_IN_JOB));
 
+        Notification findNotification = notificationRepository.findById(request.getNotificationId())
+                .orElseThrow(() -> new AppBizException(NOT_FOUND_ENTITY_IN_NOTIFICATION));
+
+
+        findJob.setNotification(findNotification);
+
+        return jobId;
+    }
 
 
 }

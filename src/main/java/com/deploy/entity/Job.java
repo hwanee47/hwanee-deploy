@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 @Getter
 @Entity
 @Table(name = "JOB")
@@ -26,6 +28,9 @@ public class Job extends BaseEntity {
     @Column(name = "DESCRIPTION")
     private String description; // 설명
 
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "NOTIFICATION_ID")
+    private Notification notification;
 
     @OneToMany(mappedBy = "job")
     private List<Step> steps = new ArrayList<>();
@@ -36,6 +41,12 @@ public class Job extends BaseEntity {
     @OneToMany(mappedBy = "job")
     private List<BuildFile> buildFiles = new ArrayList<>();
 
+
+    //== 연관관계 메서드 ==//
+    public void setNotification(Notification notification) {
+        this.notification = notification;
+        notification.setJob(this);
+    }
 
     //== 생성 메서드 ==//
     public static Job createJob(String name, String description) {

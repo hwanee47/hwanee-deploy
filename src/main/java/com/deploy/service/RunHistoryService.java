@@ -88,7 +88,6 @@ public class RunHistoryService {
         return new PageImpl<>(results, pageable, list.getTotalElements());
     }
 
-
     /**
      * Run History 생성
      * @param job
@@ -189,6 +188,7 @@ public class RunHistoryService {
                 .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_RUNHISTORY));
 
         findRunHistory.completeRun(logFilepath);
+
     }
 
 

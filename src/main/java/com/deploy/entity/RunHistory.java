@@ -92,6 +92,7 @@ public class RunHistory extends BaseEntity {
         this.totalRunTime = totalRunTime;
         this.status = HistoryStatus.COMPLETE;
         this.logFilePath = logFilePath;
+
     }
 
     public void failRun() {

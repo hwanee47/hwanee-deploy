@@ -9,16 +9,19 @@ import com.deploy.entity.enums.StepType;
 import com.deploy.exception.AppBizException;
 import com.deploy.exception.AppErrorCode;
 import com.deploy.repository.*;
+import com.deploy.service.event.DeployCompletedEvent;
 import com.deploy.service.utils.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +41,7 @@ public class StepService {
     private final RemoteService remoteService;
     private final AesService aesService;
     private final BuildFileService buildFileService;
+    private final ApplicationEventPublisher eventPublisher;
 
     private final String DEFAULT_CLONE_PATH = System.getProperty("user.home") + "/deployApp/source_code/";
 
@@ -345,6 +349,7 @@ public class StepService {
         }
 
         String sourcePath = findBuildFile.getBuildFilePath();
+        String sourceFileName = Paths.get(findBuildFile.getBuildFilePath()).getFileName().toString();
         String targetPath = "/home/ec2-user";
         String targetFileName = "my-app.jar";
 
@@ -354,8 +359,14 @@ public class StepService {
 
             // 배포후 처리
             executeCommand(deploySteps.get(1));
+
+            // 메세지 발송
+            log.info("job.getNotification().getId() = {}", job.getNotification().getId());
+            eventPublisher.publishEvent(new DeployCompletedEvent(job.getNotification().getId(), true, sourceFileName));
         } catch (Exception e) {
             log.error("Fail designate deploy. message={}", e.getMessage());
+            // 메세지 발송
+            eventPublisher.publishEvent(new DeployCompletedEvent(job.getNotification().getId(), false, sourceFileName));
             throw e;
         }
 

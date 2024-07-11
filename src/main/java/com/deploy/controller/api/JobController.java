@@ -8,9 +8,11 @@ import com.deploy.dto.response.TuiGridRes;
 import com.deploy.dto.response.handler.ResponseHandler;
 import com.deploy.service.CredentialService;
 import com.deploy.service.JobService;
+import com.deploy.service.event.RunCompletedEvent;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +54,13 @@ public class JobController {
     @PostMapping("/run/{id}")
     public ResponseEntity<?> runJob(@PathVariable Long id) {
         jobService.runJob(id);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "success", id);
+    }
+
+
+    @PutMapping("/{id}/notification")
+    public ResponseEntity<?> updateNotification(@PathVariable Long id, @RequestBody @Valid JobNotificationUpdateReq request) {
+        jobService.updateNotification(id, request);
         return ResponseHandler.generateResponse(HttpStatus.OK, "success", id);
     }
 }

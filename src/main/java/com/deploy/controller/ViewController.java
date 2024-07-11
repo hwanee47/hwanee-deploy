@@ -50,6 +50,22 @@ public class ViewController {
         return "settings/credentials";
     }
 
+    @GetMapping("/settings/notifications")
+    public String notifications() {
+        return "settings/notifications";
+    }
+
+    @GetMapping("/settings/notification")
+    public String notificaion() {
+        return "settings/notification";
+    }
+
+    @GetMapping("/settings/notification-edit")
+    public String scmNotificationEdit(String id, Model model) {
+        model.addAttribute("id", id);
+        return "settings/notification-edit";
+    }
+
     @GetMapping("/settings/scmConfigs")
     public String scmConfigs() {
         return "settings/scmConfigs";
@@ -119,6 +135,14 @@ public class ViewController {
     public String projectBuildFiles(String id, Model model) {
         model.addAttribute("id", id);
         model.addAttribute("showBuildFile", true);
+        return "project/project";
+    }
+
+
+    @GetMapping("/project/project-notification")
+    public String projectNotification(String id, Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("showNotification", true);
         return "project/project";
     }
 

@@ -20,6 +20,7 @@ public class JobRes {
     private String name;
     private String description;
     private List<StepRes> steps;
+    private Long notificationId;
 
     public JobRes(Job job) {
         this.id = job.getId();
@@ -28,5 +29,6 @@ public class JobRes {
         this.steps = job.getSteps().stream()
                 .map(StepRes::new)
                 .collect(toList());
+        this.notificationId = job.getNotification() == null ? null : job.getNotification().getId();
     }
 }
