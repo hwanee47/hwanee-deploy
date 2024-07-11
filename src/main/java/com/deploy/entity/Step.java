@@ -75,7 +75,7 @@ public class Step extends BaseEntity {
 
 
     //== 비즈니스 로직 ==//
-    public void changeInfo(StepType stepType, BuildSet buildSet, Credential credential, ScmConfig scmConfig) {
+    public void changeInfo(StepType stepType, BuildSet buildSet, Credential credential, ScmConfig scmConfig, String command) {
         this.stepType = stepType;
         this.command = command;
         this.credential = credential;

@@ -79,7 +79,9 @@ public class RunHistory extends BaseEntity {
         long totalRunTime = 0L;
 
         for (RunHistoryDetail runHistoryDetail : runHistoryDetails) {
-            totalRunTime += runHistoryDetail.getRunTime();
+            if (runHistoryDetail.getRunTime() != null) {
+                totalRunTime += runHistoryDetail.getRunTime();
+            }
 
             if (!runHistoryDetail.isSuccess()) {
                 result = false;

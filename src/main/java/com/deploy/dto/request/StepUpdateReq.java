@@ -2,6 +2,7 @@ package com.deploy.dto.request;
 
 import com.deploy.entity.enums.BuildType;
 import com.deploy.entity.enums.StepType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,4 +21,6 @@ public class StepUpdateReq {
 
     private String command;
 
+    @JsonProperty(value = "isTest")
+    private boolean isTest;
 }

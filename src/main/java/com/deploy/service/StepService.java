@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -32,6 +34,7 @@ public class StepService {
     private final ScmConfigRepository scmConfigRepository;
     private final ScmServiceFactory scmServiceFactory;
     private final BuildServiceFactory buildServiceFactory;
+    private final BuildFileRepository buildFileRepository;
     private final RemoteService remoteService;
     private final AesService aesService;
     private final BuildFileService buildFileService;
@@ -82,7 +85,7 @@ public class StepService {
         Step step = Step.createStep(
                 maxStepIndex+1,
                 stepCreateReq.getType(),
-                new BuildSet(stepCreateReq.getBuildType(), null),
+                new BuildSet(stepCreateReq.getBuildType(), null, stepCreateReq.isTest()),
                 stepCreateReq.getCommand(),
                 job,
                 credential,
@@ -124,9 +127,10 @@ public class StepService {
         // update
         findStep.changeInfo(
                 request.getType(),
-                new BuildSet(request.getBuildType(), null),
+                new BuildSet(request.getBuildType(), null, request.isTest()),
                 credential,
-                scmConfig
+                scmConfig,
+                request.getCommand()
         );
 
         return id;
@@ -179,7 +183,6 @@ public class StepService {
                 // 빌드파일 엔티티 저장
                 buildFileService.createBuildFile(step.getJob(), result);
 
-
                 break;
             case DEPLOY:
                 String sourcePath = prevResult;
@@ -188,11 +191,37 @@ public class StepService {
                 result = executeDeploy(step, sourcePath, targetPath, targetFileName);
 
                 break;
+            case COMMAND:
+                result = executeCommand(step);
+
+                break;
         }
 
         return result;
     }
 
+    /**
+     * 배포 후 커맨드 실행
+     * @param step
+     * @return
+     * @throws Exception
+     */
+    private String executeCommand(Step step) throws Exception {
+        // Credential 조회
+        Credential credential = step.getCredential();
+        String targetHost = credential.getTargetHost();
+        Integer targetPort = credential.getTargetPort();
+        String targetUsername = credential.getTargetUsername();
+        String targetPassword = aesService.decrypt(credential.getTargetPassword());
+        String privateKey = aesService.decrypt(credential.getPrivateKey());
+
+        String command = step.getCommand();
+
+        // 초기화
+        remoteService.init(targetHost, targetPort, targetUsername, targetPassword, privateKey);
+
+        return remoteService.executeScript(command);
+    }
 
     /**
      * 배포 수행
@@ -246,7 +275,7 @@ public class StepService {
         BuildService buildService = buildServiceFactory.getBuildService(step.getBuildSet().getBuildType());
 
         // 빌드 프로젝트
-        buildFile = buildService.executeBuild(projectPath);
+        buildFile = buildService.executeBuild(projectPath, step.getBuildSet().isBuildTest());
         return buildFile;
     }
 
@@ -269,6 +298,8 @@ public class StepService {
         String username = scmConfig.getUsername();
         String password = aesService.decrypt(scmConfig.getPassword());
 
+
+
         // 클론 프로젝트
         scmService.cloneProject(url, branch, username, password, clonePath);
 
@@ -286,6 +317,48 @@ public class StepService {
                 throw new IllegalArgumentException("["+param+"] 값은 필수입니다.");
             }
         }
+    }
+
+
+    /**
+     * 버전 지정 배포
+     * @param buildFileId
+     */
+    public void designateDeploy(Long buildFileId) throws Exception {
+
+        // 엔티티 조회
+        BuildFile findBuildFile = buildFileRepository.findById(buildFileId)
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_BUILDFILE));
+        Job job = jobRepository.findById(findBuildFile.getJob().getId())
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_JOB));
+
+        if (job.getSteps().isEmpty()) {
+            throw new AppBizException("Step config를 먼저 설정해주세요.");
+        }
+
+        List<Step> deploySteps = job.getSteps().stream()
+                .filter(step -> step.getStepType().equals(StepType.DEPLOY) | step.getStepType().equals(StepType.COMMAND))
+                .collect(Collectors.toList());
+
+        if (deploySteps.isEmpty()) {
+            throw new AppBizException("Step config의 배포(DEPLOY)를 설정해주세요");
+        }
+
+        String sourcePath = findBuildFile.getBuildFilePath();
+        String targetPath = "/home/ec2-user";
+        String targetFileName = "my-app.jar";
+
+        try {
+            // 배포
+            executeDeploy(deploySteps.get(0), sourcePath, targetPath, targetFileName);
+
+            // 배포후 처리
+            executeCommand(deploySteps.get(1));
+        } catch (Exception e) {
+            log.error("Fail designate deploy. message={}", e.getMessage());
+            throw e;
+        }
+
     }
 
 }

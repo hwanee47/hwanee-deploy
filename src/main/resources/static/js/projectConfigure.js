@@ -1,6 +1,8 @@
 const projectConfigureScm = document.getElementById('projectConfigure-scm');
 const projectConfigureCredential = document.getElementById('projectConfigure-credential');
 const projectConfigureBuildType = document.getElementById('projectConfigure-buildType');
+const projectConfigureIsTest = document.getElementById('projectConfigure-isTest');
+const projectConfigureCommand = document.getElementById('projectConfigure-command');
 
 projectConfigureScm.addEventListener('change', function() {
 
@@ -26,7 +28,7 @@ const fnSaveProjectStep = (stepIndex) => {
 
     let jobId = $('#project-id').val();
     let type = $(`#projectConfigure-stepType-${stepIndex}`).val();
-    let buildType, credentialId, scmConfigId, stepId;
+    let buildType, credentialId, scmConfigId, stepId, isTest, command;
 
     if (stepIndex === 1) {
         scmConfigId = $('#projectConfigure-scm').val();
@@ -37,6 +39,7 @@ const fnSaveProjectStep = (stepIndex) => {
     if (stepIndex === 2) {
         buildType = $('#projectConfigure-buildType').val();
         stepId = $('#projectConfigure-buildType').data('stepId');
+        isTest = $('#projectConfigure-isTest').val();
         if (!buildType) return;
     }
 
@@ -46,6 +49,15 @@ const fnSaveProjectStep = (stepIndex) => {
         if (!credentialId) return;
     }
 
+    if (stepIndex === 4) {
+        credentialId = $('#projectConfigure-credential').val();
+        command = $('#projectConfigure-command').val();
+        stepId = $('#projectConfigure-command').data('stepId');
+        if (!command || !credentialId) return;
+    }
+
+
+
 
     if (stepId) {
         _axios
@@ -53,7 +65,9 @@ const fnSaveProjectStep = (stepIndex) => {
                 'type': type,
                 'buildType': buildType,
                 'credentialId': credentialId,
-                'scmConfigId' : scmConfigId
+                'scmConfigId': scmConfigId,
+                'isTest': isTest,
+                'command': command,
             })
             .then(function (response) {
                 gfnShowToast('success', '수정이 완료되었습니다.');
@@ -69,7 +83,9 @@ const fnSaveProjectStep = (stepIndex) => {
                 'type': type,
                 'buildType': buildType,
                 'credentialId': credentialId,
-                'scmConfigId' : scmConfigId
+                'scmConfigId' : scmConfigId,
+                'isTest': isTest,
+                'command': command,
             })
             .then(function (response) {
                 gfnShowToast('success', '저장이 완료되었습니다.');
@@ -167,11 +183,15 @@ const fnSetStepInfo = (list) => {
         } else if (step.stepType === 'BUILD') {
             projectConfigureBuildType.dataset.stepId = step.id;
             projectConfigureBuildType.value = step.stepValue;
+            projectConfigureIsTest.value = step.isTest;
             fnSelectChangeTrigger(projectConfigureBuildType);
         } else if (step.stepType === 'DEPLOY') {
             projectConfigureCredential.dataset.stepId = step.id;
             projectConfigureCredential.value = step.stepValue;
             fnSelectChangeTrigger(projectConfigureCredential);
+        } else if (step.stepType === 'COMMAND') {
+            projectConfigureCommand.dataset.stepId = step.id;
+            projectConfigureCommand.value = step.stepValue;
         }
     });
 }

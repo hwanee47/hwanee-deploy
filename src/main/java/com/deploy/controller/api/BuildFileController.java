@@ -6,6 +6,7 @@ import com.deploy.dto.response.BuildFileRes;
 import com.deploy.dto.response.TuiGridRes;
 import com.deploy.dto.response.handler.ResponseHandler;
 import com.deploy.service.BuildFileService;
+import com.deploy.service.StepService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,6 +29,7 @@ import java.nio.file.Paths;
 public class BuildFileController {
 
     private final BuildFileService buildFileService;
+    private final StepService stepService;
 
     @GetMapping("/list/{jobId}")
     public TuiGridRes searchByJobId(@PathVariable Long jobId, CustomPageable customPageable) {
@@ -76,6 +77,12 @@ public class BuildFileController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @PostMapping("/deploy/{buildFileId}")
+    public ResponseEntity<?> designateDeploy(@PathVariable Long buildFileId) throws Exception {
+        stepService.designateDeploy(buildFileId);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "success", buildFileId);
     }
 
 }

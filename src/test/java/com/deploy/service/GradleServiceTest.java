@@ -19,7 +19,7 @@ class GradleServiceTest {
         String projectPath = "/Users/hwaneehwanee/test/hwanee-deploy";
 
         try {
-            gradleService.executeBuild(projectPath);
+            gradleService.executeBuild(projectPath, false);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

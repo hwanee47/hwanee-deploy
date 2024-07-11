@@ -94,25 +94,29 @@ public class RemoteService {
             String line;
 
             // 표준 출력 읽기
+            logger.info("====================================================");
             while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
+                logger.info("[OK] [target server] -> " + line);
             }
 
             // 에러 출력 읽기
             while ((line = errorReader.readLine()) != null) {
                 errorOutput.append(line).append("\n");
+                logger.error("[ERROR] [target server] -> " + line);
             }
+            logger.info("====================================================");
 
             // 에러 메시지가 있는 경우
             if (errorOutput.length() > 0) {
                 throw new RemoteException(errorOutput.toString());
             }
 
-            log.info("[OK] Succeeded RemoteService execute script.");
+            logger.info("[OK] Succeeded RemoteService execute script.");
 
             return output.toString();
         } catch (Exception e) {
-            log.error("[ERROR] Failed RemoteService executeScript. message={}", e.getMessage());
+            logger.error("[ERROR] Failed RemoteService executeScript. message={}", e.getMessage());
             throw e;
         } finally {
             this.disconnect();

@@ -5,9 +5,12 @@ import com.deploy.dto.request.JobUpdateReq;
 import com.deploy.dto.response.BuildFileRes;
 import com.deploy.entity.BuildFile;
 import com.deploy.entity.Job;
+import com.deploy.entity.Step;
+import com.deploy.entity.enums.StepType;
 import com.deploy.exception.AppBizException;
 import com.deploy.exception.AppErrorCode;
 import com.deploy.repository.BuildFileRepository;
+import com.deploy.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,7 +29,8 @@ import java.util.stream.Collectors;
 public class BuildFileService {
 
     private final BuildFileRepository buildFileRepository;
-
+    private final JobRepository jobRepository;
+//    private final StepService stepService;
 
     /**
      * 빌드파일 목록 조회
@@ -93,6 +97,9 @@ public class BuildFileService {
 
         return buildFileId;
     }
+
+
+
 
 
 }

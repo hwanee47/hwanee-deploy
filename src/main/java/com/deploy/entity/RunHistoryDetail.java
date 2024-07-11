@@ -82,7 +82,7 @@ public class RunHistoryDetail extends BaseEntity {
 
     public void fail(String message) {
         this.isSuccess = false;
-        this.runFailLog = message;
+        this.runFailLog = message.length() > 100 ? message.substring(0, 100) : message;
         this.status = HistoryStatus.COMPLETE;
     }
 

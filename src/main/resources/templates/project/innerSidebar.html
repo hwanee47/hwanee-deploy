@@ -52,7 +52,7 @@
                           'btn-indigo text-left text-white font-semibold' :
                           'btn text-left text-gray-800 font-semibold bg-white hover:bg-gray-200 hover:text-gray-900'"
                        th:href="@{/app/view/project/project-buildFile(id=${id})}">
-                        <i class="fad fa-history text-xs mr-3 custom-after-opacity"></i>
+                        <i class="fad fa-folder-open text-xs mr-3 custom-after-opacity"></i>
                         Build File
                     </a>
                 </li>
@@ -64,6 +64,16 @@
                        th:href="@{/app/view/project/project-history(id=${id})}">
                         <i class="fad fa-history text-xs mr-3 custom-after-opacity"></i>
                         History
+                    </a>
+                </li>
+
+                <li>
+                    <a th:class="${showNotification} ?
+                          'btn-indigo text-left text-white font-semibold' :
+                          'btn text-left text-gray-800 font-semibold bg-white hover:bg-gray-200 hover:text-gray-900'"
+                       th:href="@{/app/view/project/project-notification(id=${id})}">
+                        <i class="fad fa-bell text-xs mr-3 custom-after-opacity"></i>
+                        Notification
                     </a>
                 </li>
 

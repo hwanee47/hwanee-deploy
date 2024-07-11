@@ -16,10 +16,11 @@ import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class GradleService implements BuildService{
+public class GradleService implements BuildService {
 
     private final String DEFAULT_TARGET_PATH = System.getProperty("user.home") + "/deployApp/build/";
     private Logger logger = LoggerFactory.getLogger(GradleService.class);
@@ -29,20 +30,28 @@ public class GradleService implements BuildService{
     }
 
     @Override
-    public String executeBuild(String projectPath) throws Exception {
+    public String executeBuild(String projectPath, boolean isTest) throws Exception {
 
         logger.info("[OK] Start build. projectPath={}", projectPath);
+
         String builtFile = null;
 
         try {
             File project = new File(projectPath);
 
             ProcessBuilder builder = new ProcessBuilder();
-            builder.command("./gradlew", "clean", "build");
+            if (isTest) {
+                builder.command("./gradlew", "clean", "build");
+            } else {
+                builder.command("./gradlew", "clean", "build", "-x", "test");
+            }
+
             builder.directory(project);
+            logger.info("[OK] Build command={}", builder.command().stream().collect(Collectors.joining(" ")));
 
             // 빌드 시작
             Process process = builder.start();
+            StringBuilder stdError = new StringBuilder();
 
             // 표준 출력 (stdout) 스트림 읽기
             Thread stdoutThread = new Thread(() -> {
@@ -61,7 +70,10 @@ public class GradleService implements BuildService{
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        logger.error(line);
+                        if (!line.contains("Note")) { // 경고 메시지를 필터링하여 표준 에러에서 제외
+                            stdError.append(line).append("\n");
+                            logger.error(line);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -79,14 +91,17 @@ public class GradleService implements BuildService{
             // 빌드후 -plain.jar 삭제
             deletePlainJar(projectPath);
 
+            if (exitCode != 0 || stdError.length() > 0) {
+                throw new Exception("Gradle build failed with exit code=" + exitCode + ". Error: " + stdError.toString());
+            }
+
             // 빌드된 JAR 파일 경로 수집
             builtFile = findAndMoveBuiltJar(projectPath);
 
             logger.info("[OK] End build. exitCode={}, builtFile={}", exitCode, builtFile);
 
-
         } catch (Exception e) {
-            logger.error("[ERROR] Failed gradle build. exception={}, message={}",e.getClass().getName() ,e.getMessage());
+            logger.error("[ERROR] Failed gradle build. exception={}, message={}", e.getClass().getName(), e.getMessage());
             e.printStackTrace();
             throw e;
         }
@@ -107,19 +122,18 @@ public class GradleService implements BuildService{
         return null;
     }
 
-
     private void deletePlainJar(String projectPath) {
         try (Stream<Path> paths = Files.walk(Paths.get(projectPath, "build", "libs"))) {
             paths.filter(Files::isRegularFile)
-                .filter(path -> path.toString().endsWith("-plain.jar"))
-                .forEach(path -> {
-                    try {
-                        Files.deleteIfExists(path);
-                        logger.info("[OK] Deleted plain.jar file={}", path);
-                    } catch (IOException e) {
-                        logger.warn("[WARN] Failed to delete plain.jar file={}. message={}", path, e.getMessage());
-                    }
-                });
+                    .filter(path -> path.toString().endsWith("-plain.jar"))
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                            logger.info("[OK] Deleted plain.jar file={}", path);
+                        } catch (IOException e) {
+                            logger.warn("[WARN] Failed to delete plain.jar file={}. message={}", path, e.getMessage());
+                        }
+                    });
         } catch (IOException e) {
             logger.warn("[ERROR] Failed to walk through the directory. exception={}, message={}", e.getClass().getName(), e.getMessage());
         }
@@ -141,4 +155,6 @@ public class GradleService implements BuildService{
         logger.info("[OK] Moved built JAR file to {}", targetPath);
         return targetPath.toString();
     }
+
+
 }

@@ -1,5 +1,10 @@
 const btnSaveProjectBuildFile = document.getElementById('btnSaveProjectBuildFile');
 const btnDownload = document.getElementById('btnDownload');
+const btnDeploy = document.getElementById('btnDeploy');
+
+btnDeploy.addEventListener('click', function() {
+    fnDeployProjectBuildFile($('#projectBuildFile-id').val());
+})
 
 btnSaveProjectBuildFile.addEventListener('click', function() {
     fnSaveProjectBuildFile($('#projectBuildFile-id').val());
@@ -8,6 +13,18 @@ btnSaveProjectBuildFile.addEventListener('click', function() {
 btnDownload.addEventListener('click', function() {
     fnDownloadBuildFile($('#projectBuildFile-id').val());
 })
+
+
+
+const fnDeployProjectBuildFile = (buildFileId) => {
+    _axios
+        .post(`/api/buildFile/deploy/${buildFileId}`)
+        .then(function (response) {
+            console.log(response)
+        })
+        .catch(function (error) {
+        })
+}
 
 
 const fnDownloadBuildFile = (buildFileId) => {
@@ -81,6 +98,12 @@ const initGridBuildFiles = (projectId) => {
                 renderer: {
                     type: CustomColumnRenderer
                 }
+            },
+            {
+                name: 'description', header: '변경사항', width: 120,
+                renderer: {
+                    type: CustomDescriptionRenderer
+                }
             }
         ],
         data: {
@@ -119,13 +142,40 @@ const fnSetBuildFileInfo = (data) => {
 class CustomColumnRenderer {
     constructor(props) {
         const el = document.createElement('span');
-        el.className = 'text-xs text-blue-700 p-2';
+        el.className = 'text-xs text-blue-700 pl-3';
         if (props.columnInfo.name === "seq") {
             el.textContent = "# " + props.value;
         } else {
             el.textContent = props.value;
         }
 
+
+        this.el = el;
+    }
+
+    getElement() {
+        return this.el;
+    }
+
+    render(props) {
+
+    }
+}
+
+
+class CustomDescriptionRenderer {
+    constructor(props) {
+        const el = document.createElement('span');
+
+        console.log(props.value);
+
+        if (props.value) {
+            el.className = 'bg-blue-400 text-xs text-white font-medium me-2 px-3 py-1 rounded-full dark:bg-blue-900 dark:text-blue-300 ml-3';
+            el.textContent = "작성완료";
+        } else {
+            el.className = 'bg-gray-500 text-xs text-white font-medium me-2 px-3 py-1 rounded-full dark:bg-gray-900 dark:text-gray-300 ml-3';
+            el.textContent = "미작성";
+        }
 
         this.el = el;
     }
