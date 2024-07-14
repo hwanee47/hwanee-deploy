@@ -20,7 +20,7 @@ const fnDeployProjectBuildFile = (buildFileId) => {
     _axios
         .post(`/api/buildFile/deploy/${buildFileId}`)
         .then(function (response) {
-            console.log(response)
+
         })
         .catch(function (error) {
         })
