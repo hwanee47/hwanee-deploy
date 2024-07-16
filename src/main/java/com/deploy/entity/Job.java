@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +23,13 @@ public class Job extends BaseEntity {
     @Column(name = "JOB_ID")
     private Long id;
 
+    @Comment("Job 이름")
     @Column(name = "NAME")
-    private String name; // Job 이름
+    private String name;
 
+    @Comment("설명")
     @Column(name = "DESCRIPTION")
-    private String description; // 설명
+    private String description;
 
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "NOTIFICATION_ID")

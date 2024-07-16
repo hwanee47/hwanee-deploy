@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 @Getter
 @Entity
@@ -17,12 +18,15 @@ public class User extends BaseEntity {
     @Column(name = "USER_ID")
     private Long id;
 
+    @Comment("이메일")
     @Column(name = "EMAIL")
     private String email;
 
+    @Comment("비밀번호")
     @Column(name = "PASSWORD")
     private String password;
 
+    @Comment("유저명")
     @Column(name = "USERNAME")
     private String username;
 

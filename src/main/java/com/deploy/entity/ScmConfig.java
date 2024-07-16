@@ -3,6 +3,7 @@ package com.deploy.entity;
 import com.deploy.entity.enums.ScmType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 @Getter
 @Entity
@@ -15,31 +16,40 @@ public class ScmConfig extends BaseEntity {
     @Column(name = "SCM_ID")
     private Long id;
 
+    @Comment("SCM유형 : svn, git")
     @Enumerated(EnumType.STRING)
     @Column(name = "SCM_TYPE")
-    private ScmType scmType; // SCM유형 : svn, git
+    private ScmType scmType;
 
+    @Comment("설명")
     @Column(name = "DESCRIPTION")
-    private String description; // 설명
+    private String description;
 
+    @Comment("Repository URL")
     @Column(name = "URL")
-    private String url; // Repository URL
+    private String url;
 
+    @Comment("사용자명")
     @Column(name = "USERNAME")
-    private String username; // 사용자명
+    private String username;
 
+    @Comment("비밀번호")
     @Column(name = "PASSWORD")
-    private String password; // 비밀번호
+    private String password;
 
+    @Comment("브랜치명")
     @Column(name = "BRANCH")
-    private String branch; // 브랜치명
+    private String branch;
 
+    @Comment("클론경로")
     @Column(name = "CLONE_PATH")
-    private String clonePath; // 클론경로
+    private String clonePath;
 
+    @Comment("연결성공여부")
     @Column(name = "IS_CONNECTED")
     private boolean isConnected;
 
+    @Comment("실패 메세지")
     @Column(name = "FAIL_MESSAGE")
     private String failMessage;
 

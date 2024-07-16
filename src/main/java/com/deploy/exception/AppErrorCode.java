@@ -12,7 +12,8 @@ public enum AppErrorCode {
     NOT_FOUND_ENTITY_IN_RUNHISTORY("400", "No such data in RunHistory"),
     NOT_FOUND_ENTITY_IN_RUNHISTORYDETAIL("400", "No such data in RunHistoryDetail"),
     NOT_FOUND_ENTITY_IN_BUILDFILE("400", "No such data in BuildFile"),
-    NOT_FOUND_ENTITY_IN_NOTIFICATION("400", "No such data in Notification")
+    NOT_FOUND_ENTITY_IN_NOTIFICATION("400", "No such data in Notification"),
+    NOT_FOUND_ENTITY_IN_SCHEDULE("400", "No such data in Schedule"),
     ;
 
     private final String code;

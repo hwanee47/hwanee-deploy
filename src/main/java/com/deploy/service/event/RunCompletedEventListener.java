@@ -26,18 +26,24 @@ public class RunCompletedEventListener {
     @EventListener
     public void sendMessage(RunCompletedEvent event) {
 
-        Long runHistoryId = event.getRunHistoryId();
+        try {
+            log.info("sendMessage 시작 ");
+            Long runHistoryId = event.getRunHistoryId();
 
-        RunHistory findRunHistory = runHistoryRepository.findById(runHistoryId)
+            RunHistory findRunHistory = runHistoryRepository.findById(runHistoryId)
                     .orElseThrow(() -> new AppBizException(NOT_FOUND_ENTITY_IN_RUNHISTORY));
 
 
-        StringBuilder message = new StringBuilder();
-        message.append("<< Run NOW 작업 완료 알림 >>");
-        message.append("\n- 처리상태 : " + findRunHistory.isSuccess());
-        message.append("\n- 소요시간 : " + AppUtils.convertToRunTime(findRunHistory.getTotalRunTime()));
-        message.append("\n- 로그파일 : " + findRunHistory.getLogFilePath());
+            StringBuilder message = new StringBuilder();
+            message.append("<< Run NOW 작업 완료 알림 >>");
+            message.append("\n- 처리상태 : " + findRunHistory.isSuccess());
+            message.append("\n- 소요시간 : " + AppUtils.convertToRunTime(findRunHistory.getTotalRunTime()));
+            message.append("\n- 로그파일 : " + findRunHistory.getLogFilePath());
 
-        notificationService.sendMessage(findRunHistory.getJob().getNotification().getId(), message.toString());
+            notificationService.sendMessage(findRunHistory.getJob().getNotification().getId(), message.toString());
+        } catch (Exception e) {
+            log.error("sendMessage error. message={}",e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

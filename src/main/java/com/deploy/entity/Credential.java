@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 
@@ -19,30 +20,38 @@ public class Credential extends BaseEntity {
     @Column(name = "CREDENTIAL_ID")
     private Long id;
 
+    @Comment("유저 식별용 이름")
     @Column(name = "IDENTIFIER_NAME")
-    private String identifierName; // 유저 식별용 이름
+    private String identifierName;
 
+    @Comment("계정")
     @Column(name = "TARGET_USERNAME")
-    private String targetUsername; // 계정
+    private String targetUsername;
 
+    @Comment("비밀번호")
     @Column(name = "TARGET_PASSWORD")
-    private String targetPassword; // 비밀번호
+    private String targetPassword;
 
+    @Comment("원격지 호스트")
     @Column(name = "TARGET_HOST")
-    private String targetHost; // 원격지 호스트
+    private String targetHost;
 
+    @Comment("원격지 포트")
     @Column(name = "TARGET_PORT")
-    private Integer targetPort; // 원격지 포트
+    private Integer targetPort;
 
+    @Comment("인증키")
     @Lob
     @Column(name = "PRIVATE_KEY", columnDefinition = "MEDIUMTEXT")
-    private String privateKey; // 인증키
+    private String privateKey;
 
+    @Comment("인증키 비밀번호")
     @Column(name = "PASSPHRASE")
-    private String passphrase; // 인증키 비밀번호
+    private String passphrase;
 
+    @Comment("비고")
     @Column(name = "DESCRIPTION")
-    private String description; // 비고
+    private String description;
 
 
     //== 생성 메서드 ==//

@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Comment;
 
 import static jakarta.persistence.FetchType.*;
 
@@ -23,19 +24,22 @@ public class Step extends BaseEntity {
     @Column(name = "STEP_ID")
     private Long id;
 
+    @Comment("순서")
     @Column(name = "STEP_INDEX")
-    private Long stepIndex; // 순서
+    private Long stepIndex;
 
+    @Comment("유형")
     @Column(name = "STEP_TYPE")
     @Enumerated(value = EnumType.STRING)
-    private StepType stepType; // 유형
+    private StepType stepType;
 
     @Embedded
     private BuildSet buildSet;
 
+    @Comment("명령어")
     @Lob
     @Column(name = "COMMAND")
-    private String command; // 명령어
+    private String command;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "CREDENTIAL_ID")

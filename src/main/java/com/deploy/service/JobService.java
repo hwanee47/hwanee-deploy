@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -125,6 +126,11 @@ public class JobService {
         Long runHistoryId = executeRun(jobId);
 
         // Message event
+        completedRun(runHistoryId);
+    }
+
+
+    public void completedRun(Long runHistoryId) {
         eventPublisher.publishEvent(new RunCompletedEvent(runHistoryId));
     }
 
@@ -134,7 +140,7 @@ public class JobService {
      * @param jobId
      * @return
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Long executeRun(Long jobId) {
         // 엔티티 조회
         Job findJob = jobRepository.findById(jobId)

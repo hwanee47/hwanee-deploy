@@ -28,6 +28,7 @@ public class BuildFile extends BaseEntity {
     @Column(name = "BUILD_FILE_PATH")
     private String buildFilePath;
 
+    @Comment("비고")
     @Column(name = "DESCRIPTION")
     private String description;
 
