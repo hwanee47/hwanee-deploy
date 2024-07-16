@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+    <th:block layout:fragment="content">
+
+        <div class="bg-white dark:bg-gray-800 px-10 py-6">
+            <div class="container bg-white dark:bg-gray-800 rounded">
+                <div class="xl:w-full border-b border-gray-300 dark:border-gray-700 py-5 bg-white dark:bg-gray-800">
+                    <div class="flex w-11/12 w-full mx-0 items-center">
+                        <p class="text-lg text-gray-800 dark:text-gray-100 font-bold">My Profile</p>
+                        <div class="ml-2 cursor-pointer text-gray-600 dark:text-gray-400">
+                            <img class="dark:hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4.svg" alt="info">
+                            <img class="dark:block hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4dark.svg" alt="info">
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <div class="w-full xl:mx-0">
+                        <div class="rounded relative w-full mt-8 h-48">
+                            <img th:src="@{/img/banner/profile-banner.png}" alt="" class="w-full h-full object-cover rounded absolute shadow" />
+                            <div class="absolute bg-black opacity-50 top-0 right-0 bottom-0 left-0 rounded"></div>
+                            <div class="flex items-center px-3 py-2 rounded absolute right-0 mr-4 mt-4 cursor-pointer">
+                                <p class="text-xs text-gray-100">Change Cover Photo</p>
+                                <div class="ml-2 text-gray-100">
+                                    <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg1.svg" alt="Edit">
+                                </div>
+                            </div>
+                            <div class="w-20 h-20 rounded-full bg-cover bg-center bg-no-repeat absolute bottom-0 -mb-10 ml-12 shadow flex items-center justify-center">
+                                <img th:src="@{/img/user.svg}" alt="" class="absolute z-0 h-full w-full object-cover rounded-full shadow top-0 left-0 bottom-0 right-0" />
+                                <div class="absolute bg-black opacity-50 top-0 right-0 bottom-0 left-0 rounded-full z-0"></div>
+                                <div class="cursor-pointer flex flex-col justify-center items-center z-10 text-gray-100">
+                                    <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg1.svg" alt="Edit">
+                                    <p class="text-xs text-gray-100">Edit Picture</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-16 flex flex-col w-full">
+                            <label for="profile-email" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Email</label>
+                            <input tabindex="0" type="text" id="profile-email" name="profile-email" required class="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="@example" disabled/>
+                        </div>
+                        <div class="mt-8 flex flex-col w-full">
+                            <label for="profile-username" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Username</label>
+                            <input tabindex="0" type="text" id="profile-username" name="profile-username" required class="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="@example" />
+                        </div>
+                        <div class="mt-8 flex flex-col w-full">
+                            <label for="about" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">About</label>
+                            <textarea id="about" name="about" required class="bg-transparent border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 resize-none placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="Let the world know who you are" rows="5"></textarea>
+                            <p class="w-full text-right text-xs pt-1 text-gray-600 dark:text-gray-400">Character Limit: 200</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container w-full mt-6">
+                <div class="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-end">
+                    <button role="button" aria-label="cancel form" class="bg-gray-200 focus:outline-none transition duration-150 ease-in-out hover:bg-gray-300 dark:bg-gray-700 rounded text-indigo-600 dark:text-indigo-600 px-6 py-2 text-xs mr-4 focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">Cancel</button>
+                    <button id="btnSaveMyProfile" role="button" aria-label="Save form" class="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 bg-indigo-700 focus:outline-none transition duration-150 ease-in-out hover:bg-indigo-600 rounded text-white px-8 py-2 text-sm">Save</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="bg-white dark:bg-gray-800 px-10 mt-20">
+            <div class="container bg-white dark:bg-gray-800 rounded">
+                <div class="xl:w-full border-b border-gray-300 dark:border-gray-700 py-5 bg-white dark:bg-gray-800">
+                    <div class="flex w-11/12 w-full mx-0 items-center">
+                        <p class="text-lg text-gray-800 dark:text-gray-100 font-bold">Change password</p>
+                        <div class="ml-2 cursor-pointer text-gray-600 dark:text-gray-400">
+                            <img class="dark:hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4.svg" alt="info">
+                            <img class="dark:block hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4dark.svg" alt="info">
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <div class="w-full xl:mx-0">
+                        <div class="mt-6 flex flex-col w-full">
+                            <label for="currentPassword" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">현재 비밀번호</label>
+                            <input tabindex="0" type="password" id="currentPassword" name="currentPassword" required class="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="current password" />
+                        </div>
+                        <div class="mt-6 flex flex-col w-full">
+                            <label for="newPassword" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">새 비밀번호</label>
+                            <input tabindex="0" type="password" id="newPassword" name="newPassword" required class="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="new password"/>
+                        </div>
+                        <div class="mt-6 flex flex-col w-full">
+                            <label for="newPasswordConfirm" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">새 비밀번호 (확인)</label>
+                            <input tabindex="0" type="password" id="newPasswordConfirm" name="newPasswordConfirm" required class="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="new password"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container w-full mt-6">
+                <div class="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-end">
+                    <button role="button" aria-label="cancel form" class="bg-gray-200 focus:outline-none transition duration-150 ease-in-out hover:bg-gray-300 dark:bg-gray-700 rounded text-indigo-600 dark:text-indigo-600 px-6 py-2 text-xs mr-4 focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">Cancel</button>
+                    <button id="btnChangePassword" role="button" aria-label="Save form" class="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 bg-indigo-700 focus:outline-none transition duration-150 ease-in-out hover:bg-indigo-600 rounded text-white px-8 py-2 text-sm">Save</button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- script -->
+        <script th:src="@{/js/profile.js}"></script>
+        <script>
+            $(document).ready(function() {
+                fnSearchMyInfo(sessionStorage.getItem('userId'));
+            });
+        </script>
+
+
+    </th:block>
+
+</html>

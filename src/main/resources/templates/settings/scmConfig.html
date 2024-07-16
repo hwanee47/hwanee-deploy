@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+    <th:block layout:fragment="content">
+
+        <div class="bg-white dark:bg-gray-800 px-10 py-6">
+            <div class="container bg-white dark:bg-gray-800 rounded">
+                <div class="xl:w-full border-b border-gray-300 dark:border-gray-700 py-5 bg-white dark:bg-gray-800">
+                    <div class="flex w-11/12 w-full mx-0 items-center">
+                        <p class="text-lg text-gray-800 dark:text-gray-100 font-bold">SCM Config</p>
+                        <div class="ml-2 cursor-pointer text-gray-600 dark:text-gray-400">
+                            <img class="dark:hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4.svg" alt="info">
+                            <img class="dark:block hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4dark.svg" alt="info">
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <div class="w-full xl:mx-0">
+                        <div class="rounded relative w-full mt-8 h-48">
+                            <img th:src="@{/img/banner/scmConfig-banner.png}" alt="" class="w-full h-full object-cover rounded absolute shadow" />
+                            <div class="absolute bg-black opacity-50 top-0 right-0 bottom-0 left-0 rounded"></div>
+                            <div class="flex items-center px-3 py-2 rounded absolute right-0 mr-4 mt-4 cursor-pointer">
+                                <p class="text-xs text-gray-100">Change Cover Photo</p>
+                                <div class="ml-2 text-gray-100">
+                                    <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg1.svg" alt="Edit">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-8 mt-8">
+                            <div class="flex flex-col w-full">
+                                <label for="scmConfig-type" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">SCM Type (SCM 유형)</label>
+                                <div class="relative inline-block w-full">
+                                    <select id="scmConfig-type" class="appearance-none border border-gray-300 dark:border-gray-700 pl-3 pr-10 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 w-full">
+                                        <option value="SVN">SVN</option>
+                                        <option value="GIT">GIT</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-600">
+                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414L10 13.414l-4.707-4.707a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col w-full">
+                                <label for="scmConfig-url" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Url</label>
+                                <input tabindex="0" type="text" id="scmConfig-url" name="scmConfig-url" required class="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="@example" />
+                            </div>
+                            <div class="flex flex-col w-full">
+                                <label for="scmConfig-password" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Username (계정)</label>
+                                <input tabindex="0" type="text" id="scmConfig-username" name="scmConfig-username" required class="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="@example" />
+                            </div>
+                            <div class="flex flex-col w-full">
+                                <label for="scmConfig-password" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Password (비밀번호)</label>
+                                <div class="relative w-full toggle-password-container">
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-2">
+                                        <input class="hidden js-password-toggle" id="password1" type="checkbox" />
+                                        <label class="bg-gray-300 hover:bg-gray-400 rounded px-2 py-1 text-sm text-gray-600 cursor-pointer js-password-label" for="password1">
+                                            <i class="fas fa-eye"></i>
+                                        </label>
+                                    </div>
+                                    <input autocomplete="off" type="password" id="scmConfig-password" name="scmConfig-password" class="w-full border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 js-password" placeholder="@example" />
+                                </div>
+                            </div>
+                            <div class="flex flex-col w-full">
+                                <label for="scmConfig-branch" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Branch (브랜치)</label>
+                                <input tabindex="0" type="text" id="scmConfig-branch" name="scmConfig-branch" required class="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="@example" />
+                            </div>
+                            <div class="flex flex-col w-full">
+                                <label for="scmConfig-description" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Description</label>
+                                <textarea id="scmConfig-description" name="scmConfig-description" required class="bg-transparent border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 resize-none placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="description" rows="5"></textarea>
+                                <p class="w-full text-right text-xs pt-1 text-gray-600 dark:text-gray-400">Character Limit: 200</p>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container w-full mt-6">
+                <div class="flex">
+                    <div class="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex items-center justify-start space-x-1">
+                        <button id="btnHealthCheck" role="button" class="bg-green-600 hover:bg-green-500 focus:outline-none transition duration-150 ease-in-out dark:bg-gray-700 rounded text-white dark:text-indigo-600 px-6 py-2 text-sm mr-4 focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">Test Connection</button>
+                        <p id="healthCheckMessage" class="font-semibold"></p>
+                    </div>
+                    <div class="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-end">
+                        <button id="btnCancelScmConfig" role="button" aria-label="cancel form" class="bg-gray-200 focus:outline-none transition duration-150 ease-in-out hover:bg-gray-300 dark:bg-gray-700 rounded text-indigo-600 dark:text-indigo-600 px-6 py-2 text-xs mr-4 focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">Cancel</button>
+                        <button id="btnSaveScmConfig" role="button" aria-label="Save form" class="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 bg-indigo-700 focus:outline-none transition duration-150 ease-in-out hover:bg-indigo-600 rounded text-white px-8 py-2 text-sm">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- script -->
+        <script th:src="@{/js/scmConfig.js}"></script>
+        <script>
+            $(document).ready(function() {
+            });
+        </script>
+
+
+    </th:block>
+
+</html>

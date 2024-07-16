@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <th:block th:replace="~{/layout/fragments/head :: headFragment}"></th:block>
+    <body>
+        <!-- ===== Navbar Start ===== -->
+        <th:block th:replace="~{/layout/fragments/navbar :: navbarFragment}"></th:block>
+        <!-- ===== Navbar End ===== -->
+
+        <!-- ===== Page Wrapper Start ===== -->
+        <div class="h-screen flex flex-row">
+
+            <!-- ===== Sidebar Start ===== -->
+            <div id="layout-sidebar">
+                <th:block th:replace="~{/layout/fragments/sidebar :: sidebarFragment}"></th:block>
+            </div>
+            <!-- ===== Sidebar End ===== -->
+
+            <!-- ===== Content Area Start ===== -->
+            <div class="bg-gray-100 flex-1 p-6 md:mt-20">
+                <!-- ===== Main Content Start ===== -->
+                <th:block layout:fragment="content"></th:block>
+                <!-- ===== Main Content End ===== -->
+            </div>
+            <!-- ===== Content Area End ===== -->
+
+            <!-- ===== Toast Start ===== -->
+            <th:block th:replace="~{toast :: toastFragment}"></th:block>
+            <!-- ===== Toast End ===== -->
+
+            <!-- ===== Modal Start ===== -->
+            <th:block th:replace="~{modal :: modalFragment}"></th:block>
+            <!-- ===== Modal End ===== -->
+
+        </div>
+        <!-- ===== Page Wrapper End ===== -->
+
+
+
+        <!-- ===== Common Script Start===== -->
+        <script>
+            $(document).ready(function() {
+                var currentUrl = window.location.pathname;
+                var sidebar = document.getElementById('layout-sidebar');
+
+                // project 페이지 오픈시 사이드바 숨기기
+                var regex = /^\/app\/view\/project\/project/;
+                if (regex.test(currentUrl)) {
+                    sidebar.style.display = 'none';
+                }
+            });
+
+
+
+            // 패스워드 토글
+            $('.js-password-toggle').change(function() {
+                var container = $(this).closest('.toggle-password-container');
+                var passwordInput = container.find('input.js-password');
+                var eyeIcon = container.find('i');
+
+                if ($(this).is(':checked')) {
+                    passwordInput.attr('type', 'text');
+                    eyeIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    eyeIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+        </script>
+        <!-- ===== Common Script End===== -->
+
+        <!-- ===== Page Script Start===== -->
+        <th:block layout:fragment="script"></th:block>
+        <!-- ===== Page Script End===== -->
+    </body>
+</html>

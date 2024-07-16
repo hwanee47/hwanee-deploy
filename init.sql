@@ -1,0 +1,5 @@
+CREATE DATABASE IF NOT EXISTS deploy;
+DROP USER IF EXISTS 'deploy-app'@'%';
+CREATE USER 'deploy-app'@'%' IDENTIFIED BY '1234';
+GRANT ALL PRIVILEGES ON deploy.* TO 'deploy-app'@'%';
+FLUSH PRIVILEGES;

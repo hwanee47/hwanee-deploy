@@ -1,21 +1,30 @@
 spring:
+  application:
+    name: deployApp
   datasource:
-#    driver-class-name: org.h2.Driver
-#    url: jdbc:h2:tcp://localhost/~/deploy
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/deploy?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+#    url: jdbc:mysql://mysql:3306/deploy?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
     username: deploy-app
     password: 1234
-
+    hikari:
+      initialization-fail-timeout: 60000
+      connection-timeout: 20000
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
-#        show_sql: true
-#        format_sql: true
+        default_batch_fetch_size: 100
+
+
+#
+#  sql:
+#    init:
+#      mode: always
+
 
 logging:
   level:
@@ -26,3 +35,9 @@ decorator:
   datasource:
     p6spy:
       enable-logging: true
+
+
+app:
+  aes:
+    secret-key: my-secert-key
+    salt: 70726574657374

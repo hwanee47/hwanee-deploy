@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Pagination Fragment</title>
+</head>
+<body>
+    <nav aria-label="Page navigation example">
+        <ul class="list-style-none flex">
+            <!-- ===== Previous Start ===== -->
+            <li th:classappend="${page.number == 0} ? 'disabled'">
+                <a th:href="@{${page.number > 0} ? @{'?page=' + (${page.number} - 1)} : '#'}"
+                   class="pointer-events-none relative block rounded-full bg-transparent px-3 py-1.5 text-sm text-surface/50 transition duration-300 dark:text-neutral-400">
+                    Previous
+                </a>
+            </li>
+            <!-- ===== Previous End ===== -->
+
+            <!-- ===== Number Start ===== -->
+            <li th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}" th:classappend="${page.number == i} ? 'active'">
+                <a th:href="@{'?page=' + ${i}}"
+                   th:text="${i + 1}"
+                   class="relative block rounded-full bg-transparent px-3 py-1.5 text-sm text-surface transition duration-300 hover:bg-neutral-100 focus:bg-neutral-100 focus:text-primary-700 focus:outline-none active:bg-neutral-100 active:text-primary-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700  dark:focus:text-primary-500 dark:active:bg-neutral-700 dark:active:text-primary-500">
+                </a>
+            </li>
+            <!-- ===== Number End ===== -->
+
+            <!-- ===== Next Start ===== -->
+            <li th:classappend="${page.number == page.totalPages - 1} ? 'disabled'">
+                <a th:href="@{${page.number < page.totalPages - 1} ? @{'?page=' + (${page.number} + 1)} : '#'}"
+                   class="relative block rounded-full bg-transparent px-3 py-1.5 text-sm text-surface transition duration-300 hover:bg-neutral-100 focus:bg-neutral-100 focus:text-primary-700 focus:outline-none active:bg-neutral-100 active:text-primary-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700 dark:focus:text-primary-500 dark:active:bg-neutral-700 dark:active:text-primary-500">
+                    Next
+                </a>
+            </li>
+            <!-- ===== Next End ===== -->
+        </ul>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <th:block th:fragment="innerContentFragment">
+
+        <!-- ===== Notification Start ===== -->
+        <div class="bg-white dark:bg-gray-800 px-10 py-6" data-step-index="1">
+            <div class="container bg-white dark:bg-gray-800 rounded">
+                <div class="xl:w-full border-b border-gray-300 dark:border-gray-700 py-5 bg-white dark:bg-gray-800">
+                    <div class="flex w-11/12 w-full mx-0 items-center">
+                        <p class="text-lg text-gray-800 dark:text-gray-100 font-bold">Notification setup</p>
+                        <div class="ml-2 cursor-pointer text-gray-600 dark:text-gray-400">
+                            <img class="dark:hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4.svg" alt="info">
+                            <img class="dark:block hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4dark.svg" alt="info">
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <div class="w-full xl:mx-0">
+                        <div class="mt-8 flex flex-col w-full">
+                            <label for="projectNotification-notification" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Notification</label>
+                            <div class="relative inline-block w-full">
+                                <select id="projectNotification-notification" class="appearance-none border border-gray-300 dark:border-gray-700 pl-3 pr-10 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 w-full">
+                                    <option value="SVN">SVN</option>
+                                    <option value="GIT">GIT</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-600">
+                                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                        <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414L10 13.414l-4.707-4.707a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container w-full mt-6">
+                <div class="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-end">
+                    <button role="button" aria-label="cancel form" class="bg-gray-200 focus:outline-none transition duration-150 ease-in-out hover:bg-gray-300 dark:bg-gray-700 rounded text-indigo-600 dark:text-indigo-600 px-6 py-2 text-xs mr-4 focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">Cancel</button>
+                    <button id="btnSaveProjectNotification" role="button" aria-label="Save form" class="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 bg-indigo-700 focus:outline-none transition duration-150 ease-in-out hover:bg-indigo-600 rounded text-white px-8 py-2 text-sm">Save</button>
+                </div>
+            </div>
+        </div>
+        <!-- ===== Notification End ===== -->
+
+
+        <script th:src="@{/js/projectNotification.js}"></script>
+        <script>
+            $(document).ready(function() {
+
+                // Notification 조회
+                fnGetNotifications()
+                    .then(data => {
+                        fnSetNotifications(data);
+                    })
+
+
+                // Project 정보 조회
+                fnSearchProject($('#project-id').val())
+                    .then(data => {
+                        fnSetProjectInfo(data);
+
+                        if (data.notificationId) {
+                            fnSetNotification(data.notificationId);
+                        }
+                    })
+
+
+            });
+        </script>
+
+    </th:block>
+
+</html>

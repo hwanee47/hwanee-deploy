@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: deployApp
+  datasource:
+    url: jdbc:h2:mem:testdb;
+  jpa:
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+  sql:
+    init:
+      mode: never
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+
+
+app:
+  aes:
+    secret-key: my-secert-key
+    salt: 6877616e65656877616e6565 # hwaneehwanee 16진수

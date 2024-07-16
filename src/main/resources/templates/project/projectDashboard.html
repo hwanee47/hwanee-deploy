@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <th:block th:fragment="innerContentFragment">
+        dashboard
+
+
+<!--        <script th:src="@{/js/project.js}"></script>-->
+        <script>
+            $(document).ready(function() {
+                fnSearchProject($('#project-id').val())
+                    .then(data => {
+                        fnSetProjectInfo(data);
+                    })
+            });
+        </script>
+
+    </th:block>
+
+</html>

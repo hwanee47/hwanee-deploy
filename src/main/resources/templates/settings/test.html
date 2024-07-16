@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+    <th:block layout:fragment="content">
+        <section class="py-1 bg-gray-50">
+            <div class="w-full mb-12 xl:mb-0 mx-auto mt-5">
+                <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded ">
+                    <div id="grid" class="w-full"></div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+
+
+            const grid = new tui.Grid({
+                el: document.getElementById('grid'),
+                scrollX: false,
+                scrollY: false,
+                bodyHeight: 'auto',
+                rowHeight: 'auto',
+                rowHeaders: ['rowNum'],
+                header: {
+                  height: 35,
+                },
+                columns: [
+                    {name: 'name', header: 'Name'},
+                    {name: 'age', header: 'Age'},
+                    {name: 'address', header: 'Address'}
+                ],
+                data: [
+                    {name: 'John Doe', age: 30, address: 'New York'},
+                    {name: 'Jane Doe', age: 25, address: 'San Francisco'},
+                    {name: 'Bob Smith', age: 50, address: 'Los Angeles'}
+                ]
+            });
+
+            tui.Grid.applyTheme('clean', {
+
+                    cell: {
+                        normal: {
+                            background: '#fbfbfb',
+                            border: '#e0e0e0',
+                            showVerticalBorder: true
+                        },
+                        header: {
+                            background: '#f8f8f8',
+                            border: '#ccc',
+                            showVerticalBorder: true
+                        },
+
+                    }
+                }
+            );
+
+
+            // 브라우저 크기 조절 시 그리드 크기 자동 조절
+            window.addEventListener('resize', function() {
+                grid.refreshLayout();
+            });
+
+        </script>
+    </th:block>
+
+</html>
