@@ -456,7 +456,7 @@
     left: 0;
     right: 17px;
     height: 1px;
-    z-index: 10;
+    z-index: auto;
 }
 .tui-grid-no-scroll-x .tui-grid-border-line-left {
     bottom: 0;

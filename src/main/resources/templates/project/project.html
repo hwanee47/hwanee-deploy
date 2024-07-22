@@ -55,6 +55,15 @@
                             <th:block th:if="${showNotification}">
                                 <th:block th:replace="~{project/projectNotification :: innerContentFragment}"></th:block>
                             </th:block>
+                            <th:block th:if="${showScheduleList}">
+                                <th:block th:replace="~{project/projectSchedules :: innerContentFragment}"></th:block>
+                            </th:block>
+                            <th:block th:if="${showScheduleAdd}">
+                                <th:block th:replace="~{project/projectSchedule :: innerContentFragment}"></th:block>
+                            </th:block>
+                            <th:block th:if="${showScheduleEdit}">
+                                <th:block th:replace="~{project/projectSchedule-edit :: innerContentFragment}"></th:block>
+                            </th:block>
 
                         </div>
                 </div>

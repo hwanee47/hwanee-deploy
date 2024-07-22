@@ -2,6 +2,7 @@ package com.deploy.service;
 
 import com.deploy.dto.request.ScheduleCreateReq;
 import com.deploy.dto.request.ScheduleUpdateReq;
+import com.deploy.dto.response.ScheduleRes;
 import com.deploy.entity.Job;
 import com.deploy.entity.Schedule;
 import com.deploy.exception.AppBizException;
@@ -10,6 +11,9 @@ import com.deploy.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -20,6 +24,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.deploy.exception.AppErrorCode.NOT_FOUND_ENTITY_IN_JOB;
 import static com.deploy.exception.AppErrorCode.NOT_FOUND_ENTITY_IN_SCHEDULE;
@@ -32,8 +37,51 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final JobRepository jobRepository;
     private final JobService jobService;
-    private final ApplicationEventPublisher eventPublisher;
     private final PlatformTransactionManager transactionManager;
+
+
+    /**
+     * 예약 리스트 조회
+     * @param jobId
+     * @param pageable
+     * @return
+     */
+    public Page<ScheduleRes> searchByJobId(Long jobId, Pageable pageable) {
+        Page<Schedule> list = scheduleRepository.searchByJobId(jobId, pageable);
+
+        List<ScheduleRes> results = list.stream()
+                .map(Schedule -> ScheduleRes.builder()
+                        .id(Schedule.getId())
+                        .createdAt(Schedule.getCreatedAt())
+                        .scheduleTime(Schedule.getScheduleTime())
+                        .executedTime(Schedule.getExecutedTime())
+                        .description(Schedule.getDescription())
+                        .build())
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(results, pageable, list.getTotalElements());
+    }
+
+
+    /**
+     * Schedule 조회
+     * @param scheduleId
+     * @return
+     */
+    public ScheduleRes findSchedule(Long scheduleId) {
+        // 엔티티 조회
+        Schedule findSchedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new AppBizException(NOT_FOUND_ENTITY_IN_SCHEDULE));
+
+        return ScheduleRes.builder()
+                .id(findSchedule.getId())
+                .createdAt(findSchedule.getCreatedAt())
+                .scheduleTime(findSchedule.getScheduleTime())
+                .executedTime(findSchedule.getExecutedTime())
+                .description(findSchedule.getDescription())
+                .build();
+    }
+
 
     /**
      * 스케줄 저장
@@ -90,6 +138,10 @@ public class ScheduleService {
         // 엔티티 조회
         Schedule findSchedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new AppBizException(NOT_FOUND_ENTITY_IN_SCHEDULE));
+
+
+        if (findSchedule.isExecuted())
+            throw new AppBizException("실행완료된 스케줄은 삭제불가능합니다.");
 
         scheduleRepository.delete(findSchedule);
 

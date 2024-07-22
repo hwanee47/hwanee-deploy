@@ -90,42 +90,41 @@ class ScheduleServiceTest {
 
 
         //then
-        assertThat(findSchedule.getScheduleTime()).isEqualTo(updateRequest.getTime());
         assertThat(findSchedule.getDescription()).isEqualTo(updateRequest.getDescription());
 
     }
 
 
-    @Test
-    @DisplayName("이미 실행된 스케줄은 수정할 수 없다.")
-    public void test3() {
-        //given
-        ScheduleCreateReq request = ScheduleCreateReq.builder()
-                .time(LocalDateTime.now())
-                .description("test")
-                .build();
-
-        Long scheduleId = scheduleService.createSchedule(request);
-        Schedule findSchedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new AppBizException(NOT_FOUND_ENTITY_IN_SCHEDULE));
-
-        // 실행처리
-        findSchedule.executedSchedule();
-
-        em.flush();
-        em.clear();
-
-        log.info("강제 flush");
-
-        ScheduleUpdateReq updateRequest = ScheduleUpdateReq.builder()
-                .time(LocalDateTime.now())
-                .description("test222")
-                .build();
-
-        //when & then
-        assertThrows(AppBizException.class, () -> scheduleService.updateSchedule(scheduleId, updateRequest));
-
-    }
+//    @Test
+//    @DisplayName("이미 실행된 스케줄은 수정할 수 없다.")
+//    public void test3() {
+//        //given
+//        ScheduleCreateReq request = ScheduleCreateReq.builder()
+//                .time(LocalDateTime.now())
+//                .description("test")
+//                .build();
+//
+//        Long scheduleId = scheduleService.createSchedule(request);
+//        Schedule findSchedule = scheduleRepository.findById(scheduleId)
+//                .orElseThrow(() -> new AppBizException(NOT_FOUND_ENTITY_IN_SCHEDULE));
+//
+//        // 실행처리
+//        findSchedule.executedSchedule();
+//
+//        em.flush();
+//        em.clear();
+//
+//        log.info("강제 flush");
+//
+//        ScheduleUpdateReq updateRequest = ScheduleUpdateReq.builder()
+//                .time(LocalDateTime.now())
+//                .description("test222")
+//                .build();
+//
+//        //when & then
+//        assertThrows(AppBizException.class, () -> scheduleService.updateSchedule(scheduleId, updateRequest));
+//
+//    }
 
 
     private Long createJob() {

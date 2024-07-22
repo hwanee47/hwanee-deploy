@@ -16,7 +16,7 @@ import static java.time.LocalDateTime.now;
 @Entity
 @Table(name = "SCHEDULE")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Schedule {
+public class Schedule extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +44,11 @@ public class Schedule {
 
     //== 생성 메서드 ==//
     public static Schedule createSchedule(Job job, LocalDateTime scheduleTime, String description) {
+
+        if (scheduleTime.compareTo(LocalDateTime.now()) < 0)
+            throw new AppBizException("미래 시간만 설정 가능합니다.");
+
+
         Schedule schedule = new Schedule();
         schedule.job = job;
         schedule.scheduleTime = scheduleTime;
@@ -65,6 +70,9 @@ public class Schedule {
 
         if (this.executed)
             throw new AppBizException("이미 실행된 스케줄은 수정할 수 없습니다.");
+
+        if (scheduleTime.compareTo(LocalDateTime.now()) < 0)
+            throw new AppBizException("미래 시간만 설정 가능합니다.");
 
         this.scheduleTime = scheduleTime;
         this.description = description;

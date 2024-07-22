@@ -110,13 +110,16 @@ public class MavenService implements BuildService {
     }
 
     private String findAndMoveBuiltJar(String projectPath) throws IOException {
+
+        String projectName = projectPath.substring(projectPath.lastIndexOf("/") + 1);
+
         try (Stream<Path> paths = Files.walk(Paths.get(projectPath, "target"))) {
             Optional<Path> optionalPath = paths.filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith(".jar"))
                     .max(Comparator.comparingLong(path -> path.toFile().lastModified()));
 
             if (optionalPath.isPresent()) {
-                return moveBuiltJarWithTimestamp(optionalPath.get().toString());
+                return moveBuiltJarWithTimestamp(optionalPath.get().toString(), projectName);
             }
         }
         return null;
@@ -139,13 +142,13 @@ public class MavenService implements BuildService {
         }
     }
 
-    private String moveBuiltJarWithTimestamp(String builtFilePath) throws IOException {
+    private String moveBuiltJarWithTimestamp(String builtFilePath, String projectName) throws IOException {
         Path sourcePath = Paths.get(builtFilePath);
         String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss").format(new Date());
         String fileNameWithTimestamp = timestamp + ".jar";
 
         // 타겟 디렉토리 없는경우 생성
-        Path targetDirectory = Paths.get(DEFAULT_TARGET_PATH);
+        Path targetDirectory = Paths.get(DEFAULT_TARGET_PATH + projectName + File.separator);
         if (Files.notExists(targetDirectory)) {
             Files.createDirectories(targetDirectory);
         }

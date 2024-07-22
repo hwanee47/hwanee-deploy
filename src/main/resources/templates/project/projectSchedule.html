@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <th:block th:fragment="innerContentFragment">
+
+        <!-- ===== Notification Start ===== -->
+        <div class="bg-white dark:bg-gray-800 px-10 py-6" data-step-index="1">
+            <div class="container bg-white dark:bg-gray-800 rounded">
+                <div class="xl:w-full border-b border-gray-300 dark:border-gray-700 py-5 bg-white dark:bg-gray-800">
+                    <div class="flex w-11/12 w-full mx-0 items-center">
+                        <p class="text-lg text-gray-800 dark:text-gray-100 font-bold">Schedule Add</p>
+                        <div class="ml-2 cursor-pointer text-gray-600 dark:text-gray-400">
+                            <img class="dark:hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4.svg" alt="info">
+                            <img class="dark:block hidden" src="https://tuk-cdn.s3.amazonaws.com/can-uploader/simple_form-svg4dark.svg" alt="info">
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <div class="w-full xl:mx-0">
+                        <div class="mt-8 flex flex-col w-full">
+                            <label class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Schedule Time</label>
+                            <div class="w-full">
+                                <div class="w-full tui-datepicker-input tui-datetime-input tui-has-focus">
+                                    <input type="text" id="datepicker-input" aria-label="Date-Time">
+                                    <span class="tui-ico-date"></span>
+                                </div>
+                                <div id="wrapper" class="relative" style="margin-top: -1px;"></div>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex flex-col w-full">
+                            <label for="projectScheduleAdd-description" class="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Description</label>
+                            <textarea id="projectScheduleAdd-description" name="projectRename-description" required class="bg-transparent border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 resize-none placeholder-gray-500 text-gray-600 dark:text-gray-400" placeholder="Let the world know who you are" rows="5"></textarea>
+                            <p class="w-full text-right text-xs pt-1 text-gray-600 dark:text-gray-400">Character Limit: 200</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container w-full mt-6">
+                <div class="w-full py-4 sm:px-0 bg-white dark:bg-gray-800 flex justify-end">
+                    <button id="btnCancelProjectScheduleAdd" role="button" aria-label="cancel form" class="bg-gray-200 focus:outline-none transition duration-150 ease-in-out hover:bg-gray-300 dark:bg-gray-700 rounded text-indigo-600 dark:text-indigo-600 px-6 py-2 text-xs mr-4 focus:ring-2 focus:ring-offset-2 focus:ring-gray-700">Cancel</button>
+                    <button id="btnSaveProjectScheduleAdd" role="button" aria-label="Save form" class="focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 bg-indigo-700 focus:outline-none transition duration-150 ease-in-out hover:bg-indigo-600 rounded text-white px-8 py-2 text-sm">Save</button>
+                </div>
+            </div>
+        </div>
+        <!-- ===== Notification End ===== -->
+
+
+        <script th:src="@{/js/projectSchedule.js}"></script>
+        <script>
+            $(document).ready(function() {
+
+                // Project 정보 조회
+                fnSearchProject($('#project-id').val())
+                    .then(data => {
+                        fnSetProjectInfo(data);
+                    })
+
+
+                fnInitScheduleAdd();
+
+
+                var selectedDate = datepicker.getDate(); // Get selected date from datepicker
+                var formattedDate = formatDate(selectedDate);
+
+                console.log(formattedDate);
+
+
+            });
+        </script>
+
+    </th:block>
+
+</html>

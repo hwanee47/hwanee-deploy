@@ -182,7 +182,7 @@ public class StepService {
                 break;
             case BUILD:
                 String projectPath = prevResult;
-                result = executeBuild(step, prevResult);
+                result = executeBuild(step, projectPath);
 
                 // 빌드파일 엔티티 저장
                 buildFileService.createBuildFile(step.getJob(), result);

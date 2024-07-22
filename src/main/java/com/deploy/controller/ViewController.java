@@ -146,4 +146,29 @@ public class ViewController {
         return "project/project";
     }
 
+    @GetMapping("/project/project-schedule")
+    public String projectSchedule(String id, Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("showSchedule", true);   // 사이드바 active 효과
+        model.addAttribute("showScheduleList", true);
+        return "project/project";
+    }
+
+    @GetMapping("/project/project-schedule-add")
+    public String projectScheduleAdd(String id, Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("showSchedule", true);   // 사이드바 active 효과
+        model.addAttribute("showScheduleAdd", true);
+        return "project/project";
+    }
+
+    @GetMapping("/project/project-schedule-edit")
+    public String projectScheduleEdit(String id, String scheduleId, Model model) {
+        model.addAttribute("id", id);   // job id
+        model.addAttribute("scheduleId", scheduleId);   // schedule id
+        model.addAttribute("showSchedule", true);   // 사이드바 active 효과
+        model.addAttribute("showScheduleEdit", true);
+        return "project/project";
+    }
+
 }
