@@ -152,7 +152,7 @@ public class ScheduleService {
      * 스케줄 실행
      * - 1분 마다 실행
      */
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(cron = "0 * * * * *")
     @Transactional
     public void runScheduledTasks() throws Exception {
 
@@ -168,8 +168,9 @@ public class ScheduleService {
         TransactionStatus status1 = transactionManager.getTransaction(definition);
 
         try {
-            LocalDateTime now = LocalDateTime.now();
-            List<Schedule> schedules = scheduleRepository.findByExecutedFalseAndScheduleTimeLessThanEqual(now);
+            LocalDateTime startTime = LocalDateTime.now().withSecond(0).withNano(0);
+            LocalDateTime endTime = startTime.plusMinutes(1).withSecond(0).withNano(0);
+            List<Schedule> schedules = scheduleRepository.findByExecutedFalseAndScheduleTimeBetween(startTime, endTime);
 
             for (Schedule schedule : schedules) {
 
