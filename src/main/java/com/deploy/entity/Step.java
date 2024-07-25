@@ -41,6 +41,10 @@ public class Step extends BaseEntity {
     @Column(name = "COMMAND")
     private String command;
 
+    @Comment("on 여부 (on/off)")
+    @Column(name = "IS_ON")
+    private boolean isOn;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "CREDENTIAL_ID")
     private Credential credential; // 자격증명
@@ -71,6 +75,7 @@ public class Step extends BaseEntity {
         step.credential = credential;
         step.scmConfig = scmConfig;
         step.buildSet = buildSet;
+        step.isOn = true;
 
         step.setJob(job);
 
@@ -87,4 +92,8 @@ public class Step extends BaseEntity {
         this.buildSet = buildSet;
     }
 
+    // on/off 토글
+    public void toggleSwitch(boolean toggle) {
+        this.isOn = toggle;
+    }
 }

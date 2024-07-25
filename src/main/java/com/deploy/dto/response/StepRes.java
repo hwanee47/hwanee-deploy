@@ -19,12 +19,16 @@ public class StepRes {
     @JsonProperty(value = "isTest")
     private boolean isTest;
 
+    @JsonProperty(value = "isOn")
+    private boolean isOn;
+
 
     public StepRes(Step step) {
         this.id = step.getId();
         this.stepIndex = step.getStepIndex();
         this.stepType = step.getStepType();
         this.isTest = step.getBuildSet().isBuildTest();
+        this.isOn = step.isOn();
 
         switch (step.getStepType()) {
             case SCM:

@@ -80,7 +80,6 @@ class StepServiceTest {
 
 
 
-
     private void createScmConfig(ScmType scmType, String url, String username, String password, String branch) {
         ScmConfig scmConfig = ScmConfig.builder()
                 .scmType(scmType)

@@ -1,6 +1,7 @@
 package com.deploy.service;
 
 import com.deploy.dto.request.StepCreateReq;
+import com.deploy.dto.request.StepToggleReq;
 import com.deploy.dto.request.StepUpdateReq;
 import com.deploy.entity.*;
 import com.deploy.entity.embed.BuildSet;
@@ -370,6 +371,22 @@ public class StepService {
             throw e;
         }
 
+    }
+
+
+    /**
+     * Step on/off 기능
+     * @param id
+     * @param request
+     */
+    @Transactional
+    public void toggleSwitch(Long id, StepToggleReq request) {
+        // 엔티티 조회
+        Step findStep = stepRepository.findById(id)
+                .orElseThrow(() -> new AppBizException(AppErrorCode.NOT_FOUND_ENTITY_IN_STEP));
+
+        // on/off
+        findStep.toggleSwitch(request.getIsOn());
     }
 
 }

@@ -162,6 +162,10 @@ public class JobService {
         String prevResult = "";
 
         for (Step step : findJob.getSteps()) {
+            if (!step.isOn()) {
+                historyLogger.info("==== StepService switch off. type={} ====", step.getStepType());
+                continue;
+            }
 
             historyLogger.info("==== StepService executeStep start. type={} ====", step.getStepType());
 

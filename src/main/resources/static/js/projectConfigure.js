@@ -3,6 +3,7 @@ const projectConfigureCredential = document.getElementById('projectConfigure-cre
 const projectConfigureBuildType = document.getElementById('projectConfigure-buildType');
 const projectConfigureIsTest = document.getElementById('projectConfigure-isTest');
 const projectConfigureCommand = document.getElementById('projectConfigure-command');
+const toggleContainers = document.querySelectorAll('.toggle-container');
 
 projectConfigureScm.addEventListener('change', function() {
 
@@ -22,41 +23,97 @@ projectConfigureScm.addEventListener('change', function() {
     )
 })
 
+toggleContainers.forEach(toggleContainer => {
+
+    toggleContainer.addEventListener('click', () => {
+        let isOn = toggleContainer.dataset.isOn === 'true';
+        isOn = !isOn;
+        toggleContainer.dataset.isOn = isOn;
+        fnSetToggleStyle(toggleContainer, isOn);
+
+        let firstDivContainer = toggleContainer.closest('div[data-step-index]');
+        let stepIndex = firstDivContainer.getAttribute('data-step-index');
+        fnUpdateToggleSwitch(fnGetStepId(Number(stepIndex)), isOn);
+    });
+})
+
+// 토글 스타일 변경
+const fnSetToggleStyle = (toggleContainer, isOn) => {
+    const toggleCircle = toggleContainer.querySelector('.toggle-circle');
+
+    if (isOn) {
+        toggleContainer.classList.remove('bg-gray-300');
+        toggleContainer.classList.add('bg-blue-500');
+        toggleCircle.classList.add('transform', 'translate-x-8');
+    } else {
+        toggleContainer.classList.remove('bg-blue-500');
+        toggleContainer.classList.add('bg-gray-300');
+        toggleCircle.classList.remove('translate-x-8');
+    }
+}
+
+// Step 토글
+const fnUpdateToggleSwitch = (stepId, toggle) => {
+    _axios
+        .put(`/api/step/${stepId}/toggle`, {
+            'isOn': toggle
+        })
+        .then(function (response) {
+            gfnShowToast('success', '수정이 완료되었습니다.');
+        })
+        .catch(function (error) {
+
+        });
+}
+
+const fnGetStepId = (stepIndex) => {
+    let stepId;
+    if (stepIndex === 1) {
+        stepId = $('#projectConfigure-scm').data('stepId');
+    }
+    else if (stepIndex === 2) {
+        stepId = $('#projectConfigure-buildType').data('stepId');
+    }
+    else if (stepIndex === 3) {
+        stepId = $('#projectConfigure-credential').data('stepId');
+    }
+    else if (stepIndex === 4) {
+        stepId = $('#projectConfigure-command').data('stepId');
+    }
+
+    return stepId;
+}
+
 
 // Step 저장
 const fnSaveProjectStep = (stepIndex) => {
 
     let jobId = $('#project-id').val();
+    let stepId = fnGetStepId(stepIndex);
     let type = $(`#projectConfigure-stepType-${stepIndex}`).val();
-    let buildType, credentialId, scmConfigId, stepId, isTest, command;
+    let buildType, credentialId, scmConfigId, isTest, command;
 
     if (stepIndex === 1) {
         scmConfigId = $('#projectConfigure-scm').val();
-        stepId = $('#projectConfigure-scm').data('stepId');
         if (!scmConfigId) return;
     }
 
     if (stepIndex === 2) {
         buildType = $('#projectConfigure-buildType').val();
-        stepId = $('#projectConfigure-buildType').data('stepId');
         isTest = $('#projectConfigure-isTest').val();
         if (!buildType) return;
     }
 
     if (stepIndex === 3) {
         credentialId = $('#projectConfigure-credential').val();
-        stepId = $('#projectConfigure-credential').data('stepId');
         if (!credentialId) return;
     }
 
     if (stepIndex === 4) {
         credentialId = $('#projectConfigure-credential').val();
         command = $('#projectConfigure-command').val();
-        stepId = $('#projectConfigure-command').data('stepId');
         if (!command || !credentialId) return;
     }
-
-
 
 
     if (stepId) {
@@ -175,25 +232,49 @@ const fnSetCredentials = (data) => {
 // step 정보 셋팅
 const fnSetStepInfo = (list) => {
 
+    // toggleContainer.addEventListener('click', () => {
+    //     const toggleCircle = toggleContainer.querySelector('.toggle-circle');
+    //     isOn = !isOn;
+    //
+    //     fnSetToggleStyle(toggleContainer, toggleCircle, isOn);
+    //
+    //     let parentWithStepIndex = toggleContainer.closest('div[data-step-index]');
+    //     let stepIndex = parentWithStepIndex.getAttribute('data-step-index');
+    //     fnUpdateToggleSwitch(fnGetStepId(Number(stepIndex)), isOn);
+    // });
+
+
+
     list.forEach(step => {
         if (step.stepType === 'SCM') {
             projectConfigureScm.dataset.stepId = step.id;
             projectConfigureScm.value = step.stepValue;
             fnSelectChangeTrigger(projectConfigureScm);
+            fnSetStepToggleInfo(projectConfigureScm, step.isOn);
         } else if (step.stepType === 'BUILD') {
             projectConfigureBuildType.dataset.stepId = step.id;
             projectConfigureBuildType.value = step.stepValue;
             projectConfigureIsTest.value = step.isTest;
             fnSelectChangeTrigger(projectConfigureBuildType);
+            fnSetStepToggleInfo(projectConfigureBuildType, step.isOn);
         } else if (step.stepType === 'DEPLOY') {
             projectConfigureCredential.dataset.stepId = step.id;
             projectConfigureCredential.value = step.stepValue;
             fnSelectChangeTrigger(projectConfigureCredential);
+            fnSetStepToggleInfo(projectConfigureCredential, step.isOn);
         } else if (step.stepType === 'COMMAND') {
             projectConfigureCommand.dataset.stepId = step.id;
             projectConfigureCommand.value = step.stepValue;
+            fnSetStepToggleInfo(projectConfigureCommand, step.isOn);
         }
     });
+}
+
+const fnSetStepToggleInfo = (stepElement, isOn) => {
+    const firstDivContainer = stepElement.closest('div[data-step-index]');
+    const toggleContainer = firstDivContainer.querySelector('.toggle-container');
+    toggleContainer.dataset.isOn = isOn;
+    fnSetToggleStyle(toggleContainer, isOn);
 }
 
 // 연결확인

@@ -2,6 +2,7 @@ package com.deploy.controller.api;
 
 import com.deploy.dto.request.CredentialCreateReq;
 import com.deploy.dto.request.StepCreateReq;
+import com.deploy.dto.request.StepToggleReq;
 import com.deploy.dto.request.StepUpdateReq;
 import com.deploy.dto.response.handler.ResponseHandler;
 import com.deploy.service.StepService;
@@ -29,6 +30,13 @@ public class StepController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateStep(@PathVariable Long id, @RequestBody @Valid StepUpdateReq request) {
         stepService.updateStep(id, request);
+        return ResponseHandler.generateResponse(HttpStatus.OK, "success", id);
+    }
+
+
+    @PutMapping("/{id}/toggle")
+    public ResponseEntity<?> toggle(@PathVariable Long id, @RequestBody @Valid StepToggleReq request) {
+        stepService.toggleSwitch(id, request);
         return ResponseHandler.generateResponse(HttpStatus.OK, "success", id);
     }
 }
